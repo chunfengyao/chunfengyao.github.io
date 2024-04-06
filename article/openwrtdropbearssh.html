@@ -24,8 +24,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1712406634141"
-                  >2024-04-06 20:30</time
+                >Updated At：<time datetime="1712444041677"
+                  >2024-04-07 06:54</time
                 ></span
               >
             </div>
@@ -74,16 +74,16 @@ chain srcnat {
 <p>当然，由于Openwrt的防火墙是支持web操作的，通过luci-web添加这个转发规则也很简单。</p>
 <h3 id="防火墙-端口转发-添加">防火墙-&gt;端口转发-&gt;添加:</h3>
 <ul>
-<li>列表项源区域：wan口所在区域</li>
-<li>列表项外部端口：22</li>
-<li>列表项目标区域：wan口所在区域</li>
-<li>列表项内部IP地址：61.241.173.216（攻击主机的地址）</li>
-<li>列表项内部端口：22</li>
+<li><code>源区域</code>：wan口所在区域</li>
+<li><code>外部端口</code>：22</li>
+<li><code>目标区域</code>：wan口所在区域</li>
+<li><code>内部IP地址</code>：61.241.173.216（攻击主机的地址）</li>
+<li><code>内部端口</code>：22</li>
 </ul>
 <h3 id="转到添加串口的高级设置标签页">转到添加串口的<code>高级设置</code>标签页</h3>
 <ul>
-<li>列表项源IP地址：61.241.173.216（攻击主机的地址）</li>
-<li>由于不涉及NAT转换，可以把启用NAT环回关掉</li>
+<li><code>源IP地址</code>：61.241.173.216（攻击主机的地址）</li>
+<li>（由于不涉及NAT转换，可以把<code>启用NAT环回</code>关掉）</li>
 </ul>
 <p><img src="/_resources/59d0d75289e344fe82fae65a5e58a5fd.png" /><br />
 <img src="/_resources/983b7a179cb642fcb086c549891ddf02.png" /></p>
