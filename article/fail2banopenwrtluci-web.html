@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>使用fail2ban保护Openwrt的luci-web登录 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">使用fail2ban保护Openwrt的luci-web登录</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1714543730967"
+                  >2024-05-01 14:08</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1714543768932"
+                  >2024-05-01 14:09</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><p>fail2ban靠的是日志文件，对应与luci-web的日志源码在这里：<br />
+<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511">登录失败日志</a>，<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505">登录成功日志</a></p>
+<p>生成的日志参见如下，假设攻击者IP是<code>1.1.1.1</code>，三次登录失败，最后一次登录成功</p>
+<div><pre class="hljs"><code>May  1 01:06:38 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:41 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:48 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:52 OpenWrt uwsgi-luci: [info] luci: accepted login on / for root from 1.1.1.1</code></pre></div>
+<p>由于Openwrt所包含的fail2ban配置文件，并没有包含luci-web的filter，所以，需要先自定义一个filter（比如<code>/etc/fail2ban/filter.d/luci-web.conf</code>），内容如下（部分item已给出详细的注释）：</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># fail2ban filter configuration for luci-web by uwsgi-luci</span>
+
+<span class="hljs-section">[INCLUDES]</span>
+<span class="hljs-comment"># Read common prefixes. If any customizations available -- read them from</span>
+<span class="hljs-comment"># common.local</span>
+<span class="hljs-attr">after</span> = common.conf
+
+<span class="hljs-comment"># 大致浏览了下，fail2ban自带的日志前缀无法匹配到luci-web的日志信息，并且，为了尽可能符合fail2ban的filter配置文件模式，这里自定义了一个日志类型</span>
+<span class="hljs-section">[lt_uwsgi-luci-over-syslog-ng]</span>
+<span class="hljs-attr">__prefix_line</span> = \s+&lt;__hostname&gt;\s+&lt;__daemon_re&gt;\:\s+\[.+\]\s+luci\:\s+
+<span class="hljs-attr">datepattern</span> = {^LN-BEG}
+
+<span class="hljs-section">[Definition]</span>
+<span class="hljs-comment"># 通过logtype，让fail2ban使用我们自定义的前缀和日期格式</span>
+<span class="hljs-attr">logtype</span> = uwsgi-luci-over-syslog-ng
+
+<span class="hljs-comment"># 这个对应了前缀中的&lt;__daemon_re&gt;（带有一定规则的正则匹配的&lt;_daemon&gt;）</span>
+<span class="hljs-attr">_daemon</span> = uwsgi-luci
+
+<span class="hljs-comment"># 预匹配表达式</span>
+<span class="hljs-attr">prefregex</span> = ^%(__prefix_line)s&lt;F-CONTENT&gt;([Ff]ailed).+&lt;/F-CONTENT&gt;$
+
+<span class="hljs-comment"># 匹配失败登录的表达式</span>
+<span class="hljs-attr">failregex</span> = ^[Ff]ailed\s+login\s+<span class="hljs-literal">on</span>\s+/.*\s+for\s+.+\s*from\s+&lt;HOST&gt;(:\d+)?$
+
+ignoreregex =
+</code></pre></div>
+<p>另外，对于调试fail2ban的表达式，可以使用<code>fail2ban-regex</code></p>
+<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">其中/var/<span class="hljs-built_in">log</span>/test-log是测试日志，可以通过<span class="hljs-built_in">echo</span>去手动添加日志进行测试</span>
+fail2ban-regex --log-level=debug /var/log/test-log /etc/fail2ban/filter.d/luci-web.conf</code></pre></div>
+<p>filter有了，并且，也通过<code>fail2ban-regex</code>测试通过了，就可以接下来进行jail的配置了<br />
+内容如下:</p>
+<div><pre class="hljs"><code><span class="hljs-section">[luci]</span>
+<span class="hljs-attr">filter</span> = luci-web
+
+<span class="hljs-attr">enabled</span> = <span class="hljs-literal">true</span>
+<span class="hljs-comment"># 这里使用你自定义的日志文件路径（注意，luci默认是不把日志文件写入到本地文件的），可以使用`uci get system.@[0].log_file`查询，当然，如果你使用的是syslog-ng，日志文件的位置就在syslog-ng的配置文件中</span>
+<span class="hljs-attr">logpath</span> = /var/log/messages
+<span class="hljs-attr">maxretry</span> = <span class="hljs-number">6</span>
+<span class="hljs-attr">findtime</span> = <span class="hljs-number">5</span>m
+<span class="hljs-attr">bantime</span> = <span class="hljs-number">1</span>h
+
+<span class="hljs-comment"># incremental banning:</span>
+<span class="hljs-attr">bantime.increment</span> = <span class="hljs-literal">true</span>
+
+<span class="hljs-comment"># max banning time = permanent:</span>
+<span class="hljs-attr">bantime.maxtime</span> = -<span class="hljs-number">1</span>
+
+<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部丢弃（效果类似于主机不在线）</span>
+<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter drop"]</span>
+<span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部丢弃 </span>
+<span class="hljs-attr">action</span> = nftables-multiport[name=%(__name__)s-all, port=<span class="hljs-string">"443,80"</span>, protocol=<span class="hljs-string">"tcp,udp"</span>, blocktype=<span class="hljs-string">"counter drop"</span>]
+<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部拒绝（默认是icmp不可达）（效果类似于端口不通）</span>
+<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter reject"] notify-custom[norestored=true]</span>
+</code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
