@@ -24,8 +24,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1714543768932"
-                  >2024-05-01 14:09</time
+                >Updated At：<time datetime="1714559942412"
+                  >2024-05-01 18:39</time
                 ></span
               >
             </div>
@@ -39,7 +39,7 @@
 May  1 01:06:41 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
 May  1 01:06:48 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
 May  1 01:06:52 OpenWrt uwsgi-luci: [info] luci: accepted login on / for root from 1.1.1.1</code></pre></div>
-<p>由于Openwrt所包含的fail2ban配置文件，并没有包含luci-web的filter，所以，需要先自定义一个filter（比如<code>/etc/fail2ban/filter.d/luci-web.conf</code>），内容如下（部分item已给出详细的注释）：</p>
+<p>由于Openwrt所包含的fail2ban配置文件，并没有包含luci-web的filter，所以，需要先自定义一个filter（比如<code>/etc/fail2ban/filter.d/luci-web.conf</code>），内容如下（部分item我加了详细的中文注释）：</p>
 <div><pre class="hljs"><code><span class="hljs-comment"># fail2ban filter configuration for luci-web by uwsgi-luci</span>
 
 <span class="hljs-section">[INCLUDES]</span>
@@ -47,13 +47,14 @@ May  1 01:06:52 OpenWrt uwsgi-luci: [info] luci: accepted login on / for root fr
 <span class="hljs-comment"># common.local</span>
 <span class="hljs-attr">after</span> = common.conf
 
-<span class="hljs-comment"># 大致浏览了下，fail2ban自带的日志前缀无法匹配到luci-web的日志信息，并且，为了尽可能符合fail2ban的filter配置文件模式，这里自定义了一个日志类型</span>
+<span class="hljs-comment"># 大致浏览了下fail2ban的配置文件，fail2ban自带的日志前缀%(__prefix_line)s是无法匹配到luci-web的日志信息的</span>
+<span class="hljs-comment"># 并且，为了尽可能符合fail2ban的filter配置文件模式，这里自定义了一个日志类型</span>
 <span class="hljs-section">[lt_uwsgi-luci-over-syslog-ng]</span>
 <span class="hljs-attr">__prefix_line</span> = \s+&lt;__hostname&gt;\s+&lt;__daemon_re&gt;\:\s+\[.+\]\s+luci\:\s+
 <span class="hljs-attr">datepattern</span> = {^LN-BEG}
 
 <span class="hljs-section">[Definition]</span>
-<span class="hljs-comment"># 通过logtype，让fail2ban使用我们自定义的前缀和日期格式</span>
+<span class="hljs-comment"># 通过logtype，让fail2ban使用我们自定义的日志类型中的前缀和日期格式</span>
 <span class="hljs-attr">logtype</span> = uwsgi-luci-over-syslog-ng
 
 <span class="hljs-comment"># 这个对应了前缀中的&lt;__daemon_re&gt;（带有一定规则的正则匹配的&lt;_daemon&gt;）</span>
@@ -92,8 +93,10 @@ fail2ban-regex --log-level=debug /var/log/test-log /etc/fail2ban/filter.d/luci-w
 <span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter drop"]</span>
 <span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部丢弃 </span>
 <span class="hljs-attr">action</span> = nftables-multiport[name=%(__name__)s-all, port=<span class="hljs-string">"443,80"</span>, protocol=<span class="hljs-string">"tcp,udp"</span>, blocktype=<span class="hljs-string">"counter drop"</span>]
-<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部拒绝（默认是icmp不可达）（效果类似于端口不通）</span>
-<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter reject"] notify-custom[norestored=true]</span>
+<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部拒绝（默认是icmp不可达）（效果类似于主机不可ping通）</span>
+<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter reject"]</span>
+<span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部拒绝（默认是icmp不可达）（效果类似于端口未开启）</span>
+<span class="hljs-comment">#action = nftables-multiport[name=%(__name__)s-all, port="443,80", protocol="tcp,udp", blocktype="counter reject"]</span>
 </code></pre></div>
 </div>
       </article>
