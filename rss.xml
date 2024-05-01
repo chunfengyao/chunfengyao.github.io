@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Wed, 01 May 2024 10:44:05 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 01 May 2024 22:51:06 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -51,7 +51,7 @@ ignoreregex =
 <div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">其中/var/<span class="hljs-built_in">log</span>/test-log是测试日志，可以通过<span class="hljs-built_in">echo</span>去手动添加日志进行测试</span>
 fail2ban-regex --log-level=debug /var/log/test-log /etc/fail2ban/filter.d/luci-web.conf</code></pre></div>
 <p>filter有了，并且，也通过<code>fail2ban-regex</code>测试通过了，就可以接下来进行jail的配置了<br />
-内容如下:</p>
+内容如下（由于我这边所有App都已经转到nftables了，所以，我只用了nftables版本的action，iptables的action其实也类似）:</p>
 <div><pre class="hljs"><code><span class="hljs-section">[luci]</span>
 <span class="hljs-attr">filter</span> = luci-web
 
@@ -77,6 +77,28 @@ fail2ban-regex --log-level=debug /var/log/test-log /etc/fail2ban/filter.d/luci-w
 <span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部拒绝（默认是icmp不可达）（效果类似于端口未开启）</span>
 <span class="hljs-comment">#action = nftables-multiport[name=%(__name__)s-all, port="443,80", protocol="tcp,udp", blocktype="counter reject"]</span>
 </code></pre></div>
+<p>注意上方的action中的blocktype，我在blocktype中加了counter（计数），翻看fail2ban的源码就能发现配置文件中的参数和最终的行为之间的关联，而加了这个counter之后可以让我们更加直观地看到在ban生效之后主机的数据包数量和大小。查看方法（基于nft）：</p>
+<div><pre class="hljs"><code>nft list table inet f2b-table</code></pre></div>
+<p>输出内容类似于：</p>
+<div><pre class="hljs"><code>table inet f2b-table <span class="hljs-punctuation">{</span>
+        set addr-set-luci-all <span class="hljs-punctuation">{</span>
+                type ipv4_addr
+                elements = <span class="hljs-punctuation">{</span> <span class="hljs-number">31.184</span><span class="hljs-number">.198</span><span class="hljs-number">.71</span><span class="hljs-punctuation">,</span> <span class="hljs-number">58.215</span><span class="hljs-number">.203</span><span class="hljs-number">.139</span><span class="hljs-punctuation">,</span>
+                             <span class="hljs-number">116.55</span><span class="hljs-number">.248</span><span class="hljs-number">.235</span><span class="hljs-punctuation">,</span> <span class="hljs-number">119.167</span><span class="hljs-number">.165</span><span class="hljs-number">.54</span><span class="hljs-punctuation">,</span>
+                             <span class="hljs-number">120.26</span><span class="hljs-number">.110</span><span class="hljs-number">.245</span><span class="hljs-punctuation">,</span> <span class="hljs-number">120.27</span><span class="hljs-number">.151</span><span class="hljs-number">.128</span><span class="hljs-punctuation">,</span>
+                             <span class="hljs-number">120.48</span><span class="hljs-number">.84</span><span class="hljs-number">.73</span><span class="hljs-punctuation">,</span> <span class="hljs-number">122.194</span><span class="hljs-number">.12</span><span class="hljs-number">.206</span><span class="hljs-punctuation">,</span>
+                             <span class="hljs-number">125.124</span><span class="hljs-number">.199</span><span class="hljs-number">.57</span><span class="hljs-punctuation">,</span> <span class="hljs-number">182.92</span><span class="hljs-number">.165</span><span class="hljs-number">.47</span><span class="hljs-punctuation">,</span>
+                             <span class="hljs-number">182.92</span><span class="hljs-number">.184</span><span class="hljs-number">.221</span><span class="hljs-punctuation">,</span> <span class="hljs-number">182.92</span><span class="hljs-number">.239</span><span class="hljs-number">.50</span><span class="hljs-punctuation">,</span>
+                             <span class="hljs-number">183.56</span><span class="hljs-number">.201</span><span class="hljs-number">.60</span><span class="hljs-punctuation">,</span> <span class="hljs-number">193.35</span><span class="hljs-number">.18</span><span class="hljs-number">.122</span> <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span>
+
+        chain f2b-chain <span class="hljs-punctuation">{</span>
+                type nat hook prerouting priority dstnat + <span class="hljs-number">1</span>; policy accept;
+                # 注意这里最后的'packets <span class="hljs-number">1230</span> bytes <span class="hljs-number">73800</span>'，就是ban后又收到了来自攻击者的<span class="hljs-number">1230</span>个数据包(约等于请求个数)
+                meta l4proto <span class="hljs-punctuation">{</span> tcp<span class="hljs-punctuation">,</span> udp <span class="hljs-punctuation">}</span> ip saddr @addr-set-luci-all counter packets <span class="hljs-number">1230</span> bytes <span class="hljs-number">73800</span> drop
+        <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>注意：防火墙的counter会在重启时重置为0哦！</p>
 ]]></content:encoded>
         </item>
         <item>
