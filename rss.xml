@@ -4,14 +4,53 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Sat, 04 May 2024 23:32:13 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 05 May 2024 00:34:12 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
             <title><![CDATA[使用pystun3进行NAT类型探测时的步骤]]></title>
             <guid>d6829effd51b44028a970b59e1790b2c</guid>
             <pubDate>Sat, 04 May 2024 23:16:34 GMT</pubDate>
-            <content:encoded><![CDATA[<img src="/_resources/9f75a44f82514c38b03abe53e586ece7.svg" />]]></content:encoded>
+            <content:encoded><![CDATA[<p><img src="/_resources/9f75a44f82514c38b03abe53e586ece7.svg" /></p>
+<p>通过js连接turn服务器进行测试</p>
+<div><pre class="hljs"><code><span class="hljs-keyword">function</span> <span class="hljs-title function_">checkTURNServer</span>(<span class="hljs-params">turnConfig, timeout</span>){ 
+
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>){
+
+    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){
+        <span class="hljs-keyword">if</span>(promiseResolved) <span class="hljs-keyword">return</span>;
+        <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">false</span>);
+        promiseResolved = <span class="hljs-literal">true</span>;
+    }, timeout || <span class="hljs-number">5000</span>);
+
+    <span class="hljs-keyword">var</span> promiseResolved = <span class="hljs-literal">false</span>
+      , myPeerConnection = <span class="hljs-variable language_">window</span>.<span class="hljs-property">RTCPeerConnection</span> || <span class="hljs-variable language_">window</span>.<span class="hljs-property">mozRTCPeerConnection</span> || <span class="hljs-variable language_">window</span>.<span class="hljs-property">webkitRTCPeerConnection</span>   <span class="hljs-comment">//compatibility for firefox and chrome</span>
+      , pc = <span class="hljs-keyword">new</span> <span class="hljs-title function_">myPeerConnection</span>({<span class="hljs-attr">iceServers</span>:[turnConfig]})
+      , noop = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){};
+    pc.<span class="hljs-title function_">createDataChannel</span>(<span class="hljs-string">""</span>);    <span class="hljs-comment">//create a bogus data channel</span>
+    pc.<span class="hljs-title function_">createOffer</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">sdp</span>){
+      <span class="hljs-keyword">if</span>(sdp.<span class="hljs-property">sdp</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'typ relay'</span>) &gt; -<span class="hljs-number">1</span>){ <span class="hljs-comment">// sometimes sdp contains the ice candidates...</span>
+        promiseResolved = <span class="hljs-literal">true</span>;
+        <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">true</span>);
+      }
+      pc.<span class="hljs-title function_">setLocalDescription</span>(sdp, noop, noop);
+    }, noop);    <span class="hljs-comment">// create offer and set local description</span>
+    pc.<span class="hljs-property">onicecandidate</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">ice</span>){  <span class="hljs-comment">//listen for candidate events</span>
+      <span class="hljs-keyword">if</span>(promiseResolved || !ice || !ice.<span class="hljs-property">candidate</span> || !ice.<span class="hljs-property">candidate</span>.<span class="hljs-property">candidate</span> || !(ice.<span class="hljs-property">candidate</span>.<span class="hljs-property">candidate</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'typ relay'</span>)&gt;-<span class="hljs-number">1</span>))  <span class="hljs-keyword">return</span>;
+      promiseResolved = <span class="hljs-literal">true</span>;
+      <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">true</span>);
+    };
+  });   
+}
+
+<span class="hljs-title function_">checkTURNServer</span>({
+    <span class="hljs-attr">url</span>: <span class="hljs-string">'turn:127.0.0.1:3478'</span>,
+    <span class="hljs-attr">username</span>: <span class="hljs-string">'test'</span>,
+    <span class="hljs-attr">credential</span>: <span class="hljs-string">'test'</span>
+}).<span class="hljs-title function_">then</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">bool</span>){
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'is my TURN server active? '</span>, bool? <span class="hljs-string">'yes'</span>:<span class="hljs-string">'no'</span>);
+}).<span class="hljs-title function_">catch</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">error</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">console</span>));</code></pre></div>
+]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[使用fail2ban保护Openwrt的luci-web登录]]></title>
