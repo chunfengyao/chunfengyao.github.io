@@ -4,11 +4,11 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Sun, 05 May 2024 02:39:23 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 05 May 2024 10:26:29 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
-            <title><![CDATA[使用pystun3进行NAT类型探测时的步骤]]></title>
+            <title><![CDATA[使用stun进行NAT类型探测]]></title>
             <guid>d6829effd51b44028a970b59e1790b2c</guid>
             <pubDate>Sat, 04 May 2024 23:16:34 GMT</pubDate>
             <content:encoded><![CDATA[<p><img src="/_resources/9f75a44f82514c38b03abe53e586ece7.svg" /></p>
