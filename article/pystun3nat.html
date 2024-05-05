@@ -24,8 +24,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1714869217907"
-                  >2024-05-05 08:33</time
+                >Updated At：<time datetime="1714871054980"
+                  >2024-05-05 09:04</time
                 ></span
               >
             </div>
@@ -71,6 +71,12 @@
 }).<span class="hljs-title function_">then</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">bool</span>){
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'is my TURN server active? '</span>, bool? <span class="hljs-string">'yes'</span>:<span class="hljs-string">'no'</span>);
 }).<span class="hljs-title function_">catch</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">error</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">console</span>));</code></pre></div>
+<p>另外，对于测试stun的客户端，请注意：</p>
+<ul>
+<li>按<code>rfc 3489</code>的标准：探测客户端网络的NAT类型是需要两个公网地址的（通过dns能查询到同一个address family的两个公网地址，比如两个公网ipv4）</li>
+<li>按<code>rfc 5389</code>的标准：是否需要两个公网IP，取决于客户端的NAT穿透模式</li>
+</ul>
+<p>所以，如果你只有一个公网IP，那么，pystun3就不需要尝试了（对于一些早期的stun客户端软件-包括一些VoIP客户端，大部分只支持<code>rfc 3489</code>，所以，pystun3对于某些客户端排查错误还是有用的）。</p>
 </div>
       </article>
     </div>
