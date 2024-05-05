@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Sun, 05 May 2024 01:08:01 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 05 May 2024 02:39:23 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -12,6 +12,13 @@
             <guid>d6829effd51b44028a970b59e1790b2c</guid>
             <pubDate>Sat, 04 May 2024 23:16:34 GMT</pubDate>
             <content:encoded><![CDATA[<p><img src="/_resources/9f75a44f82514c38b03abe53e586ece7.svg" /></p>
+<p>对于使用pystun3进行NAT Type测试，请注意：</p>
+<ul>
+<li>按<code>rfc 3489</code>的标准：探测客户端网络的NAT类型是需要两个公网地址的（通过dns能查询到同一个address family的两个公网地址，比如两个公网ipv4）</li>
+<li>按<code>rfc 5389</code>的标准：是否需要两个公网IP，取决于客户端的NAT穿透模式</li>
+</ul>
+<p>所以，如果你只有一个公网IP，那么，pystun3（只支持<code>rfc 3489</code>）就不需要尝试了（其实，对于其它一些早期的stun客户端软件-包括一些VoIP客户端，大部分只支持<code>rfc 3489</code>，将pystun3用于这些客户端排查错误还是有用的）。</p>
+<p>另外，实际上，在进行比如基于webrtc的p2p连接时，是不需要得到具体的NAT类型的，对于stun服务来说只需要得到公网地址即可，所以，如果你只有一个公网IP地址，是不影响webrtc的使用的。</p>
 <p>通过js连接turn服务器进行测试</p>
 <div><pre class="hljs"><code><span class="hljs-keyword">function</span> <span class="hljs-title function_">checkTURNServer</span>(<span class="hljs-params">turnConfig, timeout</span>){ 
 
@@ -50,12 +57,6 @@
 }).<span class="hljs-title function_">then</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">bool</span>){
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'is my TURN server active? '</span>, bool? <span class="hljs-string">'yes'</span>:<span class="hljs-string">'no'</span>);
 }).<span class="hljs-title function_">catch</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">error</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">console</span>));</code></pre></div>
-<p>另外，对于测试stun的客户端，请注意：</p>
-<ul>
-<li>按<code>rfc 3489</code>的标准：探测客户端网络的NAT类型是需要两个公网地址的（通过dns能查询到同一个address family的两个公网地址，比如两个公网ipv4）</li>
-<li>按<code>rfc 5389</code>的标准：是否需要两个公网IP，取决于客户端的NAT穿透模式</li>
-</ul>
-<p>所以，如果你只有一个公网IP，那么，pystun3就不需要尝试了（对于一些早期的stun客户端软件-包括一些VoIP客户端，大部分只支持<code>rfc 3489</code>，所以，pystun3对于某些客户端排查错误还是有用的）。</p>
 ]]></content:encoded>
         </item>
         <item>
