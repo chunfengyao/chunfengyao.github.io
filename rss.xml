@@ -4,15 +4,16 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Tue, 18 Jun 2024 10:56:16 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 27 Jun 2024 21:27:53 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
-            <title><![CDATA[Andriod - 通过adb关闭屏幕]]></title>
+            <title><![CDATA[Andriod - 通过adb执行JAVA程序（包含main入口的java文件）]]></title>
             <guid>2d3f56eee8bd416e9f2dae3238b1ebf2</guid>
-            <pubDate>Tue, 18 Jun 2024 09:41:38 GMT</pubDate>
-            <content:encoded><![CDATA[<h4 id="通过adb执行java程序包含main入口的java文件">通过adb执行JAVA程序（包含main入口的java文件）</h4>
-<h5 id="首先编写java文件">首先编写JAVA文件</h5>
+            <pubDate>Sun, 16 Jun 2024 09:41:38 GMT</pubDate>
+            <content:encoded><![CDATA[<ul>
+<li>首先编写JAVA文件 - 该代码作用：通过adb执行java关闭屏幕</li>
+</ul>
 <div><pre class="hljs"><code><span class="hljs-keyword">import</span> android.annotation.SuppressLint;
 <span class="hljs-keyword">import</span> android.os.IBinder;
 <span class="hljs-keyword">import</span> android.os.Build;
@@ -87,17 +88,22 @@
     }
 }
 </code></pre></div>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">然后编译，通过-cp指定android.jar的路径</span>
-javac -source 1.8 -target 1.8 ./DisplayControl.java -cp "$ANDROID_HOME/platforms/android-33/android.jar"
-<span class="hljs-meta"># </span><span class="language-bash">然后将class文件打包为dex（Dalvik可执行文件）</span>
-"$ANDROID_HOME/build-tools/27.0.3/dx" --dex --output ./DisplayControl.dex ./DisplayControl.class
-<span class="hljs-meta">
-# </span><span class="language-bash">将文件推送到设备的tmp目录（有权限，并且可以添加可执行权限）</span>
-adb push DisplayControl.dex /data/local/tmp/
-<span class="hljs-meta">
-# </span><span class="language-bash">执行（其中：/data/<span class="hljs-built_in">local</span>/tmp/DisplayControl.dex是dex路径，最后的DisplayControl是包含main方法的类名）</span>
-adb shell CLASSPATH=/data/local/tmp/DisplayControl.dex app_process / DisplayControl
-</code></pre></div>
+<ul>
+<li>然后编译，通过-cp指定android.jar的路径</li>
+</ul>
+<div><pre class="hljs"><code>javac -source 1.8 -target 1.8 ./DisplayControl.java -cp "$ANDROID_HOME/platforms/android-33/android.jar"</code></pre></div>
+<ul>
+<li>然后将class文件打包为dex（Dalvik可执行文件）</li>
+</ul>
+<div><pre class="hljs"><code>"$ANDROID_HOME/build-tools/27.0.3/dx" --dex --output ./DisplayControl.dex ./DisplayControl.class</code></pre></div>
+<ul>
+<li>将文件推送到设备的tmp目录（有权限，并且可以添加可执行权限）</li>
+</ul>
+<div><pre class="hljs"><code>adb push DisplayControl.dex /data/local/tmp/</code></pre></div>
+<ul>
+<li>执行（其中：/data/local/tmp/DisplayControl.dex是dex路径，最后的DisplayControl是包含main方法的类名）</li>
+</ul>
+<div><pre class="hljs"><code>adb shell CLASSPATH=/data/local/tmp/DisplayControl.dex app_process / DisplayControl</code></pre></div>
 ]]></content:encoded>
         </item>
         <item>

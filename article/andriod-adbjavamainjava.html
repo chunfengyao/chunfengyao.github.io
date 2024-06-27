@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 <link rel="stylesheet" href="/_assets/main.css" />
 
-    <title>Andriod - 通过adb关闭屏幕 - chunfeng.yao</title>
+    <title>Andriod - 通过adb执行JAVA程序（包含main入口的java文件） - chunfeng.yao</title>
   <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
   <body>
     <div class="main">
@@ -15,25 +15,26 @@
       </nav>
       <article>
         <header>
-          <h1 class="article-title">Andriod - 通过adb关闭屏幕</h1>
+          <h1 class="article-title">Andriod - 通过adb执行JAVA程序（包含main入口的java文件）</h1>
           <div class="article-info">
             <div>
               <span
-                >Created At：<time datetime="1718703698438"
-                  >2024-06-18 17:41</time
+                >Created At：<time datetime="1718530898438"
+                  >2024-06-16 17:41</time
                 ></span
               >
               <span
-                >Updated At：<time datetime="1718708047247"
-                  >2024-06-18 18:54</time
+                >Updated At：<time datetime="1718538143188"
+                  >2024-06-16 19:42</time
                 ></span
               >
             </div>
             
           </div>
         </header>
-        <div class="article-content markdown-body"><h4 id="通过adb执行java程序包含main入口的java文件">通过adb执行JAVA程序（包含main入口的java文件）</h4>
-<h5 id="首先编写java文件">首先编写JAVA文件</h5>
+        <div class="article-content markdown-body"><ul>
+<li>首先编写JAVA文件 - 该代码作用：通过adb执行java关闭屏幕</li>
+</ul>
 <div><pre class="hljs"><code><span class="hljs-keyword">import</span> android.annotation.SuppressLint;
 <span class="hljs-keyword">import</span> android.os.IBinder;
 <span class="hljs-keyword">import</span> android.os.Build;
@@ -108,17 +109,22 @@
     }
 }
 </code></pre></div>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">然后编译，通过-cp指定android.jar的路径</span>
-javac -source 1.8 -target 1.8 ./DisplayControl.java -cp "$ANDROID_HOME/platforms/android-33/android.jar"
-<span class="hljs-meta"># </span><span class="language-bash">然后将class文件打包为dex（Dalvik可执行文件）</span>
-"$ANDROID_HOME/build-tools/27.0.3/dx" --dex --output ./DisplayControl.dex ./DisplayControl.class
-<span class="hljs-meta">
-# </span><span class="language-bash">将文件推送到设备的tmp目录（有权限，并且可以添加可执行权限）</span>
-adb push DisplayControl.dex /data/local/tmp/
-<span class="hljs-meta">
-# </span><span class="language-bash">执行（其中：/data/<span class="hljs-built_in">local</span>/tmp/DisplayControl.dex是dex路径，最后的DisplayControl是包含main方法的类名）</span>
-adb shell CLASSPATH=/data/local/tmp/DisplayControl.dex app_process / DisplayControl
-</code></pre></div>
+<ul>
+<li>然后编译，通过-cp指定android.jar的路径</li>
+</ul>
+<div><pre class="hljs"><code>javac -source 1.8 -target 1.8 ./DisplayControl.java -cp "$ANDROID_HOME/platforms/android-33/android.jar"</code></pre></div>
+<ul>
+<li>然后将class文件打包为dex（Dalvik可执行文件）</li>
+</ul>
+<div><pre class="hljs"><code>"$ANDROID_HOME/build-tools/27.0.3/dx" --dex --output ./DisplayControl.dex ./DisplayControl.class</code></pre></div>
+<ul>
+<li>将文件推送到设备的tmp目录（有权限，并且可以添加可执行权限）</li>
+</ul>
+<div><pre class="hljs"><code>adb push DisplayControl.dex /data/local/tmp/</code></pre></div>
+<ul>
+<li>执行（其中：/data/local/tmp/DisplayControl.dex是dex路径，最后的DisplayControl是包含main方法的类名）</li>
+</ul>
+<div><pre class="hljs"><code>adb shell CLASSPATH=/data/local/tmp/DisplayControl.dex app_process / DisplayControl</code></pre></div>
 </div>
       </article>
     </div>
