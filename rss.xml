@@ -4,9 +4,109 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 27 Jun 2024 21:27:53 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 03 Jul 2024 00:18:58 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
+        <item>
+            <title><![CDATA[Openwrt中通过对Dnsmasq进行DUMP来排查dns缓存问题]]></title>
+            <guid>f1baff6a14074fe49e99f54fe58a26b0</guid>
+            <pubDate>Wed, 03 Jul 2024 00:05:00 GMT</pubDate>
+            <content:encoded><![CDATA[<p>首先Openwrt中开启Dnsmasq的日志功能。</p>
+<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
+uci set dhcp.cfg01411c.logqueries='1'
+uci del dhcp.cfg01411c.quietdhcp	# 这个可以不设置
+uci commit
+<span class="hljs-meta">
+# </span><span class="language-bash">当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
+uci set dhcp.@dnsmasq[0].logqueries='1'
+uci del dhcp.@dnsmasq[0].quietdhcp  # 这个可以不设置
+uci commit</code></pre></div>
+<p>这会让<code>Openwrt</code>生成的配置文件中的<code>log-queries</code>变为启用状态。</p>
+<p>然后重启/重载Dnsmasq（我是直接重启的，有兴趣的小伙伴也可以试试重载有没有效果）</p>
+<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">
+/etc/init.d/dnsmasq restart</span>
+<span class="hljs-meta">
+# </span><span class="language-bash">
+/etc/init.d/dnsmasq restart</span></code></pre></div>
+<p>重启/重载完可以检查下配置文件是不是正确生成了：</p>
+<div><pre class="hljs"><code>grep "log-queries" /var/etc/dnsmasq.conf*</code></pre></div>
+<p>然后开俩终端<br />
+终端一用于监视日志</p>
+<div><pre class="hljs"><code>logread -f</code></pre></div>
+<p>终端二用于发送信号量，以触发dump</p>
+<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">调用pidof子命令获取Dnsmasq的进程号，再给对应进程发送SIGUSR1信号</span>
+kill -SIGUSR1 `pidof /usr/sbin/dnsmasq`</code></pre></div>
+<p>然后即可看到dump内容，大致如下</p>
+<div><pre class="hljs"><code>Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: time 3487
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cache size 150, 0/163 cache insertions re-used unexpired cache entries.
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: queries forwarded 98, queries answered locally 38
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: queries for authoritative zones 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-query subqueries HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-query crypto work HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-RRSet signature fails HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: pool memory in use 0, max 88, allocated 2200
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: child processes for TCP requests: in use 0, highest since last SIGUSR1 0, max allowed 20.
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: server 127.0.0.1#5333: queries sent 98, retried 0, failed 0, nxdomain replies 3, avg. latency 597ms
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: Host                           Address                                  Flags      Expires                  Source
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ------------------------------ ---------------------------------------- ---------- ------------------------ ------------
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: mtalk.google.com               mobile-gtalk.l.google.com                CF         62
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-localhost                  ::1                                      6F I   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: upp-cdn.itunes-apple.com.akadn ioshost.qtlcdn.com                       CF         4294967112
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-loopback                   ::1                                      6F I   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-allnodes.lan               ff02::1                                  6FRI   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: assis.local.lan                                                         !F I   H   0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: clients4.google.com            clients.l.google.com                     CF         4294967271
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ipcdn-lb.apple.com.akadns.net  ioshost.qtlcdn.com                       CF         4294967292
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ajax.googleapis.com            142.250.189.234                          4F         4294967269
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: live.github.com                140.82.112.25                            4F         3
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 172.217.164.106                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.191.74                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.202                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.234                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.188.10                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.191.42                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.214.138                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.32.42                            4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.170                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.72.202                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.234                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.170                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.202                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: googlehosted.l.googleuserconte 142.250.189.161                          4F         98
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: lh3.googleusercontent.com      googlehosted.l.googleusercontent.com     CF         4294967261
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.cookielaw.org              104.19.178.52                            4F         4294967283
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.cookielaw.org              104.19.177.52                            4F         4294967283
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.sstatic.net                104.18.40.222                            4F         78
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.sstatic.net                172.64.147.34                            4F         78
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: i.sstatic.net                  104.18.41.33                             4F         4294967135
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: i.sstatic.net                  172.64.146.223                           4F         4294967135
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: mobile-gtalk.l.google.com      142.251.2.188                            4F         62
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: clients.l.google.com           142.250.189.174                          4F         4294967271
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.191.42                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.170                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.191.74                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 172.217.164.106                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.202                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.72.202                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.214.138                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.170                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.234                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.234                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.202                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.32.42                            4F         4294967248</code></pre></div>
+<p>然后排查dns缓存问题即可</p>
+<p>排查完之后，需要关闭的话，如下：</p>
+<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
+uci del dhcp.cfg01411c.logqueries
+uci set dhcp.cfg01411c.quietdhcp='1'  # 这个可以不设置
+uci commit
+<span class="hljs-meta">
+# </span><span class="language-bash">当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
+uci del dhcp.@dnsmasq[0].logqueries
+uci set dhcp.@dnsmasq[0].quietdhcp='1'  # 这个可以不设置
+uci commit</code></pre></div>
+]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[Andriod - 通过adb执行JAVA程序（包含main入口的java文件）]]></title>
             <guid>2d3f56eee8bd416e9f2dae3238b1ebf2</guid>
@@ -1016,44 +1116,6 @@ M834 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist
 <p><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⊕</mo></mrow><annotation encoding="application/x-tex">\oplus</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em"></span><span class="mord">⊕</span></span></span></span></span>为异或（相同为0，不同为1）<br />
 偶校验位 <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>n</mi></msub><mo>=</mo><msub><mi>a</mi><mn>0</mn></msub><mo>⊕</mo><msub><mi>a</mi><mn>1</mn></msub><mo>⊕</mo><msub><mi>a</mi><mn>2</mn></msub><mo>⊕</mo><mo>…</mo><mo>⊕</mo><msub><mi>a</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">a_{n} =a_{0} \oplus a_{1} \oplus a_{2} \oplus … \oplus a_{n-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em"><span></span></span></span></span></span></span></span></span></span></span>， 奇校验位 <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>n</mi></msub><mo>=</mo><mi>N</mi><mi>O</mi><mi>T</mi><mo stretchy="false">(</mo><msub><mi>a</mi><mn>0</mn></msub><mo>⊕</mo><msub><mi>a</mi><mn>1</mn></msub><mo>⊕</mo><msub><mi>a</mi><mn>2</mn></msub><mo>⊕</mo><mo>…</mo><mo>⊕</mo><msub><mi>a</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">a_{n} =NOT(a_{0} \oplus a_{1} \oplus a_{2} \oplus … \oplus a_{n-1})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.13889em">NOT</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
 <h4 id="可以记为奇偶校验可描述为给每一个码字加一个校验位用它来构成奇性或偶性校验">可以记为：奇/偶校验可描述为：给每一个码字加一个校验位，用它来构成奇性或偶性校验。</h4>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[iptables]]></title>
-            <guid>97a3997e797a4b5296e48548bbe1f07d</guid>
-            <pubDate>Thu, 09 Jun 2022 10:56:57 GMT</pubDate>
-            <content:encoded><![CDATA[<p>表：nat、raw、mangle、filter</p>
-<p><img src="/_resources/d7f525552f6a4438ae0cf623f9b625ae.png" /></p>
-<h2 id="raw-mangle-nat-filter-规则链之间的优先顺序分三种情况">Raw --&gt; mangle --&gt; nat --&gt; filter 规则链之间的优先顺序（分三种情况）：</h2>
-<ul>
-<li>
-<p><strong>第一种情况：入站数据流向</strong></p>
-<ul>
-<li>从外界到达防火墙的数据包，先被PREROUTING规则链处理（是否修改数据包地址等），之后会进行路由选择（判断该数据包应该发往何处），如果数据包的目标主机是防火墙本机（比如说Internet用户访问防火墙主机中的web服务器的数据包），那么内核将其传给INPUT链进行处理（决定是否允许通过等），通过以后再交给系统上层的应用程序（比如Apache服务器）进行响应。</li>
-</ul>
-</li>
-<li>
-<p><strong>第二冲情况：转发数据流向</strong></p>
-<ul>
-<li>来自外界的数据包到达防火墙后，首先被PREROUTING规则链处理，之后会进行路由选择，如果数据包的目标地址是其它外部地址（比如局域网用户通过网关访问QQ站点的数据包），则内核将其传递给FORWARD链进行处理（是否转发或拦截），然后再交给POSTROUTING规则链（是否修改数据包的地址等）进行处理。</li>
-</ul>
-</li>
-<li>
-<p><strong>第三种情况：出站数据流向</strong></p>
-<ul>
-<li>防火墙本机向外部地址发送的数据包（比如在防火墙主机中测试公网DNS服务器时），首先被OUTPUT规则链处理，之后进行路由选择，然后传递给POSTROUTING规则链（是否修改数据包的地址等）进行处理。</li>
-</ul>
-</li>
-</ul>
-<h2 id="dnat-snat">DNAT、SNAT</h2>
-<ul>
-<li>
-<p><a title="View all posts in DNAT" href="https://developpaper.com/tag/dnat/">DNAT</a> (destination network address translation) is usually called destination mapping.</p>
-</li>
-<li>
-<p><a title="View all posts in SNAT" href="https://developpaper.com/tag/snat/">SNAT</a> (source network address translation) is usually called source mapping.</p>
-</li>
-</ul>
 ]]></content:encoded>
         </item>
     </channel>
