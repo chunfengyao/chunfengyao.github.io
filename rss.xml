@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Wed, 03 Jul 2024 00:26:38 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 06 Jul 2024 23:15:08 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -14,12 +14,10 @@
             <content:encoded><![CDATA[<p>首先Openwrt中开启Dnsmasq的日志功能。</p>
 <div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
 uci set dhcp.cfg01411c.logqueries='1'
-uci del dhcp.cfg01411c.quietdhcp	# 这个可以不设置
 uci commit
 <span class="hljs-meta">
 # </span><span class="language-bash">当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
 uci set dhcp.@dnsmasq[0].logqueries='1'
-uci del dhcp.@dnsmasq[0].quietdhcp  # 这个可以不设置
 uci commit</code></pre></div>
 <p>这会让<code>Openwrt</code>生成的配置文件中的<code>log-queries</code>变为启用状态。</p>
 <p>然后重启/重载Dnsmasq（我是直接重启的，有兴趣的小伙伴也可以试试重载有没有效果）</p>
@@ -97,18 +95,17 @@ Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 
 <p>排查完之后，需要关闭的话，如下：</p>
 <div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
 uci del dhcp.cfg01411c.logqueries
-uci set dhcp.cfg01411c.quietdhcp='1'  # 这个可以不设置
 uci commit
 <span class="hljs-meta">
 # </span><span class="language-bash">当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
 uci del dhcp.@dnsmasq[0].logqueries
-uci set dhcp.@dnsmasq[0].quietdhcp='1'  # 这个可以不设置
 uci commit</code></pre></div>
 <p>然后重启/重载Dnsmasq（我是直接重启的，有兴趣的小伙伴也可以试试重载有没有效果）</p>
 <div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">重启</span>
 /etc/init.d/dnsmasq restart
 <span class="hljs-meta"># </span><span class="language-bash">重载</span>
 /etc/init.d/dnsmasq restart</code></pre></div>
+<h3 id="根据打印的信息可知290版本的dnsmasq是可以通过reload来清空dns缓存的">根据打印的信息可知，2.90版本的Dnsmasq是可以通过reload来清空dns缓存的。</h3>
 ]]></content:encoded>
         </item>
         <item>
