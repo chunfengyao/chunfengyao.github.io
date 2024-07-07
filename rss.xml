@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Sun, 07 Jul 2024 01:42:10 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 07 Jul 2024 01:44:02 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -20,10 +20,8 @@ uci commit
 uci set dhcp.@dnsmasq[0].logqueries='1'
 uci commit</code></pre></div>
 <p>这会让<code>Openwrt</code>生成的配置文件中的<code>log-queries</code>变为启用状态。</p>
-<p>然后重启/重载Dnsmasq（我是直接重启的，有兴趣的小伙伴也可以试试重载有没有效果）</p>
+<p>然后重启Dnsmasq</p>
 <div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">重启</span>
-/etc/init.d/dnsmasq restart
-<span class="hljs-meta"># </span><span class="language-bash">重载</span>
 /etc/init.d/dnsmasq restart</code></pre></div>
 <p>重启/重载完可以检查下配置文件是不是正确生成了：</p>
 <div><pre class="hljs"><code>grep "log-queries" /var/etc/dnsmasq.conf*</code></pre></div>
@@ -100,10 +98,8 @@ uci commit
 # </span><span class="language-bash">当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
 uci del dhcp.@dnsmasq[0].logqueries
 uci commit</code></pre></div>
-<p>然后重启/重载Dnsmasq（我是直接重启的，有兴趣的小伙伴也可以试试重载有没有效果）</p>
+<p>然后重启Dnsmasq</p>
 <div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">重启</span>
-/etc/init.d/dnsmasq restart
-<span class="hljs-meta"># </span><span class="language-bash">重载</span>
 /etc/init.d/dnsmasq restart</code></pre></div>
 <h3 id="根据打印的信息可知290版本的dnsmasq是可以通过reload来清空dns缓存的">根据打印的信息可知，2.90版本的Dnsmasq是可以通过reload来清空dns缓存的。</h3>
 ]]></content:encoded>
