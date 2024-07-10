@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Sun, 07 Jul 2024 01:44:02 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 10 Jul 2024 00:14:31 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -329,7 +329,7 @@ uci commit</code></pre></div>
             <title><![CDATA[使用fail2ban保护Openwrt的luci-web登录]]></title>
             <guid>f13995c60eaf488490ade8d058f8c9ad</guid>
             <pubDate>Wed, 01 May 2024 06:08:50 GMT</pubDate>
-            <content:encoded><![CDATA[<p>fail2ban靠的是日志文件，对应与luci-web的日志源码在这里：<br />
+            <content:encoded><![CDATA[<p>fail2ban靠的是日志文件，对应于luci-web的日志源码在这里：<br />
 <a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511">登录失败日志</a>，<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505">登录成功日志</a></p>
 <p>生成的日志参见如下，假设攻击者IP是<code>1.1.1.1</code>，三次登录失败，最后一次登录成功</p>
 <div><pre class="hljs"><code>May  1 01:06:38 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
