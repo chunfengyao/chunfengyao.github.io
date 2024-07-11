@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>Flutter三种默认BuildType - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">Flutter三种默认BuildType</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1720570513212"
+                  >2024-07-10 08:15</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1720675253503"
+                  >2024-07-11 13:20</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><p>刚巧最近在处理Android端Debug模式下add-2-app运行时的一个奇怪的问题：</p>
+<div><pre class="hljs"><code>[FATAL:flutter<span class="hljs-regexp">/runtime/</span>dart_vm_initializer.cc(<span class="hljs-number">22</span>)] Error <span class="hljs-keyword">while</span> initializing the Dart VM: Precompiled <span class="hljs-keyword">runtime</span> requires a precompiled snapshot</code></pre></div>
+<p>从报错信息不难看出，这是release运行模式下没有找到预编译的可执行文件。但是，实际上编译的时候指定的是Debug模式。</p>
+<ul>
+<li>Flutter默认提供三种BuildType：Debug、Release、Profile，其中
+<ul>
+<li>Debug：主要用于调试，特点：运行速度较慢，基于Dart的JIT模式(Just-in-Time)（比如原生的Python、JavaScript），并且，允许gdb动态调试</li>
+<li>Release：主要用于发布，特点：基于Dart的AOT模式(Ahead-of-Time)（比如GoLang、C、CPP），即，编译为目标平台的机器码后再执行（可以选择去除符号表）</li>
+<li>Profile：主要用于release下的性能跟踪：基于Debug的运行环境，但是，使用AOT模式编译，不支持调试，但是支持几乎所有的性能监听组件</li>
+</ul>
+</li>
+</ul>
+<p>我们今天主要讲Debug和Release：</p>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
