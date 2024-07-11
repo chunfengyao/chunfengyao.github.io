@@ -24,8 +24,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1720675253503"
-                  >2024-07-11 13:20</time
+                >Updated At：<time datetime="1720677151083"
+                  >2024-07-11 13:52</time
                 ></span
               >
             </div>
@@ -44,7 +44,105 @@
 </ul>
 </li>
 </ul>
-<p>我们今天主要讲Debug和Release：</p>
+<p>我们今天主要讲Debug和Release：<br />
+首先看下对比：<br />
+对于Debug：</p>
+<ul>
+<li><strong>Assertions are enabled.</strong></li>
+<li>Service extensions are enabled.</li>
+<li><strong>Compilation is optimized for fast development and run cycles (but not for execution speed, binary size, or deployment).</strong></li>
+<li><strong>Debugging is enabled, and tools supporting source level debugging (such as DevTools) can connect to the process.</strong></li>
+</ul>
+<p>对于Release：</p>
+<ul>
+<li><strong>Assertions are disabled.</strong></li>
+<li><strong>Debugging information is stripped out.</strong></li>
+<li><strong>Debugging is disabled.</strong></li>
+<li><strong>Compilation is optimized for fast startup, fast execution, and small package sizes.</strong></li>
+<li>Service extensions are disabled.</li>
+</ul>
+<p>对于Profile：</p>
+<ul>
+<li><strong>Some service extensions, such as the one that enables the performance overlay, are enabled.</strong></li>
+<li>Tracing is enabled, and tools supporting source-level debugging (such as DevTools) can connect to the process.</li>
+</ul>
+<p>然后我们大致看下编译进最终安装包中的文件有哪些，以及他们的结构，以Android端为主：<br />
+首先是Debug模式：</p>
+<div><pre class="hljs"><code><span class="hljs-bullet">.
+</span>├── AndroidManifest.xml
+<span class="hljs-bullet">.
+</span><span class="hljs-bullet">.
+</span><span class="hljs-bullet">.
+</span>├── R.txt
+├── assets
+│   └── flutter<span class="hljs-emphasis">_assets
+│       ├── isolate_snapshot_data
+│       ├── kernel_blob.bin
+│       └── vm_snapshot_</span>data
+├── classes.jar
+└── libs
+<span class="hljs-code">    └── libs.jar</span></code></pre></div>
+<p>然后是Release：</p>
+<div><pre class="hljs"><code>.
+├── AndroidManifest<span class="hljs-selector-class">.xml</span>
+.
+.
+.
+├── R<span class="hljs-selector-class">.txt</span>
+├── arm64-v8a
+├── armeabi-v7a
+├── classes<span class="hljs-selector-class">.jar</span>
+├── jni
+│   ├── arm64-v8a
+│   │   └── libapp<span class="hljs-selector-class">.so</span>
+│   ├── armeabi-v7a
+│   │   └── libapp<span class="hljs-selector-class">.so</span>
+│   └── x86_64
+│       └── libapp<span class="hljs-selector-class">.so</span>
+└── x86_64</code></pre></div>
+<p>除了这些之外，还有一个flutter_embedding也会参与编译。</p>
+<p>从源码来看，编译中会执行一些dart指令来生成编译产物：</p>
+<p>Debug模式下：</p>
+<ul>
+<li>flutter build bundle（会生成 assets、vm_snapshot_data、isolate_snapshot_data 和 kernel_bloc.bin。业务代码被生成在 kernel_bloc.bin 中，相当于 app.dill 的拷贝）</li>
+</ul>
+<p>Release模式下：</p>
+<ul>
+<li>flutter build bundle</li>
+<li>flutter build aot（会先生成 app.dill，这条命令分为两种编译模式：app-aot-assemble 和 app-aot-blobs。对于iOS 或者收到添加了 --build-shared-library 参数的会使用 app-aot-assemble，这种模式会生成 App.Framework 或 app.so。Android 默认使用 app-aot-blobs，这种模式会生成 isolate_snapshot_data、isolate_snapshot_instr、vm_snapshot_data 和 vm_snapshot_instr 四个文件。）
+<ul>
+<li>生成app.dill: dart frontend_server.dart.snapshot --output-dill app.dill packages:main.dart</li>
+<li>app-aot-assemble模式: flutter build aot --build-shared-library（app-aot-assemble过程，最终会生成app.so文件）</li>
+<li>app-aot-blobs模式会生成如下四个文件
+<ul>
+<li>isolate_snapshot_data：
+<ul>
+<li>表示 isolate 堆存储区的初始状态和特定的信息。和 vm_snapshot_data 配合，更快的启动 Dart VM。</li>
+</ul>
+</li>
+<li>isolate_snapshot_instr:
+<ul>
+<li>包含由 Dart isolate 执行的 AOT 代码。</li>
+</ul>
+</li>
+<li>vm_snapshot_data:
+<ul>
+<li>表示 isolates 之间的共享的 Dart 堆存储区的初始状态，用于更快的启动 Dart VM。</li>
+</ul>
+</li>
+<li>vm_snapshot_instr:
+<ul>
+<li>包含 VM 中所有的 isolates 之间共享的常见例程的指令</li>
+</ul>
+</li>
+<li>isolate_snapshot_data 和 isolate_snapshot_instr 跟业务相关，而 vm_snapshot_data 和 vm_snapshot_instr 则是跟 VM 相关，无关业务。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>flutter build bundle --precompiled</li>
+</ul>
+<div><pre class="hljs"><code></code></pre></div>
 </div>
       </article>
     </div>
