@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 11 Jul 2024 05:55:32 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 12 Jul 2024 00:25:24 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -80,10 +80,10 @@
 │       └── libapp<span class="hljs-selector-class">.so</span>
 └── x86_64</code></pre></div>
 <p>除了这些之外，还有一个flutter_embedding也会参与编译。</p>
-<p>从源码来看，编译中会执行一些dart指令来生成编译产物：</p>
+<p>从源码来看，编译中会执行如下指令来生成编译产物：</p>
 <p>Debug模式下：</p>
 <ul>
-<li>flutter build bundle（会生成 assets、vm_snapshot_data、isolate_snapshot_data 和 kernel_bloc.bin。业务代码被生成在 kernel_bloc.bin 中，相当于 app.dill 的拷贝）</li>
+<li><code>flutter build bundle</code>，会生成 assets、vm_snapshot_data、isolate_snapshot_data 和 kernel_bloc.bin。业务代码被生成在 kernel_bloc.bin 中，相当于 app.dill 的拷贝</li>
 </ul>
 <p>Release模式下：</p>
 <ul>
@@ -121,7 +121,6 @@
 </li>
 <li>flutter build bundle --precompiled</li>
 </ul>
-<div><pre class="hljs"><code></code></pre></div>
 ]]></content:encoded>
         </item>
         <item>
