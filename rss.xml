@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 18 Jul 2024 00:11:18 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 18 Jul 2024 01:39:51 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -88,6 +88,8 @@ Debug模式：</p>
 │       └── libapp<span class="hljs-selector-class">.so</span>
 └── x86_64</code></pre></div>
 <p>除了这些之外，还有一个flutter_embedding也会参与编译。</p>
+<p>我们先大致看下编译时中间产物目录的情况<br />
+<img src="/_resources/2f6e9376a8a847c5a1ca37ebe5cc2437.png" alt="19a1d45184f598772e2e46a27df8b7c5.png" width="853" height="505" class="jop-noMdConv" /></p>
 <p>从源码来看，编译中会执行如下指令来生成编译产物：</p>
 <p>Debug模式下：</p>
 <ul>
@@ -127,7 +129,7 @@ Debug模式：</p>
 <li>区别：assemble不需要 Dart VM 环境，只需要 Dart Runtime，所以，执行速度较快，但是，无法动态执行代码。这也是AppStore的限制，导致iOS只能试用assemble模式：<code>App Store does not allow dispatch binary executable code.</code></li>
 </ul>
 </li>
-<li><code>flutter build bundle --precompiled</code>: 几乎同debug，区别是release会指定<code> --precompiled</code>，所以，只会生成assets，并且打包。而debug模式下，由于没有 <code>--precompiled</code>（也就是没有经历build aot的过程），所以，需要生成<code>vm_snapshot_data</code>、<code>isolate_snapshot_data</code>。</li>
+<li><code>flutter build bundle --precompiled</code>: 几乎同debug，区别是release会指定 <code>--precompiled</code>，所以，只会生成assets，并且打包。而debug模式下，由于没有 <code>--precompiled</code>（也就是没有经历build aot的过程），所以，需要生成<code>vm_snapshot_data</code>、<code>isolate_snapshot_data</code>。</li>
 </ul>
 <p>这边要区别一下JS端：</p>
 <ul>
@@ -579,9 +581,9 @@ root@OpenWrt:/app/kali#</code></pre></div>
 今天顺手搜了下，除了ban掉请求，看看其他人遇到这个问题的处理办法，看到一个有意思的方案：iptables流量反射。</p>
 <p>简单来说：</p>
 <ul>
-<li>攻击的流量结构：<code>攻击主机的地址:随机源端口</code>—&gt;<code>被攻击的Openwrt公网地址:22-ssh端口</code></li>
+<li>攻击的流量结构：<code>攻击主机的地址:随机源端口</code>---&gt;<code>被攻击的Openwrt公网地址:22-ssh端口</code></li>
 <li>iptables或者nftables的DNAT可以修改目标主机和端口，SNAT可以修改源主机和端口。</li>
-<li>于是，通过防火墙规则修改后，攻击流量变为：<code>被攻击的Openwrt公网地址:22-ssh端口</code>—&gt;<code>攻击主机的地址:22-ssh端口</code></li>
+<li>于是，通过防火墙规则修改后，攻击流量变为：<code>被攻击的Openwrt公网地址:22-ssh端口</code>---&gt;<code>攻击主机的地址:22-ssh端口</code></li>
 </ul>
 <p>贴一下iptables命令</p>
 <div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">iptables的版本</span>

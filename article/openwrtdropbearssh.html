@@ -48,9 +48,9 @@ root@OpenWrt:/app/kali#</code></pre></div>
 今天顺手搜了下，除了ban掉请求，看看其他人遇到这个问题的处理办法，看到一个有意思的方案：iptables流量反射。</p>
 <p>简单来说：</p>
 <ul>
-<li>攻击的流量结构：<code>攻击主机的地址:随机源端口</code>—&gt;<code>被攻击的Openwrt公网地址:22-ssh端口</code></li>
+<li>攻击的流量结构：<code>攻击主机的地址:随机源端口</code>---&gt;<code>被攻击的Openwrt公网地址:22-ssh端口</code></li>
 <li>iptables或者nftables的DNAT可以修改目标主机和端口，SNAT可以修改源主机和端口。</li>
-<li>于是，通过防火墙规则修改后，攻击流量变为：<code>被攻击的Openwrt公网地址:22-ssh端口</code>—&gt;<code>攻击主机的地址:22-ssh端口</code></li>
+<li>于是，通过防火墙规则修改后，攻击流量变为：<code>被攻击的Openwrt公网地址:22-ssh端口</code>---&gt;<code>攻击主机的地址:22-ssh端口</code></li>
 </ul>
 <p>贴一下iptables命令</p>
 <div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">iptables的版本</span>

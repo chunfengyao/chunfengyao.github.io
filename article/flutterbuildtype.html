@@ -24,8 +24,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1721261468011"
-                  >2024-07-18 08:11</time
+                >Updated At：<time datetime="1721266151909"
+                  >2024-07-18 09:29</time
                 ></span
               >
             </div>
@@ -109,6 +109,8 @@ Debug模式：</p>
 │       └── libapp<span class="hljs-selector-class">.so</span>
 └── x86_64</code></pre></div>
 <p>除了这些之外，还有一个flutter_embedding也会参与编译。</p>
+<p>我们先大致看下编译时中间产物目录的情况<br />
+<img src="/_resources/2f6e9376a8a847c5a1ca37ebe5cc2437.png" alt="19a1d45184f598772e2e46a27df8b7c5.png" width="853" height="505" class="jop-noMdConv" /></p>
 <p>从源码来看，编译中会执行如下指令来生成编译产物：</p>
 <p>Debug模式下：</p>
 <ul>
@@ -148,7 +150,7 @@ Debug模式：</p>
 <li>区别：assemble不需要 Dart VM 环境，只需要 Dart Runtime，所以，执行速度较快，但是，无法动态执行代码。这也是AppStore的限制，导致iOS只能试用assemble模式：<code>App Store does not allow dispatch binary executable code.</code></li>
 </ul>
 </li>
-<li><code>flutter build bundle --precompiled</code>: 几乎同debug，区别是release会指定<code> --precompiled</code>，所以，只会生成assets，并且打包。而debug模式下，由于没有 <code>--precompiled</code>（也就是没有经历build aot的过程），所以，需要生成<code>vm_snapshot_data</code>、<code>isolate_snapshot_data</code>。</li>
+<li><code>flutter build bundle --precompiled</code>: 几乎同debug，区别是release会指定 <code>--precompiled</code>，所以，只会生成assets，并且打包。而debug模式下，由于没有 <code>--precompiled</code>（也就是没有经历build aot的过程），所以，需要生成<code>vm_snapshot_data</code>、<code>isolate_snapshot_data</code>。</li>
 </ul>
 <p>这边要区别一下JS端：</p>
 <ul>
