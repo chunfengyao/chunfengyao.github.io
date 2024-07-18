@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Mon, 15 Jul 2024 01:11:58 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 18 Jul 2024 00:02:21 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -17,22 +17,27 @@
 <ul>
 <li>Flutter默认提供三种BuildType：Debug、Release、Profile，其中
 <ul>
-<li>Debug：主要用于调试，特点：运行速度较慢，基于Dart的JIT模式(Just-in-Time)（比如原生的Python、JavaScript），并且，允许gdb动态调试</li>
+<li>Debug：主要用于调试，特点：运行速度较慢，基于Dart的JIT模式(Just-in-Time)（比如Python、JavaScript的V8引擎）
+<ul>
+<li>JIT 模式下，能动态下发和执行代码，不用考虑所使用的机器架构。</li>
+</ul>
+</li>
 <li>Release：主要用于发布，特点：基于Dart的AOT模式(Ahead-of-Time)（比如GoLang、C、CPP），即，编译为目标平台的机器码后再执行（可以选择去除符号表）</li>
 <li>Profile：主要用于release下的性能跟踪：基于Debug的运行环境，但是，使用AOT模式编译，不支持调试，但是支持几乎所有的性能监听组件</li>
 </ul>
 </li>
 </ul>
-<p>我们今天主要讲Debug和Release：<br />
-首先看下对比：<br />
-对于Debug：</p>
+<p>我们今天主要讲Debug和Release，首先看下官方文档中的说明：</p>
+<ul>
+<li>对于Debug：
 <ul>
 <li><strong>Assertions are enabled.</strong></li>
 <li>Service extensions are enabled.</li>
 <li><strong>Compilation is optimized for fast development and run cycles (but not for execution speed, binary size, or deployment).</strong></li>
 <li><strong>Debugging is enabled, and tools supporting source level debugging (such as DevTools) can connect to the process.</strong></li>
 </ul>
-<p>对于Release：</p>
+</li>
+<li>对于Release：
 <ul>
 <li><strong>Assertions are disabled.</strong></li>
 <li><strong>Debugging information is stripped out.</strong></li>
@@ -40,13 +45,16 @@
 <li><strong>Compilation is optimized for fast startup, fast execution, and small package sizes.</strong></li>
 <li>Service extensions are disabled.</li>
 </ul>
-<p>对于Profile：</p>
+</li>
+<li>对于Profile：
 <ul>
 <li><strong>Some service extensions, such as the one that enables the performance overlay, are enabled.</strong></li>
 <li>Tracing is enabled, and tools supporting source-level debugging (such as DevTools) can connect to the process.</li>
 </ul>
-<p>然后我们大致看下编译进最终安装包中的文件有哪些，以及他们的结构，以Android端为主：<br />
-首先是Debug模式：</p>
+</li>
+</ul>
+<p>然后我们大致看下编译进最终安装包中的文件有哪些，以及他们的结构，这里只看下Android端，其他端类似（基于flutter3.19版本）：<br />
+Debug模式：</p>
 <div><pre class="hljs"><code><span class="hljs-bullet">.
 </span>├── AndroidManifest.xml
 <span class="hljs-bullet">.
@@ -61,7 +69,7 @@
 ├── classes.jar
 └── libs
 <span class="hljs-code">    └── libs.jar</span></code></pre></div>
-<p>然后是Release：</p>
+<p>Release：</p>
 <div><pre class="hljs"><code>.
 ├── AndroidManifest<span class="hljs-selector-class">.xml</span>
 .
@@ -83,43 +91,59 @@
 <p>从源码来看，编译中会执行如下指令来生成编译产物：</p>
 <p>Debug模式下：</p>
 <ul>
-<li><code>flutter build bundle</code>，会生成 assets、vm_snapshot_data、isolate_snapshot_data 和 kernel_bloc.bin。业务代码被生成在 kernel_bloc.bin 中，相当于 app.dill 的拷贝</li>
+<li><code>flutter build bundle</code>，将相关文件，比如: assets、vm_snapshot_data、isolate_snapshot_data（这俩文件我们在下一段release部分的app-aot-blobs的aot编译模式时一起看） 和 kernel_blob.bin放入 flutter_assets 目录中。业务代码被生成在 kernel_blob.bin 中（app.dill），这里就和release不一样，app.dill或者kernel_blob.bin并不会继续编译为二进制，所以，debug模式下的编译速度也是要远远快于release的。</li>
 </ul>
 <p>Release模式下：</p>
 <ul>
-<li>flutter build bundle</li>
-<li>flutter build aot（会先生成 app.dill，这条命令分为两种编译模式：app-aot-assemble 和 app-aot-blobs。对于iOS 或者收到添加了 --build-shared-library 参数的会使用 app-aot-assemble，这种模式会生成 App.Framework 或 app.so。Android 默认使用 app-aot-blobs，这种模式会生成 isolate_snapshot_data、isolate_snapshot_instr、vm_snapshot_data 和 vm_snapshot_instr 四个文件。）
+<li><code>flutter build aot</code>（会先生成 app.dill，随后也会生成snpshot，但是和debug的snapshot不一样，分为两种模式：<code>app-aot-assemble</code> 和 <code>app-aot-blobs</code>。对于iOS 或者手动添加了 <code>--build-shared-library</code> 参数的会使用 <code>app-aot-assemble</code>。
 <ul>
-<li>生成app.dill: dart frontend_server.dart.snapshot --output-dill app.dill packages:main.dart</li>
-<li>app-aot-assemble模式: flutter build aot --build-shared-library（app-aot-assemble过程，最终会生成app.so文件）</li>
-<li>app-aot-blobs模式会生成如下四个文件
+<li>生成app.dill，我们来看下简化的命令，剔除了一些参数）: <code>dart frontend_server.dart.snapshot --output-dill app.dill packages:main.dart</code>。</li>
+<li><code>app-aot-assemble</code>模式: <code>flutter build aot --build-shared-library</code>（这种模式下，会将产物编译为二进制文件，在 iOS 上为 App.framework，Android 上则为 app.so）</li>
+<li><code>app-aot-blobs</code>模式（Android 默认使用的模式，但是在 Flutter SDK 1.7.x 也已经改成 app-aot-assemble 模式。）会生成如下四个文件
 <ul>
-<li>isolate_snapshot_data：
+<li><code>isolate_snapshot_data</code>：
 <ul>
 <li>表示 isolate 堆存储区的初始状态和特定的信息。和 vm_snapshot_data 配合，更快的启动 Dart VM。</li>
 </ul>
 </li>
-<li>isolate_snapshot_instr:
+<li><code>isolate_snapshot_instr</code>:
 <ul>
 <li>包含由 Dart isolate 执行的 AOT 代码。</li>
 </ul>
 </li>
-<li>vm_snapshot_data:
+<li><code>vm_snapshot_data</code>:
 <ul>
 <li>表示 isolates 之间的共享的 Dart 堆存储区的初始状态，用于更快的启动 Dart VM。</li>
 </ul>
 </li>
-<li>vm_snapshot_instr:
+<li><code>vm_snapshot_instr</code>:
 <ul>
 <li>包含 VM 中所有的 isolates 之间共享的常见例程的指令</li>
 </ul>
 </li>
-<li>isolate_snapshot_data 和 isolate_snapshot_instr 跟业务相关，而 vm_snapshot_data 和 vm_snapshot_instr 则是跟 VM 相关，无关业务。</li>
+<li><strong>isolate_snapshot_data 和 isolate_snapshot_instr 跟业务相关，而 vm_snapshot_data 和 vm_snapshot_instr 则是跟 VM 相关，无关业务。</strong></li>
+</ul>
+</li>
+<li>区别：assemble不需要 Dart VM 环境，只需要 Dart Runtime，所以，执行速度较快，但是，无法动态执行代码。这也是AppStore的限制，导致iOS只能试用assemble模式：<code>App Store does not allow dispatch binary executable code.</code></li>
+</ul>
+</li>
+<li><code>flutter build bundle --precompiled</code>: 几乎同debug，区别是release会指定<code> --precompiled</code>，所以，只会生成assets，并且打包。而debug模式下，由于没有 <code>--precompiled</code>（也就是没有经历build aot的过程），所以，需要生成<code>vm_snapshot_data</code>、<code>isolate_snapshot_data</code>。</li>
+</ul>
+<p>这边要区别一下JS端：</p>
+<ul>
+<li>JS端的release是通过dart2js（前身是一个名为<a title="https://ariya.io/2012/02/using-the-new-frog-compiler-from-dart-editor" href="https://ariya.io/2012/02/using-the-new-frog-compiler-from-dart-editor">frog</a>的库）编译为js文件运行的，和原生的debug、release有较大的区别。
+<ul>
+<li>比如手动编译某个项目的main.dart
+<ul>
+<li><code>dart compile js -O4 -o out/flutter.main.js web/main.dart</code>
+<ul>
+<li>其中<code>-O4</code>是使用等级为4的编译优化</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>flutter build bundle --precompiled</li>
+</ul>
+</li>
 </ul>
 ]]></content:encoded>
         </item>
