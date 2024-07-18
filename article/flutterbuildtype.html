@@ -24,15 +24,15 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1721260835588"
-                  >2024-07-18 08:00</time
+                >Updated At：<time datetime="1721261468011"
+                  >2024-07-18 08:11</time
                 ></span
               >
             </div>
             
           </div>
         </header>
-        <div class="article-content markdown-body"><p>刚巧最近在处理Android端Debug模式下add-2-app运行时的一个奇怪的问题：</p>
+        <div class="article-content markdown-body"><p>刚巧最近在处理Android端Debug模式下add-2-app运行时的一个问题：</p>
 <div><pre class="hljs"><code>[FATAL:flutter<span class="hljs-regexp">/runtime/</span>dart_vm_initializer.cc(<span class="hljs-number">22</span>)] Error <span class="hljs-keyword">while</span> initializing the Dart VM: Precompiled <span class="hljs-keyword">runtime</span> requires a precompiled snapshot</code></pre></div>
 <p>从报错信息不难看出，这是release运行模式下没有找到预编译的可执行文件。但是，实际上编译的时候指定的是Debug模式。</p>
 <ul>

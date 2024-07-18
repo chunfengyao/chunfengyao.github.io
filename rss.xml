@@ -4,14 +4,14 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 18 Jul 2024 00:02:21 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 18 Jul 2024 00:11:18 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
             <title><![CDATA[Flutter三种默认BuildType]]></title>
             <guid>73989c3fa92148599035484b5c3860e3</guid>
             <pubDate>Wed, 10 Jul 2024 00:15:13 GMT</pubDate>
-            <content:encoded><![CDATA[<p>刚巧最近在处理Android端Debug模式下add-2-app运行时的一个奇怪的问题：</p>
+            <content:encoded><![CDATA[<p>刚巧最近在处理Android端Debug模式下add-2-app运行时的一个问题：</p>
 <div><pre class="hljs"><code>[FATAL:flutter<span class="hljs-regexp">/runtime/</span>dart_vm_initializer.cc(<span class="hljs-number">22</span>)] Error <span class="hljs-keyword">while</span> initializing the Dart VM: Precompiled <span class="hljs-keyword">runtime</span> requires a precompiled snapshot</code></pre></div>
 <p>从报错信息不难看出，这是release运行模式下没有找到预编译的可执行文件。但是，实际上编译的时候指定的是Debug模式。</p>
 <ul>
