@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Fri, 23 Aug 2024 16:19:17 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 24 Aug 2024 06:14:05 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -92,7 +92,7 @@
     <span class="hljs-attr">cpu_count:</span> <span class="hljs-number">2</span>
     <span class="hljs-comment"># 注意这里的参数，两个`-b`指定了监听地址，`-p`指定了监听端口，`--host-key`这个接下来会说到</span>
     <span class="hljs-attr">command:</span> [<span class="hljs-string">"-b"</span>,<span class="hljs-string">"::"</span>,<span class="hljs-string">"-b"</span>,<span class="hljs-string">"0.0.0.0"</span>,<span class="hljs-string">"-p"</span>,<span class="hljs-string">"8022"</span>,<span class="hljs-string">"--host-key"</span>,<span class="hljs-string">"/data/ssh-honeypot/keys/id_ed25519"</span>]
-    <span class="hljs-comment"># 我这边给的host网络，这个配个fail2ban会比较容易一些，否则要手动添加action去创建nat表的item才能端口重定向</span>
+    <span class="hljs-comment"># 我这边给的host网络，这个配合fail2ban会比较容易一些，否则要手动添加action去创建nat表的item才能端口重定向</span>
     <span class="hljs-attr">network_mode:</span> <span class="hljs-string">host</span>
     <span class="hljs-comment"># 常用的环境变量</span>
     <span class="hljs-attr">environment:</span>
