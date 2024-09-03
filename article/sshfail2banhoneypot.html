@@ -26,8 +26,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1724479969081"
-                  >2024-08-24 14:12</time
+                >Updated At：<time datetime="1725343921222"
+                  >2024-09-03 14:12</time
                 ></span
               >
             </div>
@@ -94,9 +94,9 @@
 </ul>
 <h4 id="最后我们再来看一下我现在正在用的方案">最后我们再来看一下我现在正在用的方案：</h4>
 <ul>
-<li>其实，对于被攻击端，我们只需要完成<code>sshd</code>登录的过程即可，也就是，我们只需要按照<code>sshd</code>登录的过程，完成握手、交换身份指纹，然后等待客户端发送用户名和密码即可了。一旦得到用户名和密码，即可直接告知客户端：登录失败。只要整个过程中的所有特征都和原先的<code>sshd</code>服务提供的一模一样，攻击者是无法察觉到的，并且，由于握手包和接收密码的都是我们自己的代码，所以，可以对密码明文做任何我们需要的事情（比如这边的记录到日志中去）。</li>
+<li>其实，对于被攻击端，我们只需要完成<code>sshd</code>登录的过程即可，也就是，我们只需要按照<code>sshd</code>登录的过程，完成握手、交换身份指纹，然后等待客户端发送用户名和密码即可了。一旦得到用户名和密码，即可直接告知客户端：登录失败。只要整个过程中的所有特征都和原先的<code>sshd</code>服务提供的一模一样，攻击者是无法察觉到的，并且，由于握手包和接收密码的都是我们自己的代码，所以，可以对密码明文做任何我们需要的事情（比如记录到日志中去）。</li>
 </ul>
-<p>本着有现成的就不动手自己写，搜索一番，找到了一类现成的服务。蜜罐（<code>honeypot</code>），针对各种各样的服务（比如数据库、<code>nginx</code>、<code>ssh</code>），都有哥哥行业的前辈们开发了对应的<code>honeypot</code>服务。在尝试了好几个<code>honeypot</code>的<code>docker</code>镜像之后，找到了一个 写的比较好的：<code>wildwildangel/tiny-ssh-honeypot:edge</code>（基于<code>golang</code>，而且，是静态编译的，所以，镜像体积很小）。</p>
+<p>本着有现成的就不动手自己写，搜索一番，找到了一类现成的服务。蜜罐（<code>honeypot</code>），针对各种各样的服务（比如数据库、<code>nginx</code>、<code>ssh</code>），都有各个行业的前辈们开发了对应的<code>honeypot</code>服务。在尝试了好几个<code>honeypot</code>的<code>docker</code>镜像之后，找到了一个 写的比较好的：<code>wildwildangel/tiny-ssh-honeypot:edge</code>（基于<code>golang</code>，而且，是静态编译的，所以，镜像体积很小）。</p>
 <p>部署<code>docker</code>的过程就不写了，贴一下我的<code>docker-compose.yaml</code></p>
 <div><pre class="hljs"><code><span class="hljs-attr">version:</span> <span class="hljs-string">"3"</span>
 
