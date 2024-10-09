@@ -26,8 +26,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1728035579637"
-                  >2024-10-04 17:52</time
+                >Updated At：<time datetime="1728479926386"
+                  >2024-10-09 21:18</time
                 ></span
               >
             </div>
@@ -149,7 +149,7 @@
 <li>IPV6
 <ul>
 <li>首部是固定40个字节（注意：IPV4是可变长度的首部）</li>
-<li>IPV6地址长度是128位，IPV4地址长度是32位（4个8位）
+<li>IPV4地址长度是32位（4个8位），IPV6地址长度是128位（4个32位，按照常见的冒号分割表示方式，每段16位、4个十六进制数，也就是总计8个16位）
 <ul>
 <li>注意IPV6的地址表示方式，尤其是省略0，以及使用IPV4的点间隔方式表示某一段</li>
 </ul>
@@ -221,7 +221,7 @@
 <ul>
 <li>先将生成多项式，转成二进制，比如：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><msup><mi>x</mi><mn>4</mn></msup><mo>+</mo><mi>x</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">G(x)=x^4+x+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal">G</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">1</span></span></span></span></span>即：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10011</mn></mrow><annotation encoding="application/x-tex">10011</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">10011</span></span></span></span></span></li>
 <li>然后将原数据左移生成多项式最高位次幂，比如：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10011</mn></mrow><annotation encoding="application/x-tex">10011</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">10011</span></span></span></span></span>则左移四位，比如原始数据为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10111011</mn></mrow><annotation encoding="application/x-tex">10111011</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">10111011</span></span></span></span></span>，左移为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>101110110000</mn></mrow><annotation encoding="application/x-tex">101110110000</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">101110110000</span></span></span></span></span></li>
-<li>然后进行二进制异或运算（不同得1，相同得0）</li>
+<li>然后进行二进制按位异或运算/二进制<strong>模2除法</strong>（不同得1，相同得0）</li>
 <li>将最终求得的余数<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi></mrow><annotation encoding="application/x-tex">R</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.00773em">R</span></span></span></span></span>，和第二步左移后的值相加（二进制或运算）（因为左移是指定位数，这样是为了接收方可以按规则切割出校验位，当做冗余校验位。</li>
 </ul>
 </li>
