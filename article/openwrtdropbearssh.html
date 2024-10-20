@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>记一次Openwrt路由器dropbear（ssh）服务被攻击（密码爆破）的处理过程 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">记一次Openwrt路由器dropbear（ssh）服务被攻击（密码爆破）的处理过程</h1>
+          <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1712396479326"
+                  >2024-04-06 17:41</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1713139239938"
+                  >2024-04-15 08:00</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><p>今天<code>fail2ban</code>又记录了一个attack，把IP丢到abuse上查了下，又是个<a title="https://www.abuseipdb.com/check/61.241.173.216" href="https://www.abuseipdb.com/check/61.241.173.216">恶迹斑斑的IP</a>。</p>
+<div><pre class="hljs"><code>root@OpenWrt:/app/kali# fail2ban-client status dropbear
+Status for the jail: dropbear
+|- Filter
+|  |- Currently failed:	1
+|  |- Total failed:	2652
+|  `- File list:	/var/log/system.log
+`- Actions
+   |- Currently banned:	1
+   |- Total banned:	1
+   `- Banned IP list:	61.241.173.216
+root@OpenWrt:/app/kali#</code></pre></div>
+<p>刚巧最近被IPV6路由的问题搞得很烦躁，拿这个attack解个闷。这要是搁之前，都是直接ban掉（一段时间）了事。<br />
+今天顺手搜了下，除了ban掉请求，看看其他人遇到这个问题的处理办法，看到一个有意思的方案：iptables流量反射。</p>
+<p>简单来说：</p>
+<ul>
+<li>攻击的流量结构：<code>攻击主机的地址:随机源端口</code>—&gt;<code>被攻击的Openwrt公网地址:22-ssh端口</code></li>
+<li>iptables或者nftables的DNAT可以修改目标主机和端口，SNAT可以修改源主机和端口。</li>
+<li>于是，通过防火墙规则修改后，攻击流量变为：<code>被攻击的Openwrt公网地址:22-ssh端口</code>—&gt;<code>攻击主机的地址:22-ssh端口</code></li>
+</ul>
+<p>贴一下iptables命令</p>
+<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">iptables的版本</span>
+<span class="hljs-meta"># </span><span class="language-bash">前置条件</span>
+/bin/echo "1" &gt; /proc/sys/net/ipv4/ip_forward	#开启IP转发
+/sbin/modprobe ip_tables	#iptables模块
+/sbin/modprobe iptable_filter	#过滤模块
+/sbin/modprobe iptable_nat	#nat模块
+<span class="hljs-meta"># </span><span class="language-bash">配置转发规则</span>
+iptables -t nat -A PREROUTING -d ${自己的公网IP} -p tcp --dport 22 -j DNAT --to-destination ${攻击主机的IP}:22
+iptables -t nat -A POSTROUTING -p tcp -d ${攻击主机的IP} --dport 22 -j SNAT --to-source ${自己的公网IP}</code></pre></div>
+<p>nftable稍麻烦，看不懂的，可以参考<a title="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/securing_networks/configuring-port-forwarding-using-nftables_getting-started-with-nftables" href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/securing_networks/configuring-port-forwarding-using-nftables_getting-started-with-nftables">redhat的文章</a>：<br />
+以下的<code>dstnat</code>、<code>srcnat</code>链，如果你没有请自己建，或者直接加到你自己的对应链里</p>
+<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">nftable的版本</span>
+chain dstnat {
+    ip saddr ${自己的公网IP} ip daddr ${自己的公网IP} tcp dport 22 dnat ip to ${攻击主机的IP}:22 comment "修改目标地址(注释内容)"
+}
+chain srcnat {
+    ip saddr ${自己的公网IP} ip daddr ${攻击主机的IP} tcp dport 22 snat ip to ${自己的公网IP} comment "修改源地址(注释内容)"
+}</code></pre></div>
+<p>当然，由于Openwrt的防火墙是支持web操作的，通过luci-web添加这个转发规则也很简单。</p>
+<h3 id="防火墙-端口转发-添加">防火墙-&gt;端口转发-&gt;添加:</h3>
+<ul>
+<li><code>源区域</code>：wan口所在区域</li>
+<li><code>外部端口</code>：22</li>
+<li><code>目标区域</code>：wan口所在区域</li>
+<li><code>内部IP地址</code>：61.241.173.216（攻击主机的地址）</li>
+<li><code>内部端口</code>：22</li>
+</ul>
+<h3 id="转到高级设置标签页">转到<code>高级设置</code>标签页</h3>
+<ul>
+<li><code>源IP地址</code>：61.241.173.216（攻击主机的地址）</li>
+<li>（由于不涉及NAT转换，可以把<code>启用NAT环回</code>关掉）</li>
+</ul>
+<p><img src="/_resources/59d0d75289e344fe82fae65a5e58a5fd.png" /><br />
+<img src="/_resources/983b7a179cb642fcb086c549891ddf02.png" /></p>
+<hr />
+<p>至此，初步的流量反射已经完成了，接下来也可以稍稍做一些警示（比如反向爆破攻击主机的ssh密码等）。</p>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
