@@ -4,13 +4,13 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Tue, 17 Dec 2024 04:53:08 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 17 Dec 2024 04:56:31 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
             <title><![CDATA[通过adb dump堆内存]]></title>
             <guid>7f36a4d7f9a6432481f46a0a58faafc6</guid>
-            <pubDate>Tue, 17 Dec 2024 04:25:35 GMT</pubDate>
+            <pubDate>Sun, 15 Dec 2024 04:25:35 GMT</pubDate>
             <content:encoded><![CDATA[<p>注：dumpheap无需manifest的<code>android:debuggable=true</code>。<br />
 必要条件： 设备必须要能adb root（也就是必须要是debug编译的系统）<br />
 （以前MIUI的开发版系统都是debug的，但是从Hyper OS开始，都是release编译了，所以，推荐直接用模拟器，其中，以<code>Apple silicon</code>的<code>macOS</code>或者<code>ARM64</code>的<code>Windows</code>为最佳）</p>
