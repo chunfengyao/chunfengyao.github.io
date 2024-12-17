@@ -26,8 +26,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1720316628732"
-                  >2024-07-07 09:43</time
+                >Updated At：<time datetime="1734411836470"
+                  >2024-12-17 13:03</time
                 ></span
               >
             </div>
@@ -35,25 +35,25 @@
           </div>
         </header>
         <div class="article-content markdown-body"><p>首先Openwrt中开启Dnsmasq的日志功能。</p>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
-uci set dhcp.cfg01411c.logqueries='1'
+<div><pre class="hljs"><code><span class="hljs-comment"># 我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
+uci <span class="hljs-built_in">set</span> dhcp.cfg01411c.logqueries=<span class="hljs-string">'1'</span>
 uci commit
-<span class="hljs-meta">
-# </span><span class="language-bash">当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
-uci set dhcp.@dnsmasq[0].logqueries='1'
+
+<span class="hljs-comment"># 当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
+uci <span class="hljs-built_in">set</span> dhcp.@dnsmasq[0].logqueries=<span class="hljs-string">'1'</span>
 uci commit</code></pre></div>
 <p>这会让<code>Openwrt</code>生成的配置文件中的<code>log-queries</code>变为启用状态。</p>
 <p>然后重启Dnsmasq</p>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">重启</span>
+<div><pre class="hljs"><code><span class="hljs-comment"># 重启</span>
 /etc/init.d/dnsmasq restart</code></pre></div>
 <p>重启/重载完可以检查下配置文件是不是正确生成了：</p>
-<div><pre class="hljs"><code>grep "log-queries" /var/etc/dnsmasq.conf*</code></pre></div>
+<div><pre class="hljs"><code>grep <span class="hljs-string">"log-queries"</span> /var/etc/dnsmasq.conf*</code></pre></div>
 <p>然后开俩终端<br />
 终端一用于监视日志</p>
 <div><pre class="hljs"><code>logread -f</code></pre></div>
 <p>终端二用于发送信号量，以触发dump</p>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">调用pidof子命令获取Dnsmasq的进程号，再给对应进程发送SIGUSR1信号</span>
-kill -SIGUSR1 `pidof /usr/sbin/dnsmasq`</code></pre></div>
+<div><pre class="hljs"><code><span class="hljs-comment"># 调用pidof子命令获取Dnsmasq的进程号，再给对应进程发送SIGUSR1信号</span>
+<span class="hljs-built_in">kill</span> -SIGUSR1 `pidof /usr/sbin/dnsmasq`</code></pre></div>
 <p>然后即可看到dump内容，大致如下</p>
 <div><pre class="hljs"><code>Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: time 3487
 Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cache size 150, 0/163 cache insertions re-used unexpired cache entries.
@@ -114,15 +114,15 @@ Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 
 Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.32.42                            4F         4294967248</code></pre></div>
 <p>然后排查dns缓存问题即可</p>
 <p>排查完之后，需要关闭的话，如下：</p>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
+<div><pre class="hljs"><code><span class="hljs-comment"># 我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
 uci del dhcp.cfg01411c.logqueries
 uci commit
-<span class="hljs-meta">
-# </span><span class="language-bash">当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
+
+<span class="hljs-comment"># 当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
 uci del dhcp.@dnsmasq[0].logqueries
 uci commit</code></pre></div>
 <p>然后重启Dnsmasq</p>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">重启</span>
+<div><pre class="hljs"><code><span class="hljs-comment"># 重启</span>
 /etc/init.d/dnsmasq restart</code></pre></div>
 <h3 id="根据打印的信息可知290版本的dnsmasq是可以通过reload来清空dns缓存的">根据打印的信息可知，2.90版本的Dnsmasq是可以通过reload来清空dns缓存的。</h3>
 </div>

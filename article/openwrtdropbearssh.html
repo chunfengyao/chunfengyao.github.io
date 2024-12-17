@@ -26,8 +26,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1713139239938"
-                  >2024-04-15 08:00</time
+                >Updated At：<time datetime="1734411874542"
+                  >2024-12-17 13:04</time
                 ></span
               >
             </div>
@@ -35,17 +35,17 @@
           </div>
         </header>
         <div class="article-content markdown-body"><p>今天<code>fail2ban</code>又记录了一个attack，把IP丢到abuse上查了下，又是个<a title="https://www.abuseipdb.com/check/61.241.173.216" href="https://www.abuseipdb.com/check/61.241.173.216">恶迹斑斑的IP</a>。</p>
-<div><pre class="hljs"><code>root@OpenWrt:/app/kali# fail2ban-client status dropbear
-Status for the jail: dropbear
+<div><pre class="hljs"><code>root@OpenWrt:/app/kali<span class="hljs-comment"># fail2ban-client status dropbear</span>
+Status <span class="hljs-keyword">for</span> the jail: dropbear
 |- Filter
 |  |- Currently failed:	1
 |  |- Total failed:	2652
-|  `- File list:	/var/log/system.log
+|  `- File list:	/var/<span class="hljs-built_in">log</span>/system.log
 `- Actions
    |- Currently banned:	1
    |- Total banned:	1
    `- Banned IP list:	61.241.173.216
-root@OpenWrt:/app/kali#</code></pre></div>
+root@OpenWrt:/app/kali<span class="hljs-comment">#</span></code></pre></div>
 <p>刚巧最近被IPV6路由的问题搞得很烦躁，拿这个attack解个闷。这要是搁之前，都是直接ban掉（一段时间）了事。<br />
 今天顺手搜了下，除了ban掉请求，看看其他人遇到这个问题的处理办法，看到一个有意思的方案：iptables流量反射。</p>
 <p>简单来说：</p>
@@ -55,23 +55,23 @@ root@OpenWrt:/app/kali#</code></pre></div>
 <li>于是，通过防火墙规则修改后，攻击流量变为：<code>被攻击的Openwrt公网地址:22-ssh端口</code>—&gt;<code>攻击主机的地址:22-ssh端口</code></li>
 </ul>
 <p>贴一下iptables命令</p>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">iptables的版本</span>
-<span class="hljs-meta"># </span><span class="language-bash">前置条件</span>
-/bin/echo "1" &gt; /proc/sys/net/ipv4/ip_forward	#开启IP转发
-/sbin/modprobe ip_tables	#iptables模块
-/sbin/modprobe iptable_filter	#过滤模块
-/sbin/modprobe iptable_nat	#nat模块
-<span class="hljs-meta"># </span><span class="language-bash">配置转发规则</span>
-iptables -t nat -A PREROUTING -d ${自己的公网IP} -p tcp --dport 22 -j DNAT --to-destination ${攻击主机的IP}:22
-iptables -t nat -A POSTROUTING -p tcp -d ${攻击主机的IP} --dport 22 -j SNAT --to-source ${自己的公网IP}</code></pre></div>
+<div><pre class="hljs"><code><span class="hljs-comment"># iptables的版本</span>
+<span class="hljs-comment"># 前置条件</span>
+/bin/<span class="hljs-built_in">echo</span> <span class="hljs-string">"1"</span> &gt; /proc/sys/net/ipv4/ip_forward	<span class="hljs-comment">#开启IP转发</span>
+/sbin/modprobe ip_tables	<span class="hljs-comment">#iptables模块</span>
+/sbin/modprobe iptable_filter	<span class="hljs-comment">#过滤模块</span>
+/sbin/modprobe iptable_nat	<span class="hljs-comment">#nat模块</span>
+<span class="hljs-comment"># 配置转发规则</span>
+iptables -t nat -A PREROUTING -d <span class="hljs-variable">${自己的公网IP}</span> -p tcp --dport 22 -j DNAT --to-destination <span class="hljs-variable">${攻击主机的IP}</span>:22
+iptables -t nat -A POSTROUTING -p tcp -d <span class="hljs-variable">${攻击主机的IP}</span> --dport 22 -j SNAT --to-source <span class="hljs-variable">${自己的公网IP}</span></code></pre></div>
 <p>nftable稍麻烦，看不懂的，可以参考<a title="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/securing_networks/configuring-port-forwarding-using-nftables_getting-started-with-nftables" href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/securing_networks/configuring-port-forwarding-using-nftables_getting-started-with-nftables">redhat的文章</a>：<br />
 以下的<code>dstnat</code>、<code>srcnat</code>链，如果你没有请自己建，或者直接加到你自己的对应链里</p>
-<div><pre class="hljs"><code><span class="hljs-meta"># </span><span class="language-bash">nftable的版本</span>
+<div><pre class="hljs"><code><span class="hljs-comment"># nftable的版本</span>
 chain dstnat {
-    ip saddr ${自己的公网IP} ip daddr ${自己的公网IP} tcp dport 22 dnat ip to ${攻击主机的IP}:22 comment "修改目标地址(注释内容)"
+    ip saddr <span class="hljs-variable">${自己的公网IP}</span> ip daddr <span class="hljs-variable">${自己的公网IP}</span> tcp dport 22 dnat ip to <span class="hljs-variable">${攻击主机的IP}</span>:22 comment <span class="hljs-string">"修改目标地址(注释内容)"</span>
 }
 chain srcnat {
-    ip saddr ${自己的公网IP} ip daddr ${攻击主机的IP} tcp dport 22 snat ip to ${自己的公网IP} comment "修改源地址(注释内容)"
+    ip saddr <span class="hljs-variable">${自己的公网IP}</span> ip daddr <span class="hljs-variable">${攻击主机的IP}</span> tcp dport 22 snat ip to <span class="hljs-variable">${自己的公网IP}</span> comment <span class="hljs-string">"修改源地址(注释内容)"</span>
 }</code></pre></div>
 <p>当然，由于Openwrt的防火墙是支持web操作的，通过luci-web添加这个转发规则也很简单。</p>
 <h3 id="防火墙-端口转发-添加">防火墙-&gt;端口转发-&gt;添加:</h3>

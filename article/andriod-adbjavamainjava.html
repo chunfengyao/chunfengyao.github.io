@@ -26,8 +26,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1718538143188"
-                  >2024-06-16 19:42</time
+                >Updated At：<time datetime="1734411848414"
+                  >2024-12-17 13:04</time
                 ></span
               >
             </div>
@@ -114,19 +114,19 @@
 <ul>
 <li>然后编译，通过-cp指定android.jar的路径</li>
 </ul>
-<div><pre class="hljs"><code>javac -source 1.8 -target 1.8 ./DisplayControl.java -cp "$ANDROID_HOME/platforms/android-33/android.jar"</code></pre></div>
+<div><pre class="hljs"><code>javac -<span class="hljs-built_in">source</span> 1.8 -target 1.8 ./DisplayControl.java -cp <span class="hljs-string">"<span class="hljs-variable">$ANDROID_HOME</span>/platforms/android-33/android.jar"</span></code></pre></div>
 <ul>
 <li>然后将class文件打包为dex（Dalvik可执行文件）</li>
 </ul>
-<div><pre class="hljs"><code>"$ANDROID_HOME/build-tools/27.0.3/dx" --dex --output ./DisplayControl.dex ./DisplayControl.class</code></pre></div>
+<div><pre class="hljs"><code><span class="hljs-string">"<span class="hljs-variable">$ANDROID_HOME</span>/build-tools/27.0.3/dx"</span> --dex --output ./DisplayControl.dex ./DisplayControl.class</code></pre></div>
 <ul>
 <li>将文件推送到设备的tmp目录（有权限，并且可以添加可执行权限）</li>
 </ul>
-<div><pre class="hljs"><code>adb push DisplayControl.dex /data/local/tmp/</code></pre></div>
+<div><pre class="hljs"><code>adb push DisplayControl.dex /data/<span class="hljs-built_in">local</span>/tmp/</code></pre></div>
 <ul>
 <li>执行（其中：/data/local/tmp/DisplayControl.dex是dex路径，最后的DisplayControl是包含main方法的类名）</li>
 </ul>
-<div><pre class="hljs"><code>adb shell CLASSPATH=/data/local/tmp/DisplayControl.dex app_process / DisplayControl</code></pre></div>
+<div><pre class="hljs"><code>adb shell CLASSPATH=/data/<span class="hljs-built_in">local</span>/tmp/DisplayControl.dex app_process / DisplayControl</code></pre></div>
 </div>
       </article>
     </div>

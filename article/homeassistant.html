@@ -26,8 +26,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1714911046000"
-                  >2024-05-05 20:10</time
+                >Updated At：<time datetime="1734411854301"
+                  >2024-12-17 13:04</time
                 ></span
               >
             </div>
@@ -37,9 +37,9 @@
         <div class="article-content markdown-body"><h2 id="注意所有牵扯到编辑configurationyaml的都得重启生效">注意：所有牵扯到编辑<code>configuration.yaml</code>的，都得重启生效</h2>
 <h3 id="设置ha的请求通过http_proxy发送不包含连接设备的请求">设置HA的请求通过http_proxy发送（不包含连接设备的请求）</h3>
 <div><pre class="hljs"><code>vi /config/custom_components/hacs/base.py
-<span class="hljs-meta"># </span><span class="language-bash">search: `self.session.get`</span>
-<span class="hljs-meta"># </span><span class="language-bash">add this line(http proxy only socks5 will not work) <span class="hljs-keyword">in</span> parameters list</span>
-`proxy="http://10.0.0.1:12333", `
+<span class="hljs-comment"># search: `self.session.get`</span>
+<span class="hljs-comment"># add this line(http proxy only socks5 will not work) in parameters list</span>
+`proxy=<span class="hljs-string">"http://10.0.0.1:12333"</span>, `
 </code></pre></div>
 <hr />
 <h3 id="添加基于rest-api的自定义通知平台">添加基于<code>REST-api</code>的自定义通知平台</h3>

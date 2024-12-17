@@ -26,8 +26,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1723957581149"
-                  >2024-08-18 13:06</time
+                >Updated At：<time datetime="1734411766499"
+                  >2024-12-17 13:02</time
                 ></span
               >
             </div>
@@ -35,7 +35,7 @@
           </div>
         </header>
         <div class="article-content markdown-body"><p>刚巧最近在处理Android端Debug模式下add-2-app运行时的一个问题：</p>
-<div><pre class="hljs"><code>[FATAL:flutter<span class="hljs-regexp">/runtime/</span>dart_vm_initializer.cc(<span class="hljs-number">22</span>)] Error <span class="hljs-keyword">while</span> initializing the Dart VM: Precompiled <span class="hljs-keyword">runtime</span> requires a precompiled snapshot</code></pre></div>
+<div><pre class="hljs"><code>[FATAL:flutter/runtime/dart_vm_initializer.cc(22)] Error while initializing the Dart VM: Precompiled runtime requires a precompiled snapshot</code></pre></div>
 <p>从报错信息不难看出，这是release运行模式下没有找到预编译的可执行文件。但是，实际上编译的时候指定的是Debug模式。</p>
 <blockquote>
 <p>最终问题还是解决了，原先项目（低版本Flutter）在项目集成的时候，把release模式下的libflutter.so库文件放到了项目中（相当于本地so库），于是，戏剧化的一幕出现了，无论是升级Flutter版本，亦或是打debug的包进行调试，由于本地so库的优先级要高于三方库依赖（比如Flutter）中的so库优先级。在编译使用了pickFirst的情况下（其实早该发现这个问题的，因为之前调试问题的时候就有提示libflutter.so库存在两份，但是，按照常规处理方式，一般都是直接pickFirst了事，但是这个项目的依赖方式确实有点少见），就会导致debug运行时，使用了release的so库，于是release的so库会去尝试在debug环境下寻找release的资源文件，这当然是找不到的，于是就有了上面的错误。</p>
@@ -81,37 +81,37 @@
 </ul>
 <p>然后我们大致看下编译进最终安装包中的文件有哪些，以及他们的结构，这里只看下Android端，其他端类似（基于flutter3.19版本）：<br />
 Debug模式：</p>
-<div><pre class="hljs"><code><span class="hljs-bullet">.
-</span>├── AndroidManifest.xml
-<span class="hljs-bullet">.
-</span><span class="hljs-bullet">.
-</span><span class="hljs-bullet">.
-</span>├── R.txt
+<div><pre class="hljs"><code>.
+├── AndroidManifest.xml
+.
+.
+.
+├── R.txt
 ├── assets
-│   └── flutter<span class="hljs-emphasis">_assets
+│   └── flutter_assets
 │       ├── isolate_snapshot_data
 │       ├── kernel_blob.bin
-│       └── vm_snapshot_</span>data
+│       └── vm_snapshot_data
 ├── classes.jar
 └── libs
-<span class="hljs-code">    └── libs.jar</span></code></pre></div>
+    └── libs.jar</code></pre></div>
 <p>Release：</p>
 <div><pre class="hljs"><code>.
-├── AndroidManifest<span class="hljs-selector-class">.xml</span>
+├── AndroidManifest.xml
 .
 .
 .
-├── R<span class="hljs-selector-class">.txt</span>
+├── R.txt
 ├── arm64-v8a
 ├── armeabi-v7a
-├── classes<span class="hljs-selector-class">.jar</span>
+├── classes.jar
 ├── jni
 │   ├── arm64-v8a
-│   │   └── libapp<span class="hljs-selector-class">.so</span>
+│   │   └── libapp.so
 │   ├── armeabi-v7a
-│   │   └── libapp<span class="hljs-selector-class">.so</span>
+│   │   └── libapp.so
 │   └── x86_64
-│       └── libapp<span class="hljs-selector-class">.so</span>
+│       └── libapp.so
 └── x86_64</code></pre></div>
 <p>除了这些之外，还有一个flutter_embedding也会参与编译。</p>
 <p>我们先大致看下编译时中间产物目录的情况<br />
