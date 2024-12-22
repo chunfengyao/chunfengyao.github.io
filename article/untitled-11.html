@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>多处理机 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/katex/katex.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">多处理机</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1664783381770"
+                    >2022-10-03 15:49</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1666205018273"
+                    >2022-10-20 02:43</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p><strong>紧耦合多处理机：</strong></p>
+<ul>
+<li>处理机之间共享主存储器，通过高速总线或高速开关连接</li>
+<li>主存储器有多个独立的存储模块</li>
+<li>每个CPU能够访问任意一个存储器模块</li>
+<li>通过映象部件MAP把全局逻辑地址变换成局部物理地址</li>
+<li>通过互连网络寻找合适的路径，并分解访问存储器的冲突<br />
+多个输入输出处理机IOP也连接在互连网络上，I/O设备与CPU共享主存储器。<br />
+处理机个数不能太多，几个到十几个</li>
+</ul>
+<p><strong>松散耦合多处理机</strong></p>
+<ul>
+<li>每一台处理机都有容量较大的局部存储器 减少访存冲突</li>
+<li>不同处理机间或者通过 通道互连 实现通信 以共享某些外部设备，或者通过 消息传送系统 Message Transfer System, MTS 来交换信息 此时各台处理机可带有自己的外部设备</li>
+<li>MTS 通常采用分时总线或环形、星形、树形等拓扑结构</li>
+<li><strong>松散耦合多处理机通常用来执行粗粒度的并行计算</strong></li>
+<li>处理的作业分割成相对独立的子任务，在各个处理机上执行</li>
+<li>两种构形： 松耦合非层次型多处理机 、 层次型总线形式的多处理机</li>
+</ul>
+<h4 id="紧耦合多处理机">紧耦合多处理机</h4>
+<ul>
+<li>特点：
+<ul>
+<li>主要通过共享主存，实现机间通讯，通信速率受限于主存频宽</li>
+<li>各处理机和主存通过互连网络（区别于SIMD的互连网络）进行连接</li>
+<li>处理机数目受限于互连网络带宽和各处理机访主存冲突的概率</li>
+</ul>
+</li>
+<li>针对共享主存模式下，访主存冲突：
+<ul>
+<li>为了减少访主存冲突，主存采用模<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em"></span><span class="mord mathnormal">m</span></span></span></span></span>多体交叉存取</li>
+<li>各处理机可自带小容量局部存储器，来降低访主存冲突</li>
+<li>各处理机还可自带高速缓冲存储器Cache，来减少访主存次数</li>
+</ul>
+</li>
+<li>根据是否带专用Cache，紧耦合多处理机分为两种不同的构型</li>
+</ul>
+<h4 id="松耦合多处理机机间互连p241">松耦合多处理机机间互连（P241）</h4>
+<ul>
+<li>
+<p>总线形式</p>
+</li>
+<li>
+<p>环形互连形式</p>
+</li>
+<li>
+<p>交叉开关形式</p>
+</li>
+<li>
+<p>多端口存储器形式<br />
+如果每个存储器模块有多个访问端口，将分布在交叉开关矩阵中的控制、转移和优先级仲裁逻辑分别移到相应存储器模块的接口中，就构成了多端口存储器形式的结构。</p>
+</li>
+<li>
+<p>蠕虫穿洞寻径网络（属于包/分组交换，另外一种交换方式是线路circuit switching交换）<br />
+机间采用小容量缓冲存储器，用于消息分组寻径存储转发。在蠕虫网络中，将消息分组又分割成一系列更小的小组，同一分组中所有小组以异步流水方式按序不间断地传送，并且同一分组中的所有小组，只有头部的小组知道其所在整个分组传送的目的地，用硬件方式进行传送的应答。各个分组允许交叉传送，但不同分组中的各个小组不能互相混在一起传送，利用虚拟通道思想，使存在于发送和接收结点之间的一条物理通道能被多个虚拟通道分时共享。</p>
+</li>
+</ul>
+<details class="jop-noMdConv"><summary class="jop-noMdConv">****虫蚀寻径（点击展开查看详情）****</summary>
+<p><a title="https://pop0726.github.io/jsj/content/chap7/section2/03.htm" href="https://pop0726.github.io/jsj/content/chap7/section2/03.htm">虫蚀寻径(wormhole)</a>，新型的多计算机系统很多采用的是虫蚀寻径方式，把包进一步分成更小的片。与结点相连的硬件寻径器中有片缓冲区。消息从源结点传送到目的结点要经过一系列寻径器。如图7.26c所示。</p>
+<ul>
+<li>同一个包中所有的片象不可分离的同伴一样以流水方式顺序地传送。包可以看作是一列火车，由火车（头片）和被牵引的车厢（数据片）组成。</li>
+<li>只有头片知道包将发往何处。所有的数据片必须跟着头片。不同的包可以交替地传送，但不同包的片不能交叉，否则它们可能被送到错误的目的地。</li>
+<li>用头片直接开辟一条以输入链路到输出链路的路径的方法来进行操作。每个消息中的片以流水方式在网络中向"蠕动"。每个片相当于虫的一个节，"蠕动"是以节为单位顺序地向前爬行。</li>
+<li>当消息的头片到达一个结点A的寻径器后，寻径器根据头片的寻径消息立即做出路由选择：</li>
+<li>如果所选择的通道空闭且所选择的结点B的片缓冲区可用，那么这个头片就不必等待，直接通过结点A传向下一个结点B。随后的其它数据片跟着相应地向前"蠕动"一步。当消息的尾片向前"蠕动"一步之后，它刚才所占有的结点就被放弃了。</li>
+<li>如果所选择的通道忙或所选择的结点的片缓冲区不可用时，那么这个头片就必须在该结点的片缓冲区中等待，直到上述两者都可用时为止，其它数据片也在原来的结点上等待。此时，被阻塞的消息不从网络中移去，片也不放弃它所占有的结点和通道。</li>
+<li>为了实现上述的一个包内相继片的异步流水操作,采用如图7.27所示的握手协议。
+<ul>
+<li>沿着路径，相邻寻径器之间有一根一位的就绪/请求（R/A)线。</li>
+<li>当接收寻径器（D）就绪时（图7.27a），就可以接收一片，即片缓冲区可用了，R/A线的电平变低。</li>
+<li>当发送的寻径器（S）就绪时（图7.27b），R/A线的电平变高并通过通道传送片<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em"></span><span class="mord mathnormal">i</span></span></span></span></span>。</li>
+<li>当D正在接收片时（图7.27c），R/A线保持高电平。</li>
+<li>当片i从D的缓冲区移走后（即传送到下一个结点）（图7.27d）.</li>
+<li>重复上述操作过程以便传送片<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">i+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">1</span></span></span></span></span>，直到整个包都被接收。<br />
+<img src="/_resources/5ca3e078e5ad423d97f5aba02f441b2d.png" alt="a33365bdc793f6c1ac9835400e47d41d.png" width="717" height="287" class="jop-noMdConv" /><br />
+虫蚀寻径的通信时延用公式表示为,是片的长度，是片经过一个结点所需时间。一般来说，，所以公式可以近似为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mfrac><mi>L</mi><mi>B</mi></mfrac></mrow><annotation encoding="application/x-tex">T=\frac{L}{B}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.13889em">T</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1.217331em;vertical-align:-0.345em"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em"><span style="top:-2.6550000000000002em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05017em">B</span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.394em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">L</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>，可以看到此时通信时延也与结点数无关。</li>
+</ul>
+</li>
+<li>可以看出，虫蚀寻径有以下的优点：
+<ul>
+<li>每个结点的缓冲区较小，易于VLSI实现。</li>
+<li>较低的网络传输时延。所有的片以流水方式向前传输，采用了时间并行性。而存储转发方式的消息包整个地从一个结点"跳"到另一个结点，通道的使用是串行的，所以它的传输时延基本上正比于消息在网络中传输的距离。虫蚀寻径方式的网络传输时延正比于消息包的长度，传输距离对它的影响很小。</li>
+<li>通道共享性好，利用率高，对通道的预约和释放是结合在一起的一个完整的过程，有一段新的通道后将立即放弃用过的一段旧通道。</li>
+<li>易于实现选播和广播通信方式。允许寻径器复制消息包的片并把它们从其多个输出通道输出。</li>
+</ul>
+</li>
+<li>然而虫蚀寻径方式也有缺点，当消息的一个片被阻塞时，整个消息的所有片都将被阻塞在所在结点，占用了结点资源，因此需要采用虚拟通道的方式来避免由此引起的一连串的阻塞。</li>
+<li>虫蚀寻径方式也可以分为无缓冲和有缓冲两类，区别在于缓冲的大小。
+<ul>
+<li>缓冲大有利于性能的提高，但会增加结点的复杂度。</li>
+<li>IBM SP2采用的寻径方式就是带缓冲的虫蚀寻径方式，它采用共享的存储区来对输入/输出消息进行缓冲。</li>
+<li>图7.26是线路开关寻径、存储转发寻径和虫蚀寻径的时空图。<br />
+<img src="/_resources/1612ba3dac7c4b949f998d3f9e201008.png" alt="6e70bee48782f147ea8ec6393c4b01c0.png" width="596" height="753" class="jop-noMdConv" /></li>
+</ul>
+</li>
+</ul>
+</details>
+<ul>
+<li>开关枢纽形式<br />
+参照多端口存储器的思想，把互连结构的开关设置在各处理机或接口内部，组成分布式结构，称为开关枢纽结构形式。每一台处理机通过它的开关枢纽与其他多台处理机连接组成各种分布结构的多处理机。开关枢纽的选择应使所组成的多处理机有较佳的拓扑结构和良好的互连特性，特别是要适应处理机机数很多的情况。<br />
+理想的拓扑结构应该是：所用开关枢纽数量少，每个开关枢纽的端口数不多，能以较短的路径把数量很多的处理机连接起来，实现快速而灵活的通信；不改变模块本身的结构，就可以使系统规模得到任意扩充。</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

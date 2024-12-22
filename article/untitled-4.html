@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>计算机网络原理-复习笔记 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/katex/katex.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">计算机网络原理-复习笔记</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1646723428076"
+                    >2022-03-08 15:10</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1729689145757"
+                    >2024-10-23 21:12</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p>首先是一些基本概念：信息啊，数据啊，网络拓扑结构的类型啊。<br />
+交换技术：电路交换、报文交换（又叫存储转发交换）、分组交换（又叫包交换）<br />
+性能相关的一些计算：带宽、时延带宽积、各种时延.<br />
+通信模式：C/S、P2P.<br />
+一些重要的协议：DNS、WWW、邮件（SMTP、POP3、IMEI）、FTP、P2P、Socket编程</p>
+<ul>
+<li>
+<h2 id="传输层进程端口到进程端口">传输层（进程（端口）到进程（端口））</h2>
+<ul>
+<li>多路复用与多路分解是传输层的一个基本功能（其实，就是基于端口，来识别是不是同一条连接，然后，根据端口来进行同一个目的地址和起始地址的数据传输的多路复用-针对发送方和分解-针对接受方）</li>
+<li>传输层会提供<strong>流量控制</strong></li>
+<li>实现可靠数据传输的措施：差错检测、确认、重传、序号、计时器
+<ul>
+<li>具体实现这些措施的，比如：停等协议、滑动窗口协议</li>
+<li>注意和数据链路层以及网络层的差错控制的区别：
+<ul>
+<li>数据链路层提供的差错控制只校验帧是否正确，不保证顺序以及丢帧和重复（链路层是物理层后的第一层，如果数据已经错了，就没必要继续传递下去了，另外，也不是每一种物理层对应的链路层都提供差错控制的，比如通信质量良好的有线网络，对应的链路层有时并不进行差错控制）</li>
+<li>网络层提供的差错控制只保证网络层的头部正确，不保证数据部分正确（因为路由器有可能会对网络层的数据包拆包以及进行分片，所以，没有必要校验）。</li>
+<li>而这边传输层的差错控制，可以弥补帧丢失、帧重复、帧失序。所以，这边的差错控制是属于可靠传输的范畴</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>TCP
+<ul>
+<li>注意TCP的三次握手和四次挥手过程</li>
+</ul>
+</li>
+<li>UDP</li>
+</ul>
+</li>
+<li>
+<h2 id="网络层主机到主机是网络的核心实现">网络层（主机到主机，是网络的核心实现）</h2>
+<ul>
+<li><strong>数据报网络</strong>（无连接，比如现在的TCP/IP网络体系结构中，提供了主机到主机的连接服务，称为数据报网络）、<strong>虚电路网络</strong>（面向连接的，比如曾经的ATM网络）注意：在传输层实现面向连接的服务与在网络层实现连接服务是根本不同的。传输层面向连接服务是在位于网络边缘的端系统中实现的；而网络层连接服务除了在端系统中实现外，也在位于网络核心的路由器中实现。虚电路和数据报网络是计算机网络的两种基本类型。
+<ul>
+<li><strong>虚电路网络</strong>的主要通信过程。1:虚电路建立。2:数据传送。3:虚电路拆除</li>
+<li>由来
+<ul>
+<li><strong>虚电路</strong>的概念来源于电话领域，它采用了真正的电路，使用 VC 号转发分组</li>
+<li>因特网作为一种<strong>数据报网络</strong>，是由互连计算机的需求发展而来的，使用 IP 地址转发分组。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>功能
+<ul>
+<li>网络互联（为了连接两个异构网络-通讯技术或者运行的协议不同的两个网络，主要职能是<strong>协议转换、构建虚拟互联网络</strong>）</li>
+<li>网络交换（主要是路由器，在两个不同类型的网络之间，进行IP包的交换-三种交换方式：基于内存、基于总线、基于网络）
+<ul>
+<li>电路交换，分组交换（数据包交换）、ATM交换、全光交换，标记交换。按照交换层次的不同，可以分为：
+<ul>
+<li>物理层交换（如电话网）</li>
+<li>链路层交换（二层交换，对MAC地址进行变更）</li>
+<li>网络层交换（三层交换，对IP地址进行变更）</li>
+<li>传输层交换（四层交换，对端口进行变更，比较少见）</li>
+<li>应用层交换（似乎可以理解为Web网关等）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>网络拥塞：缓冲区容量有限、传输线路的<strong>带宽有限</strong>、网络结点的处理能力有限、网络中<strong>某些结点发生了故障</strong>
+<ul>
+<li>处理方式：
+<ul>
+<li>流量感知路由：1、多路径路由。2、缓慢转移流量至另一链路。（类似于负载均衡，有多条路由路径可选择，然后缓慢地把高负载的流量转移到其它链路）</li>
+<li>准入控制：针对虚电路网络，对新建的虚电路网络进行审核，根据网络负载情况进行虚电路的建立。</li>
+<li>流量调节：
+<ul>
+<li>拥塞感知</li>
+<li>处理拥塞
+<ul>
+<li>抑制分组：返回一个抑制分组给拥塞数据报的源主机-发送方，减少数据发送</li>
+<li>背压：从拥塞节点出发，到源节点，中间的每一跳都要进行抑制</li>
+<li>负载脱落：主动丢弃某些数据。策略上：比如GBN中，丢弃新分组；比如实时对的视频流，丢弃老分组</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>IPV4：<strong>首部、IPV4地址编址规则、以及子网、掩码、网络号、超网融合、路由聚合、子网划分等的计算</strong>
+<ul>
+<li>DHCP
+<ul>
+<li>DHCP服务器发现</li>
+<li>DHCP服务器提供</li>
+<li>DHCP服务器请求</li>
+<li>DHCP确认</li>
+</ul>
+</li>
+<li>NAT</li>
+<li>ICMP（互联网控制报文协议）：负责在主机或者路由器之间进行差错信息报告
+<ul>
+<li>ICMP差错报告报文：
+<ul>
+<li>终点不可达、源点抑制、时间超时、参数问题、路由重定向</li>
+</ul>
+</li>
+<li>ICMP询问报文
+<ul>
+<li>回声（echo）请求/应答、时间戳请求/应答</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>IPV6
+<ul>
+<li>首部是固定40个字节（注意：IPV4是可变长度的首部）</li>
+<li>IPV4地址长度是32位（4个8位），IPV6地址长度是128位（4个32位，按照常见的冒号分割表示方式，每段16位、4个十六进制数，也就是总计8个16位）
+<ul>
+<li>注意IPV6的地址表示方式，尤其是省略0，以及使用IPV4的点间隔方式表示某一段</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>路由算法、路由协议
+<ul>
+<li>基于链路状态（全局式的，需要构建出整个网络的拓扑）的：最短路径（Dijkstra）</li>
+<li>基于距离向量的路由选择算法</li>
+</ul>
+</li>
+<li>划分自治系统（就是把一些节点组合起来形成一个自治系统，按照内部网关协议进行路由选择，以达到自治，然后，由边界路由器来和外部通过自治系统间的路由协议进行沟通）
+<ul>
+<li>内部网关协议（IGP,内部网关协议）
+<ul>
+<li>RIP（Routing Information Protocol,路由信息协议）：基于距离向量路由选择算法，和相邻路由器交换距离向量，每30秒交换一次，最远距离不超过15跳（每两个直接相连的路由器之间，记为1，不直接相连的记为无穷远）</li>
+<li>OSPF（Open Shortest Path First,开放式最短路径优先）：基于链路状态路由选择算法，先交换链路状态（拓扑图，向全网交换链路状态，也就是拓扑图，适用于比较大的网络），然后根据最短路径，确定最终从哪个端口发出。</li>
+</ul>
+</li>
+<li>外部网关协议
+<ul>
+<li>BGP（Border Gateway Protocol,边界网关协议）：通过维护IP路由表或“前缀”表来实现自治系统（AS）之间的可达性，属于矢量路由协议（距离向量）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h2 id="数据链路层">数据链路层</h2>
+<ul>
+<li>
+<p>数据链路层主要功能：</p>
+<ul>
+<li>两个子层：逻辑链路控制（LLC/Logical Link Control）、介质访问控制（MAC/Media Access Control）</li>
+<li>组帧：帧头，帧尾。</li>
+<li>链路接入：点对点链路、广播链路</li>
+<li>可靠交付（类似传输层的停等的方式）</li>
+<li><strong>差错控制</strong>（判断数据是否出错）
+<ul>
+<li>检错重发（检查出错误，并且要求发送方重发）</li>
+<li>前向纠错（可以进行纠错，不需要发送方重发）</li>
+<li>反馈校验（原封不动地发给发送方）</li>
+<li>检错丢弃</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>差错控制</strong></p>
+<ul>
+<li>香农信道编码（一个理论，也就是可以使用一个编码使得数据传输过程中不发生错误，或者通过该编码可以将错误控制在很小的数值之下）
+<ul>
+<li><strong>通过差错编码函数<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>D</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">R=f(D)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.00773em">R</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.10764em">f</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em">D</span><span class="mclose">)</span></span></span></span></span>生成差错编码，并且拼接在原始数据中，让接收方可以检出错误或者纠正错误</strong></li>
+<li>检错编码：汉明距离和检错位数的关系，<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mi>s</mi></msub><mo>=</mo><mi>r</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">d_s = r+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em"></span><span class="mord mathnormal" style="margin-right:0.02778em">r</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">1</span></span></span></span></span>，比如一个编码集的汉明距离为2，则使用这个编码集对数据进行编码，最多只能检查出1位数据的出错（只要检查数据是否都是编码集中的，就可以检查出错误，如果有一个数据不是编码集中的，就是错误数据）</li>
+<li>纠错编码：汉明距离和纠错位数的关系，<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mi>s</mi></msub><mo>=</mo><mn>2</mn><mi>r</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">d_s = 2r+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.02778em">r</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">1</span></span></span></span></span>，比如一个编码集的汉明距离为5，则使用这个编码集对数据进行编码，最多只能纠正出2位数据的出错（纠正方式，将出错的数据与编码集中的数据计算汉明距离，可以认为汉明距离最小的那个就是对应的正确的数据）</li>
+<li>汉明距离</li>
+</ul>
+</li>
+<li>几种常见的校验方式
+<ul>
+<li>奇偶检验码</li>
+<li>汉明码</li>
+<li>循环冗余码CRC（检错能力强，编码效率高，实现简单）
+<ul>
+<li>先将生成多项式，转成二进制，比如：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><msup><mi>x</mi><mn>4</mn></msup><mo>+</mo><mi>x</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">G(x)=x^4+x+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal">G</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">1</span></span></span></span></span>即：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10011</mn></mrow><annotation encoding="application/x-tex">10011</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">10011</span></span></span></span></span></li>
+<li>然后将原数据左移生成多项式最高位次幂，比如：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10011</mn></mrow><annotation encoding="application/x-tex">10011</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">10011</span></span></span></span></span>则左移四位，比如原始数据为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10111011</mn></mrow><annotation encoding="application/x-tex">10111011</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">10111011</span></span></span></span></span>，左移为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>101110110000</mn></mrow><annotation encoding="application/x-tex">101110110000</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">101110110000</span></span></span></span></span></li>
+<li>然后进行二进制按位异或运算/二进制<strong>模2除法</strong>（不同得1，相同得0）</li>
+<li>将最终求得的余数<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi></mrow><annotation encoding="application/x-tex">R</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.00773em">R</span></span></span></span></span>，和第二步左移后的值相加（二进制或运算）（因为左移是指定位数，这样是为了接收方可以按规则切割出校验位，当做冗余校验位。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>多路访问控制MAC（Multiple Access Control多用于广播链路协各个节点的数据发送）</p>
+<ul>
+<li>
+<p>信道划分MAC协议</p>
+<ul>
+<li>频分多路复用：不同频域</li>
+<li>时分多路复用</li>
+<li>波分多路复用：不同波长</li>
+<li>码分多路复用：不同编码域</li>
+</ul>
+</li>
+<li>
+<p>随机访问MAC协议</p>
+<ul>
+<li>ALOHA
+<ul>
+<li>纯ALOHA：直接发送 - 信道侦听 - 冲突重发</li>
+<li>时隙ALOHA：时隙开始时发送 - 信道侦听 - 冲突则下一个时隙按概率P重发</li>
+</ul>
+</li>
+<li>载波监听多路访问协议CSMA（Carrier Sense Multiple Access）; <strong>注意坚持与非坚持的区别、1与P的区别</strong>
+<ul>
+<li>非坚持CSMA：忙就等待随机时间后重新监听，闲则在最近时隙立即发送数据</li>
+<li>1-坚持CSMA：忙则持续侦听，闲则在最近时隙立即发送数据</li>
+<li>P-坚持CSMA：忙则持续侦听，闲则以概率P在最近时隙发送数据</li>
+</ul>
+</li>
+<li>带冲突检测的载波监听多路访问协议 CSMA/CD（Collision Detection）（主要用于以太网IEEE802.3）处理规程如下：
+<ul>
+<li>与普通CSMA区别：发送时会检测碰撞（边发送，边检测），一旦发送时检测到碰撞，就发送一个强化碰撞的信号。然后停止发送，并等待随机时间后进行重发。</li>
+</ul>
+</li>
+<li>带冲突避免的载波监听多路访问协议CSMA/CA（Collision Avoid）（主要用于无线网IEEE802.11）：在发送前通过特殊的帧，申请发送，来避免冲突
+<ul>
+<li>IEEE802.11协议中的一些重要的帧：
+<ul>
+<li>DIFS:分布式帧间间隔（Distributed Inter-frame Spacing）</li>
+<li>RTS:请求发送控制帧（Ready To Send）</li>
+<li>SIFS:短帧间间隔（Short Inter-frame Spacing）</li>
+<li>CTS:允许发送控制帧（Clear To Send）</li>
+<li>NAV:网络分配向量（Network Allocation Vector）</li>
+</ul>
+</li>
+<li>
+<h4 id="80211的通讯过程">802.11的通讯过程</h4>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>受控接入MAC控制</p>
+<ul>
+<li>集中式：由一个主机负责调度其它通信站，避免冲突。主要方法：轮询技术。</li>
+<li>分散式：主要方法：令牌技术（令牌环网）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h4 id="广播链路-lan局域网区别于下面的点对链路">广播链路 - LAN（局域网），区别于下面的点对链路</h4>
+<ul>
+<li>链路层寻址：MAC地址（6字节，48bits。注意，<strong>链路层是看不到网络层的IP地址的</strong>）
+<ul>
+<li>ARP协议（查询/响应方式，将IP地址转换为MAC地址）-工作在网络层</li>
+<li>RARP协议（与ARP协议作用相反）</li>
+</ul>
+</li>
+<li>以太网，IEEE802.3标准
+<ul>
+<li>采用上述的CSMA/CD访问控制方法</li>
+<li>采用以太网数据帧的结构</li>
+</ul>
+</li>
+<li>交换机（这里说的主要是交换式以太网（有交换机的以太网网络），比如在传统以太网中，两路数据同时发送是不可能的。但是，在交换式以太网中，是有可能可以同时发送的）
+<ul>
+<li>转发与过滤（为了解决多个节点进行广播导致的消息的冲突和碰撞），根据收到的链路层帧的MAC地址，选择性地转发到指定端口</li>
+<li>自学习，通过自学习构建交换表</li>
+<li>优点：
+<ul>
+<li>消除冲突，提高性能</li>
+<li>支持异质链路</li>
+<li>易于进行网络管理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>VLAN（虚拟局域网）：
+<ul>
+<li>基于<strong>交换机</strong>的逻辑分割广播域的应用形式</li>
+<li>不受物理位置的限制</li>
+<li>能够抑制广播风暴</li>
+<li>方法：
+<ul>
+<li>基于交换机端口</li>
+<li>基于MAC地址</li>
+<li>基于上层协议或者地址（比如IP地址）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h4 id="点对点链路协议">点对点链路/协议</h4>
+<ul>
+<li>PPP
+<ul>
+<li>差错检测、支持多种上层协议、允许连接时协商IP地址、允许身份认证。</li>
+<li>功能：
+<ul>
+<li>成帧</li>
+<li>链路控制协议（LCP，比如PPPoE拨号）</li>
+<li>网络控制协议（NCP，比如拨号结束后获取IP地址等网络配置信息）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>HDLC协议（可用于点对点链路、点对多点链路）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h2 id="物理层">物理层</h2>
+<ul>
+<li>
+<p>物理介质，以及对应的传输距离</p>
+</li>
+<li>
+<p>信道与信道容量，噪声（冲击噪声-多由外部引起、随机噪声-比如热噪声）</p>
+</li>
+<li>
+<h3 id="基带传输">基带传输：</h3>
+<ul>
+<li>
+<h4 id="基带传输码型">基带传输码型：</h4>
+<ul>
+<li>单/双极性归零(RZ,Return to Zero)/不归零码(NRZ,Not Return to Zero)：单双极，指的是电平为1,0还是1,0,-1。归零，指的是每个周期的下半周期为0（也就是从每个周期中间，回到0电平）</li>
+<li>差分码：1代表有跳变，0代表没有</li>
+<li>AMI码（Alternative Mark Inversion,信号交替反转码）：0始终用0电平表示，1则交替地用正电平和负电平表示，也就是第一个1用正电平，那第二个就用负电平，第三个就用正电平</li>
+<li>双相码（Biphase Code,曼彻斯特编码）：中间跳变，1是前半周期为正电平，后半周期为负电平，0是前半周期为负电平，后半周期为正电平</li>
+<li><strong>米勒码（密勒码/Miller Code）</strong>：一种变形双相码（也叫延迟调制码），0编码为双极不归零码00和11（当出现连续0时，交替使用，单个0时，和之前的一致），1编码为双极不归零码01和10（当出现连续1时，交替使用，单个1时，和之前的一致）</li>
+<li>CMI（Coded Mark Inversion,传号反转码）：0编码为双极不归零码的01（对，CMI中没有10），1交替编码为双极不归零码的11和00</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h3 id="频带传输可靠性最好的是2psk有效性最好的是2ask-2psk">频带传输（可靠性最好的是(2PSK)，有效性最好的是(2ASK、2PSK)）</h3>
+<ul>
+<li>二进制幅移键控（2ASK，Amplitude-Shift Keying）</li>
+<li>二进制频移键控（2FSK，Frequency-Shift Keying）</li>
+<li>二进制相移键控（2PSK，Phase-Shift Keying）</li>
+<li>二进制差分相移键控（2DPSK，Differential Phase-Shift Keying）</li>
+<li>三种调制解调方式：
+<ul>
+<li>二进制数字调制</li>
+<li>多进制数字调制</li>
+<li>正交幅值调制</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>物理层接口</p>
+<ul>
+<li>DTE：数据终端设备</li>
+<li>DCE：数据电路端接设备</li>
+<li>接口特性
+<ul>
+<li>机械特性</li>
+<li>电气特性</li>
+<li>功能特性</li>
+<li>规程特性</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h2 id="无线与移动网络">无线与移动网络</h2>
+<ul>
+<li>基本结构
+<ul>
+<li>无线主机</li>
+<li>无线链路</li>
+<li>基站（Base Station）：比如蜂窝网络中的蜂窝塔（Cell Tower）、802.11无线局域网中的AP（Access Point）</li>
+<li>网络基础设施</li>
+</ul>
+</li>
+<li>无线链路特点：
+<ul>
+<li>信号强度的衰减（属于路径损耗）</li>
+<li>干扰</li>
+<li>多径传播</li>
+</ul>
+</li>
+<li>无线主机不通过基站(即没有基站)，直接与另一个无线主机直接通信的无线网络模式称为自组织网络(Ad Hoc Network)，或称为特定网络，也称为Ad Hoc网络。</li>
+<li>地址类型：
+<ul>
+<li>永久地址：移动站点在归属网络中的原始地址</li>
+<li>外部地址：在外部网络中帮助移动结点完成移动管理功能的实体称为外部代理</li>
+<li>转交地址（COA，Care-Of Address）：一般是由外部代理为移动节点创建的。COA有时也被称为外部地址。</li>
+</ul>
+</li>
+<li>两种代理：
+<ul>
+<li>归属代理（本地代理）：永久地址、归属网络、家网</li>
+<li>外部代理（外地代理）：在外部网络中为移动节点负责移动管理功能的实体</li>
+</ul>
+</li>
+<li>移动寻址：当某节点位于一个外部网络时，所有指向该节点的永久地址的流量都需要导向外部网络（因为发送者并不知道节点移动到外部网络了，依旧只会通过永久地址发送消息）</li>
+<li>一些典型的无线网络
+<ul>
+<li>WiMax：优点：更远的传输距离、更高速的带宽接入。缺点：不支持用户在移动过称中的无缝切换、产业基础薄弱、与传统的蜂窝网络无法完全兼容。</li>
+<li><strong>蓝牙</strong>：802.15.1。工作在2.4GHz频段。特点（一小三低）：小范围、低功率、低数据速率、<strong>低成本</strong></li>
+<li><strong>ZigBee</strong>：802.15.4。特点（三低）：低功率、低数据速率、<strong>低工作周期</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h2 id="网络安全">网络安全</h2>
+<ul>
+<li>典型的一些网络威胁：
+<ul>
+<li>报文传输：传输过程面临窃听、插入、假冒、劫持等安全威胁</li>
+<li>拒绝服务DoS、分布式拒绝服务DDoS</li>
+<li>映射：先探路，再攻击</li>
+<li>分组"嗅探"：WireShark是一个典型的分组嗅探软件</li>
+<li>IP欺骗</li>
+</ul>
+</li>
+<li>网络安全通信的基本属性：
+<ul>
+<li>机密性：只有发送方和接收方能理解报文内容</li>
+<li>消息完整性：消息未被篡改，若发生篡改则一定能被检测到</li>
+<li>可访问性与可用性：对授权用户提供有效服务</li>
+<li>身份认证：双方确认彼此的真实身份</li>
+</ul>
+</li>
+<li>解决方式：
+<ul>
+<li>数据加密：
+<ul>
+<li>传统加密方式
+<ul>
+<li>凯撒密码：替换密码</li>
+<li>列（行）置换密码：换位密码</li>
+</ul>
+</li>
+<li>对称密钥加密方式
+<ul>
+<li>分组加密（块密码）：DES、ASE、IDEA</li>
+<li>流加密（序列密码）</li>
+</ul>
+</li>
+<li>非对称密钥加密（又称公开密钥加密）方式</li>
+</ul>
+</li>
+<li>消息完整性和数字签名：
+<ul>
+<li>消息完整性的目标：
+<ul>
+<li>证明报文确实来自发送方</li>
+<li>验证报文内容在传输过程中没有被篡改</li>
+<li>预防报文的时间、顺序被篡改</li>
+<li>预防报文持有期被篡改</li>
+<li>预防抵赖（两个方面：发送方否认已发送的消息、接收方否认已接收的消息）</li>
+<li>另外：消息完整性检测的一个重要目的：完成<strong>报文认证</strong>的任务（消息接收者能够检验收到的消息是否是真实的的方法）
+<ul>
+<li>报文认证要完成<strong>消息源的认证</strong>和<strong>消息的认证</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>数字签名：
+<ul>
+<li>简单数字签名</li>
+<li>签名报文摘要</li>
+</ul>
+</li>
+<li>身份认证
+<ul>
+<li>基于共享对称密钥的身份认证</li>
+<li>基于公开密钥的身份认证</li>
+</ul>
+</li>
+<li>防火墙和入侵检测系统
+<ul>
+<li>防火墙：能够隔离组织内部网络与公共互联网，允许某些分组通过，而阻止其它分组进入或离开内部网络的软件、硬件或者软硬件结合的一种设施。
+<ul>
+<li>有状态分组过滤器</li>
+<li>无状态分组过滤器</li>
+<li>应用网关</li>
+</ul>
+</li>
+<li>入侵检测系统：当观察到潜在的<strong>恶意流量</strong>时，能够产生警告的设备或系统</li>
+</ul>
+</li>
+<li>网络安全协议：
+<ul>
+<li>安全电子邮件（应用层）</li>
+<li>安全套接字层（传输层）</li>
+<li>虚拟专用网VPN和IP安全协议IPSec（网络层）
+<ul>
+<li>隧道技术：通过Internet提供的点对点的数据传输的安全通道
+<ul>
+<li>通过数据加密来保证安全</li>
+<li>数据进入隧道时，由VPN封装成IP数据报，通过隧道在Internet上传输，离开隧道后在进行解装。</li>
+</ul>
+</li>
+<li>IPSec安全体系
+<ul>
+<li>IPSec安全体系包含的两种协议
+<ul>
+<li><strong>封装安全载荷（ESP,Encapsulating Security Payload）</strong> 协议</li>
+<li><strong>认证头（AH,Authentication Header）</strong> 协议</li>
+</ul>
+</li>
+<li>IPSec中的两种传输模式：
+<ul>
+<li><strong>传输模式</strong>：主机模式，IPSec数据报的发送和接收都由端系统完成</li>
+<li><strong>隧道模式</strong>：将IPSec的功能部署在网络边缘的路由器上，路由器之间建立安全隧道，数据报在其中封装传输</li>
+</ul>
+</li>
+<li>传输模式以及协议的组合：
+<ul>
+<li>传输模式AH</li>
+<li>隧道模式AH</li>
+<li>传输模式ESP</li>
+<li><strong>隧道模式ESP</strong>：最广泛和最重要的IPSec体系形式</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

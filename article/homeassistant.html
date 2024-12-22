@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>HomeAssistant优化 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">HomeAssistant优化</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1714910218006"
+                    >2024-05-05 19:56</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1734411854301"
+                    >2024-12-17 13:04</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><h2 id="注意所有牵扯到编辑configurationyaml的都得重启生效">注意：所有牵扯到编辑<code>configuration.yaml</code>的，都得重启生效</h2>
+<h3 id="设置ha的请求通过http_proxy发送不包含连接设备的请求">设置HA的请求通过http_proxy发送（不包含连接设备的请求）</h3>
+<div><pre class="hljs"><code>vi /config/custom_components/hacs/base.py
+<span class="hljs-comment"># search: `self.session.get`</span>
+<span class="hljs-comment"># add this line(http proxy only socks5 will not work) in parameters list</span>
+`proxy=<span class="hljs-string">"http://10.0.0.1:12333"</span>, `
+</code></pre></div>
+<hr />
+<h3 id="添加基于rest-api的自定义通知平台">添加基于<code>REST-api</code>的自定义通知平台</h3>
+<ul>
+<li>编辑<code>configuration.yaml</code></li>
+<li>添加如下内容，注意：<code>${__gotify_host_port_url}</code>、<code>${__gotify_api_key}</code>替换为自己的配置：</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-attr">notify:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">gotify</span>
+    <span class="hljs-attr">platform:</span> <span class="hljs-string">rest</span>
+    <span class="hljs-attr">resource:</span> <span class="hljs-string">${__gotify_host_port_url}/message</span>
+    <span class="hljs-attr">method:</span> <span class="hljs-string">POST_JSON</span>
+    <span class="hljs-attr">headers:</span>
+      <span class="hljs-attr">X-Gotify-Key:</span> <span class="hljs-string">${__gotify_api_key}</span>
+    <span class="hljs-attr">message_param_name:</span> <span class="hljs-string">message</span>
+    <span class="hljs-attr">title_param_name:</span> <span class="hljs-string">title</span>
+    <span class="hljs-attr">data:</span>
+      <span class="hljs-attr">priority:</span> <span class="hljs-number">7</span>
+      <span class="hljs-attr">extras:</span>
+        <span class="hljs-attr">client::display:</span>
+          <span class="hljs-attr">contentType:</span> <span class="hljs-string">"text/markdown"</span></code></pre></div>
+<hr />
+<h3 id="将自动化配置和设备配置添加到侧边栏步骤如下">将自动化配置和设备配置添加到侧边栏，步骤如下：</h3>
+<ul>
+<li>开启高级模式（点击用户头像，常规设置中，高级模式）</li>
+<li>编辑<code>configuration.yaml</code>（如果你有add-on，也可以用<code>File Editor</code>进行编辑）</li>
+<li>添加如下内容：</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-attr">panel_custom:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">panel_integrations</span>
+    <span class="hljs-attr">sidebar_title:</span> <span class="hljs-string">设备与服务</span>
+    <span class="hljs-attr">sidebar_icon:</span> <span class="hljs-string">mdi:devices</span>
+    <span class="hljs-attr">url_path:</span> <span class="hljs-string">'config/integrations'</span>
+    <span class="hljs-attr">module_url:</span> <span class="hljs-string">/api/hassio/app/entrypoint.js</span>
+    <span class="hljs-attr">embed_iframe:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">require_admin:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">panel_automations</span>
+    <span class="hljs-attr">sidebar_title:</span> <span class="hljs-string">自动化与场景</span>
+    <span class="hljs-attr">sidebar_icon:</span> <span class="hljs-string">mdi:robot</span>
+    <span class="hljs-attr">url_path:</span> <span class="hljs-string">'config/automation'</span>
+    <span class="hljs-attr">module_url:</span> <span class="hljs-string">/api/hassio/app/entrypoint.js</span>
+    <span class="hljs-attr">embed_iframe:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">require_admin:</span> <span class="hljs-literal">true</span></code></pre></div>
+<ul>
+<li>最终效果如下：<br />
+<img src="/_resources/3a9e4d073d8349b99d32503d75f90e78.png" /></li>
+</ul>
+<hr />
+<h3 id="添加wakeonlan通过幻数包远程唤醒主机">添加WakeOnLan（通过幻数包远程唤醒主机）</h3>
+<ul>
+<li>编辑<code>configuration.yaml</code>，添加如下内容，注意：<code>00:00:00:00:00:00</code>、<code>x.x.x.x</code>、<code>${__host_alias}</code>换成自己的配置：</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-attr">switch:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">platform:</span> <span class="hljs-string">wake_on_lan</span>
+    <span class="hljs-attr">mac:</span> <span class="hljs-string">"00:00:00:00:00:00"</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">"${__host_alias}"</span>
+    <span class="hljs-attr">host:</span> <span class="hljs-string">"x.x.x.x"</span>
+<span class="hljs-comment">#    broadcast_address: "10.0.255.255"</span></code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

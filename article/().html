@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>中断(中断屏蔽表) - chunfeng.yao</title>
+  </head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">中断(中断屏蔽表)</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1647587730970"
+                    >2022-03-18 15:15</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1665576557952"
+                    >2022-10-12 20:09</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><h4 id="中断系统的定义">中断系统的定义：</h4>
+<ul>
+<li>CPU中止正在执行的程序，转去处理随机提出的请求，待处理完后，再回到原先被打断的程序继续恢复执行的过程称为中断。</li>
+</ul>
+<h4 id="中断系统的功能">中断系统的功能：</h4>
+<ul>
+<li>中断请求的保存和清除</li>
+<li>优先级的确定</li>
+<li>中断断点及现场的保存</li>
+<li>对中断请求的分析和处理</li>
+<li>（中断处理完后的）中断返回</li>
+</ul>
+<h4 id="在计算机中中断可以分为">在计算机中，中断可以分为:</h4>
+<ul>
+<li>内部中断（由CPU内的异常引起）</li>
+<li>外部中断（由中断信号引起）外部中断可分为：可屏蔽中断、不可屏蔽中断
+<ul>
+<li>比如：各种定时器中断，外部信号中断（比如外部硬件的中断，外部I/O设备），中断键中断</li>
+</ul>
+</li>
+<li>软件中断（由于自陷指令引起，用于供操作系统服务）</li>
+</ul>
+<p>由于中断源比较多，但不少中断源的性质比较接近，可以根据中断源进行分类，对每一类中断源给定一个中断服务程序的入口，再由软件分支转入相应的中断处理部分。</p>
+<h4 id="根据中断源的不同进行的分类有">根据中断源的不同进行的分类有：</h4>
+<ul>
+<li><strong>机器校验中断</strong>：高速程序发生了设备故障。比如主存出错、电源故障等。</li>
+<li><strong>程序性中断</strong>、管理程序调用（访管中断）：
+<ul>
+<li>程序性中断：包括指令和数据的格式错，程序执行中出现异常等。</li>
+<li>管理程序调用（访管中断）：为用户程序需要操作系统介入，调用操作系统服务。访管中断又称自愿中断。</li>
+</ul>
+</li>
+<li><strong>外部中断</strong>：来自机器外部，包括定时器中断，外部信号中断，中断键中断。</li>
+<li>I/O中断</li>
+<li>重启中断。</li>
+</ul>
+<p>上述中断的优先次序一般为：<br />
+<strong>机器校验为第一级，管理程序和程序性调用为第二级，外部中断为第三极，I/O为第四级，重启为最低级。</strong><br />
+<strong>机器校验/硬件故障 -&gt; 访管 -&gt; 程序性中断 -&gt; 外部 -&gt; I/O -&gt; 重启</strong></p>
+<p>中断响应的次序可以用排队器硬件实现，次序由高到低固定。但为了根据需要，让操作系统灵活改变中断实际的中断处理次序，很多机器设置了中断级屏蔽位寄存器，以决定某些中断请求是否可进入中断响应排队器。程序状态字中包含有中断级屏蔽位字段，只有操作系统能对其进行设置，来实现中断处理次序。</p>
+<h4 id="中断禁止表">中断禁止表：</h4>
+<p>竖轴的表示当前正在执行的中断，横轴表示新发生的中断，表格中，1表示（允许中断），允许暂停当前处理的中断先去处理新发生的中断。0表示不允许。注意，中断优先级要求，一定要优先级大于，不能等于。<strong>即表格的对角线一定全是0</strong>。</p>
+<p><strong>中断响应优先级</strong>是由硬件排队线路或中断查询程序的查询顺序决定的，不可动态改变；<br />
+<strong>中断处理优先级</strong>可以由<strong>中断屏蔽字</strong>来改变，反映的是正在处理的中断是否比新发生的中断的处理优先级低（屏蔽位为‘0’，对新中断开放），如果是的话，就中止正在处理的中断，转到新中断去处理，处理完后再回到刚才被中止的中断继续处理</p>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

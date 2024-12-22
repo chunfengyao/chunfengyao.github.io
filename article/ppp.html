@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>PPP-点对点数据链路协议 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/katex/katex.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">PPP-点对点数据链路协议</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1665319846486"
+                    >2022-10-09 20:50</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1666291287519"
+                    >2022-10-21 02:41</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p><a title="https://www.jianshu.com/p/c9c9a1dd522e" href="https://www.jianshu.com/p/c9c9a1dd522e">参考资料</a></p>
+<h3 id="ppp在异步传输中对于信息字段使用的转移字符其实就是转义字符的意思ppp在异步传输中定义的数据字段的转义符为">PPP在异步传输中对于信息字段使用的转移字符其实就是转义（字）符的意思，PPP在异步传输中定义的数据字段的转义符为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>x</mi><mn>7</mn><mi>d</mi></mrow><annotation encoding="application/x-tex">0x7d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em"></span><span class="mord">0</span><span class="mord mathnormal">x</span><span class="mord">7</span><span class="mord mathnormal">d</span></span></span></span></span></h3>
+<p>PPP（<strong>P</strong>oint-to-<strong>P</strong>oint <strong>P</strong>rotocol）工作在数据链路层（以OSI参考模型的观点）<br />
+PPPoE（英语：Point-to-Point Protocol over Ethernet）<br />
+PPP是在原来的HDLC规范之后设计的。</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Number of bytes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flag</td>
+<td>1</td>
+<td>0x7E, the beginning of a PPP frame</td>
+</tr>
+<tr>
+<td>Address</td>
+<td>1</td>
+<td>0xFF, standard broadcast address</td>
+</tr>
+<tr>
+<td>Control</td>
+<td>1</td>
+<td>0x03, unnumbered data</td>
+</tr>
+<tr>
+<td>Protocol</td>
+<td>2</td>
+<td>PPP ID of embedded data</td>
+</tr>
+<tr>
+<td>Information</td>
+<td>variable (0 or more)</td>
+<td>datagram</td>
+</tr>
+<tr>
+<td>Padding</td>
+<td>variable (0 or more)</td>
+<td>optional padding</td>
+</tr>
+<tr>
+<td>Frame Check Sequence</td>
+<td>2</td>
+<td>frame checksum</td>
+</tr>
+<tr>
+<td>Flag</td>
+<td>1</td>
+<td>0x7E, omitted for successive PPP packets</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/_resources/5a99a111e5a34b3f8d3462ee415a9933.png" /></p>
+<h3 id="两个协议子层">两个协议子层</h3>
+<ul>
+<li><strong>LCP</strong>（Link Control Protocol，链路控制协议）：
+<ul>
+<li>启动线路、检测线路、协商线路、关闭线路</li>
+</ul>
+</li>
+<li><strong>NCP</strong>（Network Control Protocol，网络控制协议）：
+<ul>
+<li>协商网络层选项</li>
+</ul>
+</li>
+</ul>
+<h3 id="ppp协议的封装成帧">PPP协议的封装成帧</h3>
+<p>PPP协议的帧仍是由首部、数据部分和尾部组成。<br />
+首部的第一个字段和尾部的最后一个字段都是标志字段F（十六进制为7E）。标志字段标识一个帧的开始或结束。在PP协议中又叫定界符。<br />
+首部的第四个字段是2个字节的协议字段，取值为0x0021时表示这个帧的数据部分是IP数据报，取值为0xC021则表示数据部分是LCP数据，取值0x8021表示数据部分是网络层控制数据。<br />
+尾部的第一个字段是循环冗余校验的帧检验序列。</p>
+<h3 id="透明传输">透明传输</h3>
+<p>和帧定界错误一样，PPP协议的帧同样存在数据部分可能出现定界符的问题。PPP协议采用字节填充方式解决这个异步传输中的问题。规则如下：<br />
+1.当数据部分出现0x7E（01111110）时，将其转变为0x7D（01111101）和0x5E;<br />
+2.当数据部分出现0x7D（01111101）时，将其转变为0x7D（01111101）和0x5D；<br />
+3.当数据部分出现控制字符时，在字符前加上0x7D并按一定的规则进行改变。<br />
+对与同步传输中的定界问题，PPP协议采用零比特填充法：发送端在发送时先扫描整个数据部分，只要发现有5个连续的1就会填充进1个0（0x7E的二进制为01111110），接收端接收帧时会先找到帧的首部和尾部，然后扫描数据部分，只要发现5个连续的1就删掉其后一位的0。</p>
+<p>在异步链路中，特殊字符 <strong>0x7D（01111101）</strong> 用作<strong>转义字符</strong>。当它出现在PPP数据帧中时，那么紧接着的字符的第6个比特要取其补码，具体实现过程如下：</p>
+<ul>
+<li>当遇到字符0x7E时，需连续传送两个字符： 0x7D和0x5E，以实现标志字符的转义。</li>
+<li>当遇到转义字符0x7D时，需连续传送两个字符： 0x7D和0x5D，以实现转义字符的转义。</li>
+<li>默认情况下，如果字符的值小于0x20（比如，一个ASCII控制字符），一般都要进行转义。
+<ul>
+<li>例如，遇到字符0x01时需连续传送0x7D和0x21两个字符（ <strong>这时，第6个比特取补码后变为1，而前面两种情况均把它变为0）。</strong></li>
+<li>这样做的原因是防止它们出现在双方主机的串行接口驱动程序或调制解调器中，因为有时它们会把这些控制字符解释成特殊的含义。另一种可能是用链路控制协议来指定是否需要对这32个字符中的某一些值进行转义。默认情况下是对所有的32个字符都进行转义。</li>
+</ul>
+</li>
+</ul>
+<p>补码跟求补不总是一回事：求补，求余，全集的补是空集，空集的补是全集，1的补是0，0的补是1</p>
+<p>点对点协议PPP控制转移字节内容（01111101）。PPP协议定义了特殊的控制转义字节01111101，有以下三种功能：（1）成帧。确定一帧的开始和结束。（2）链路控制协议。用于启动线路、检测线路、协商参数及关闭线路。（3）网络控制协议。用于协商网络层选项，并且协商方法与使用的网络层协议独立。</p>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

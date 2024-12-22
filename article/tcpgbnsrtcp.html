@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>停等、TCP滑动窗口协议（可靠数据传输）：GBN、SR、TCP（快速重传） - chunfeng.yao</title>
+  </head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">停等、TCP滑动窗口协议（可靠数据传输）：GBN、SR、TCP（快速重传）</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1662960983041"
+                    >2022-09-12 13:36</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1666226147984"
+                    >2022-10-20 08:35</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><h3 id="基于不可靠信道实现可靠数据传输采取的措施">基于不可靠信道实现可靠数据传输采取的措施：</h3>
+<ul>
+<li>差错检测：利用编码实现数据包传输过程中的比特差错检测</li>
+<li>确认：接受发送方反馈接收状态，ACK（肯定确认）；NAK（否定确认）</li>
+<li>重传：发送方重新发送接收方没有正确接受的数据</li>
+<li>序号：确保数据按序提交</li>
+<li>计时器：解决数据丢失问题</li>
+</ul>
+<h2 id="关于arq自动重传请求">关于ARQ（自动重传请求）</h2>
+<ul>
+<li>自动重传请求（Automatic Repeat-reQuest，ARQ）是OSI模型中数据链路层和传输层的错误纠正协议之一。它通过使用确认和超时这两个机制，在不可靠服务的基础上实现可靠的信息传输。如果发送方在发送后一段时间之内没有收到确认帧，它通常会重新发送。ARQ可能包括停止等待ARQ协议和连续ARQ协议，错误检测（Error Detection）、正面确认（Positive Acknowledgment）、超时重传（Retransmission after Timeout）和 负面确认及重传（Negative Acknowledgment and Retransmission）等机制。
+<ul>
+<li><strong>停止并等待</strong>ARQ协议（stop-and-wait）</li>
+<li>连续ARQ协议（Continuous ARQ）
+<ul>
+<li><strong>回退N</strong>重传(Go-Back-N)</li>
+<li><strong>选择重传</strong>(Selective Repeat)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="对于tcpgbnsr之间关系的区别">对于TCP，GBN，SR之间关系的区别：</h2>
+<h3 id="gbn">GBN：</h3>
+<ul>
+<li>如果某个报文段没有被正确接收，则从这个报文段到后面的报文段都要重新发送。</li>
+<li>采用累计应答的方式。例如接收端返回ACK=3，则证明报文段3以及之前的报文段都被正确接收。</li>
+<li>这里顺便解释一下为什么GBN可以采用累计应答的方式？怎么就能保证3之前的被正确接收了呢？这还要由GBN的工作机制来决定：在GBN机制下，在接收端的运输层一次只交付给上层一个分组，并且保证是按序交付的，因此如果分组k已接收，则所有序号小于k的分组也已经交付了。</li>
+<li>接收端不对失序到达的分组进行缓存。</li>
+</ul>
+<h3 id="sr">SR：</h3>
+<ul>
+<li>接收方设置缓存区，用于接收失序到达的分组。（从这里可以感受到，所谓的<strong>GBN中的发送端窗口</strong>和<strong>SR中的发送端与接收端的窗口</strong>其实就是缓存区，用于缓存分组。注意，由于GBN是单个分组交付，不设置缓存区，所以GBN的接收端是没有窗口的）</li>
+<li>为每个报文段设置单独的计时器，单个分组计时器超时只重发这一个报文段。</li>
+<li>接收端返回ACK是当前接收成功报文段的序号，SR不采用累计应答的方式。</li>
+</ul>
+<h3 id="tcp">TCP：</h3>
+<ul>
+<li><strong>TCP使用累计应答的方式</strong>。这一点与GBN类似。</li>
+<li>TCP在接收端会设置缓存，来缓存正确接收但是失序的分组，这点与SR类似。（实际上TCP RFC并没有对接收端要怎样处理失序到达的分组提出要求，但是在接收端设置缓存是实践中大家都采用的方法）</li>
+<li>TCP使用<strong>快速重传机制（不同于SR！）</strong>：如果收到对于一个特定报文段的3个冗余ACK，则在超时事件发生前就会对该报文段进行重传，这大大节约了时间。</li>
+<li>注意：<strong>TCP中的ACK是指接收端希望从发送端收到的下一字节的序号</strong>。例如发送端发送了编号为0-5的字节，这时接收端成功接收后就会发送ACK为6。</li>
+<li>注意：这里介绍的TCP这是理论上的，在实际使用过程中，大家加入了很多其他的机制等。目前计网学习的都是基础理论的知识。</li>
+</ul>
+<h2 id="tcp滑动窗口协议">TCP滑动窗口协议</h2>
+<p><strong>慢启动：</strong> 指cwnd（拥塞窗口），从很小的值开始（比如1），每次倍增呈指数增长，直到接近并等于ssthresh（慢启动阈值/拥塞窗口阈值），然后进入拥塞避免阶段。<br />
+<strong>拥塞避免：</strong> 当慢启动累计的cwnd超过ssthresh之后（等于ssthresh时，慢启动和拥塞避免随意用哪个），不再进行倍增指数增长，改为每经过RTT(Round-Trip Time,往返时间)加一，呈线性增长。<br />
+<strong>快速重传：</strong> 快速重传要求接收方在收到一个失序的报文段后就立即发出重复确认（为的是使发送方及早知道有报文段没有到达对方，可提高网络吞吐量约20%）而不要等到自己发送数据时捎带确认。快速重传算法规定，发送方只要一连收到三个重复确认就应当立即重传对方尚未收到的报文段，而不必继续等待设置的重传计时器时间到期。<br />
+<strong>快速恢复：</strong> 当发送方连续收到三个重复确认时，就执行“乘法减小”算法，把ssthresh门限减半（为了预防网络发生拥塞）。但是接下去并不执行慢开始算法<br />
+考虑到如果网络出现拥塞的话就不会收到好几个重复的确认，所以发送方现在认为网络可能没有出现拥塞。所以此时不执行慢开始算法，而是将cwnd设置为ssthresh减半后的值，然后执行拥塞避免算法，使cwnd缓慢增大。</p>
+<p><img src="/_resources/8488b03879d741c9a3c05d8ff96b2aeb.png" /></p>
+<p><strong>导致乘法减小的原因有两种</strong>：</p>
+<ul>
+<li>三个重复ACK表征的丢包，比如下图的A、C点。</li>
+<li>计时器超时表征丢包，比如下图的E点，就是计时器超时导致的（前面有一段水平）</li>
+<li>另外，在有些版本的拥塞控制中，计时器超时会将cwnd变为1，所以，如果明确表明了，突然cwnd降为1，但是并没有一段水平的，也是计时器超时表征的丢包。</li>
+</ul>
+<p><strong>导致由慢启动进入加法增大</strong>：拥塞窗口达到阈值，指数加速变为线性加速，比如下图的G点。</p>
+<img src="/_resources/9afbe2a485584781bb7d1ee17468adad.png" alt="e96163c5b0480d95b19f3ea4fcc19a2a.png" width="748" height="291" class="jop-noMdConv" />
+<h4 id="cwnd突然降为1也是计时器超时表征的丢包">cwnd突然降为1，也是计时器超时表征的丢包。</h4>
+<p><img src="/_resources/332ae2bb998a4761908ca3237d4e165e.png" /></p>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

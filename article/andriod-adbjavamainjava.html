@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>Andriod - 通过adb执行JAVA程序（包含main入口的java文件） - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">Andriod - 通过adb执行JAVA程序（包含main入口的java文件）</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1718530898438"
+                    >2024-06-16 17:41</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1734411848414"
+                    >2024-12-17 13:04</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><ul>
+<li>首先编写JAVA文件 - 该代码作用：通过adb执行java关闭屏幕</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-keyword">import</span> android.annotation.SuppressLint;
+<span class="hljs-keyword">import</span> android.os.IBinder;
+<span class="hljs-keyword">import</span> android.os.Build;
+<span class="hljs-keyword">import</span> java.lang.reflect.Method;
+<span class="hljs-keyword">import</span> java.lang.reflect.InvocationTargetException;
+
+<span class="hljs-meta">@SuppressLint("PrivateApi")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DisplayControl</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Class&lt;?&gt; CLASS;
+    <span class="hljs-keyword">static</span> {
+        <span class="hljs-keyword">try</span> {
+            CLASS = Class.forName(<span class="hljs-string">"android.view.SurfaceControl"</span>);
+        } <span class="hljs-keyword">catch</span> (ClassNotFoundException e) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AssertionError</span>(e);
+        }
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> <span class="hljs-keyword">throws</span> Exception {
+        System.out.println(<span class="hljs-string">"===&gt; Target Mode: "</span> + args[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">switch</span> (Integer.parseInt(args[<span class="hljs-number">0</span>])){
+                     <span class="hljs-comment">// &lt;https://android.googlesource.com/platform/frameworks/base/+/bcf48ed/core/java/android/view/SurfaceControl.java#224&gt;</span>
+            <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:
+                System.out.println(<span class="hljs-string">"POWER_MODE_OFF."</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+                System.out.println(<span class="hljs-string">"POWER_MODE_DOZE."</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+                System.out.println(<span class="hljs-string">"POWER_MODE_NORMAL."</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:
+                System.out.println(<span class="hljs-string">"POWER_MODE_DOZE_SUSPEND."</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">default</span>:
+                System.out.println(<span class="hljs-string">"Not supported value."</span>);
+                <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> CLASS.getMethod(<span class="hljs-string">"setDisplayPowerMode"</span>, IBinder.class, <span class="hljs-type">int</span>.class);
+        <span class="hljs-keyword">try</span> {
+            method.invoke(<span class="hljs-literal">null</span>, getBuiltInDisplay(),Integer.parseInt(args[<span class="hljs-number">0</span>]));
+        } <span class="hljs-keyword">catch</span> (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Method <span class="hljs-title function_">getGetBuiltInDisplayMethod</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> NoSuchMethodException {
+        Method getBuiltInDisplayMethod;
+        <span class="hljs-comment">// the method signature has changed in Android Q</span>
+        <span class="hljs-comment">// &lt;https://github.com/Genymobile/scrcpy/issues/586&gt;</span>
+        <span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.Q) {
+            getBuiltInDisplayMethod = CLASS.getMethod(<span class="hljs-string">"getBuiltInDisplay"</span>, <span class="hljs-type">int</span>.class);
+        } <span class="hljs-keyword">else</span> {
+            getBuiltInDisplayMethod = CLASS.getMethod(<span class="hljs-string">"getInternalDisplayToken"</span>);
+        }
+        <span class="hljs-keyword">return</span> getBuiltInDisplayMethod;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> IBinder <span class="hljs-title function_">getBuiltInDisplay</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> getGetBuiltInDisplayMethod();
+            <span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.Q) {
+                <span class="hljs-comment">// call getBuiltInDisplay(0)</span>
+                <span class="hljs-keyword">return</span> (IBinder) method.invoke(<span class="hljs-literal">null</span>, <span class="hljs-number">0</span>);
+            }
+            <span class="hljs-comment">// call getInternalDisplayToken()</span>
+            <span class="hljs-keyword">return</span> (IBinder) method.invoke(<span class="hljs-literal">null</span>);
+        } <span class="hljs-keyword">catch</span> (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+        }
+    }
+}
+</code></pre></div>
+<ul>
+<li>然后编译，通过-cp指定android.jar的路径</li>
+</ul>
+<div><pre class="hljs"><code>javac -<span class="hljs-built_in">source</span> 1.8 -target 1.8 ./DisplayControl.java -cp <span class="hljs-string">"<span class="hljs-variable">$ANDROID_HOME</span>/platforms/android-33/android.jar"</span></code></pre></div>
+<ul>
+<li>然后将class文件打包为dex（Dalvik可执行文件）</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-string">"<span class="hljs-variable">$ANDROID_HOME</span>/build-tools/27.0.3/dx"</span> --dex --output ./DisplayControl.dex ./DisplayControl.class</code></pre></div>
+<ul>
+<li>将文件推送到设备的tmp目录（有权限，并且可以添加可执行权限）</li>
+</ul>
+<div><pre class="hljs"><code>adb push DisplayControl.dex /data/<span class="hljs-built_in">local</span>/tmp/</code></pre></div>
+<ul>
+<li>执行（其中：/data/local/tmp/DisplayControl.dex是dex路径，最后的DisplayControl是包含main方法的类名）</li>
+</ul>
+<div><pre class="hljs"><code>adb shell CLASSPATH=/data/<span class="hljs-built_in">local</span>/tmp/DisplayControl.dex app_process / DisplayControl</code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

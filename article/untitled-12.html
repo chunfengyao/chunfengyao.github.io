@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>信道、信号调制、基带编码 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/katex/katex.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">信道、信号调制、基带编码</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1660474667122"
+                    >2022-08-14 18:57</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1724247732151"
+                    >2024-08-21 21:42</time
+                  ></span
+                >
+              </div>
+              
+              <div>
+                Keywords: 
+                <span class="keyword">易忘点</span>
+                
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><h4 id="信道容量">信道容量</h4>
+<ul>
+<li>信道的<strong>带宽</strong>：
+<ul>
+<li>能够有效通过该信道信号的最大频带宽度，用码元速率描述，单位为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>a</mi><mi>u</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">Baud</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.05017em">B</span><span class="mord mathnormal">a</span><span class="mord mathnormal">u</span><span class="mord mathnormal">d</span></span></span></span></span></li>
+</ul>
+</li>
+<li>信道的<strong>传输速率/信道容量</strong>：
+<ul>
+<li>单位时间内传输的码元（或信息）的数量，单位为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>i</mi><mi>t</mi><mi mathvariant="normal">/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">bit/s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal">bi</span><span class="mord mathnormal">t</span><span class="mord">/</span><span class="mord mathnormal">s</span></span></span></span></span>、<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>p</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">bps</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em"></span><span class="mord mathnormal">b</span><span class="mord mathnormal">p</span><span class="mord mathnormal">s</span></span></span></span></span></li>
+</ul>
+</li>
+</ul>
+<h3 id="编码方式">编码方式：</h3>
+<ul>
+<li>
+<h4 id="码型分类">码型分类：</h4>
+<ul>
+<li>单/双极性归零(RZ,Return to Zero)/不归零码(NRZ,Not Return to Zero)：
+<ul>
+<li>单双极性，指的是电平为1,0还是1,0,-1。</li>
+<li>归零，指的是<strong>每个周期的下半周期都为0</strong>（也就是从每个周期中间，回到0电平）</li>
+<li>特点：
+<ul>
+<li><strong>单极性不归零码</strong>，无电压表示"0"，恒定正电压表示"1"，每个码元时间的中间点是采样时间，判决门限为半幅电平。</li>
+<li><strong>双极性不归零码</strong>，"1"码和"0"码都有电流，"1"为正电流，"0"为负电流，正和负的幅度相等，判决门限为零电平。</li>
+<li><strong>单极性归零码</strong>，当发"1"码时，发出正电流，但持续时间短于一个码元的时间宽度，即发出一个窄脉冲；当发"0"码时，仍然不发送电流。</li>
+<li><strong>双极性归零码</strong>，其中"1"码发正的窄脉冲，"0"码发负的窄脉冲，两个码元的时间间隔可以大于每一个窄脉冲的宽度，取样时间是对准脉冲的中心。</li>
+<li>不归零码在传输中难以确定一位的结束和另一位的开始，需要用某种方法使发送器和接收器之间进行定时或同步；</li>
+<li>归零码的脉冲较窄，根据脉冲宽度与传输频带宽度成反比的关系，因而归零码在信道上占用的频带较宽。</li>
+<li>单极性码会积累直流分量，这样就不能使变压器在数据通信设备和所处环境之间提供良好绝缘的交流耦合，直流分量还会损坏连接点的表面电镀层；</li>
+<li>双极码的直流分量大大减少，这对数据传输是很有利的。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>差分码（又称相对码（上面的NRZ、RZ等称为绝对码））：使用当前<strong>周期开始处</strong>相对于上一周期是否有跳变来表示0和1，相邻脉冲有跳变表示1，无跳变为0</li>
+</ul>
+</li>
+<li>
+<h4 id="数字基带传输码码型以下的码型都是双极性不归零码型">数字基带传输码码型（以下的码型<code>都是双极性不归零</code>码型！）：</h4>
+<ul>
+<li>双相码（i-Phase Code,<strong>曼彻斯特编码</strong>）：中间跳变，1是前半周期为正电平，后半周期为负电平，0是前半周期为负电平，后半周期为正电平</li>
+<li><strong>差分双相码</strong>（差分曼彻斯特码）-结合了双相码（两种相位）和差分码（是否有跳变）。差分双向码的<strong>每周期中间时刻都要进行跳变</strong>（<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">1</span></span></span></span></span>跳变为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em"></span><span class="mord">−</span><span class="mord">1</span></span></span></span></span>，或<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em"></span><span class="mord">−</span><span class="mord">1</span></span></span></span></span>跳变为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">1</span></span></span></span></span>，形成<strong>双相</strong>），但周期中间跳变仅仅用于同步，而利用<strong>每周期开始处是否存在跳变</strong>来编码信息（<strong>差分</strong>）。<strong>开始处</strong>有跳变（极性反转）为1，没有（保持前一个周期的后半周期的极性）则为0。</li>
+<li><strong>米勒码</strong>（密勒码/Miller Code）：一种变形双相码（也叫延迟调制码）
+<ul>
+<li>0编码为双极不归零码00（整个周期负电平）和11（整个周期正电平）
+<ul>
+<li>当出现连续0时，交替使用，单个0时，和之前的一致</li>
+</ul>
+</li>
+<li>1编码为双极不归零码01（前半周期负电平，后半周期正电平）和10（前半周期正电平，后半周期负电平）
+<ul>
+<li>当出现连续1时，交替使用，单个1时，和之前的一致</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>CMI</strong>（Coded Mark Inversion,传号反转码）：
+<ul>
+<li>0编码为<strong>双极不归零码的01</strong>（即前半周期为负电平，后半周期为正电平）</li>
+<li>1交替编码为<strong>双极不归零码的11</strong>（整个周期都是正电平）<strong>和00</strong>（整个周期都是负电平）</li>
+<li>注：CMI中没有双极不归零码的10（即前半周期为正电平，后半周期为负电平）</li>
+</ul>
+</li>
+<li><strong>AMI码</strong>（Alternative Mark Inversion,信号交替反转码）（<strong>只有AMI存在0电平</strong>）：<strong>0始终用0电平表示，1则交替地用正电平和负电平表示</strong>，也就是第一个1用正电平，那第二个就用负电平，第三个就用正电平</li>
+</ul>
+</li>
+</ul>
+<img src="/_resources/6c98e5479ac64682a641db156b52a228.png" alt="8a2a17b00fcb87a3982315b1be4607d3.png" width="751" height="472" class="jop-noMdConv" />
+<h3 id="带通调制方式"><a title="http://staff.ustc.edu.cn/~wyzhou/chapter5%20bandpass.pdf" href="http://staff.ustc.edu.cn/~wyzhou/chapter5%20bandpass.pdf">带通调制方式</a>：</h3>
+<ul>
+<li><strong>带通信号（频带信号）</strong> 就是把基带信号经过载波调制后的信号（所以，带通信号依然属于模拟信号，模拟信号经过模拟数字转换器（即A/D转换器）后可以变成数字信号，便于计算机处理），把信号的频率范围搬移到较高的频段以便在信道中传输（即仅在一段频率范围内能够通过信道）</li>
+<li><strong>基带信号（信息源，也称发终端）</strong> 指发出的<strong>没有经过调制</strong>（进行频谱搬移和变换）的原始电信号，其特点是频率较低，信号频谱从零频附近开始，具有低通形式。</li>
+<li>二进制幅移键控（2ASK，2Amplitude-shift keying）</li>
+<li>二进制频移键控（2FSK，2Frequency-shift keying）</li>
+<li>二进制相移键控（2PSK，Binary phase-shift keying）</li>
+<li>二进制差分相移键控（2DPSK，2Differential Phase-shift keying）</li>
+</ul>
+<p>性能对比：</p>
+<ul>
+<li>频带利用率：<strong>2FSK</strong>频带利用率最低</li>
+<li>误码率（抗干扰能力弱）：<strong>2PSK</strong>误码率最低，抗干扰能力最强。<strong>2ASK</strong>误码率最高，抗干扰能力最差</li>
+<li>对信道特性的敏感性：非恒定参数信道（随参信道-信道特性参数会岁时间变化）下，<strong>2ASK</strong>对信道特性变化比较敏感（抗噪声性能最差）。其余的对信道特性变化不敏感</li>
+</ul>
+<h3 id="调制解调类似收音机的调频调幅">调制解调（类似收音机的调频/调幅）</h3>
+<p>AM：幅度调制<br />
+FM：频率调制</p>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
