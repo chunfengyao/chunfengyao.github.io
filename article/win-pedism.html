@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>Win PE下使用DISM以及系统镜像，离线修复系统 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">Win PE下使用DISM以及系统镜像，离线修复系统</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1699347316010"
+                    >2023-11-07 16:55</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1699352369764"
+                    >2023-11-07 18:19</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><ul>
+<li><strong>假设系统镜像挂载到<code>"Y:\"</code></strong>
+<ul>
+<li>挂载后，应存在该文件：<code>Y:\sources\install.wim</code></li>
+</ul>
+</li>
+<li><strong>假设待修复系统的盘符为：<code>"C:\"</code></strong></li>
+<li><strong>假设<code>GPT</code>下的<code>ESP</code>分区的盘符为<code>"Z:\"</code></strong></li>
+</ul>
+<hr />
+<ul>
+<li>检查待修复系统的版本信息：</li>
+</ul>
+<div><pre class="hljs"><code>Dism /image:C:\ /get-currentedition</code></pre></div>
+<ul>
+<li>检查系统镜像中 系统的版本信息：
+<ul>
+<li>如果镜像中存在多个标签，请记住对应的<code>Index</code>号码，后面会用到。假设需要使用到的标签（例如WIN 10 专业版）<code>Index</code>号为<code>2</code></li>
+</ul>
+</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-string">Dism</span> /<span class="hljs-built_in">get-imageinfo</span> /<span class="hljs-string">imagefile:Y:</span>\<span class="hljs-string">sources</span>\<span class="hljs-string">install</span>.<span class="hljs-string">wim</span></code></pre></div>
+<ul>
+<li>分析待恢复系统的组件情况：</li>
+</ul>
+<div><pre class="hljs"><code>Dism <span class="hljs-string">/image</span><span class="hljs-function">:C</span>: <span class="hljs-string">/cleanup-image</span> <span class="hljs-string">/AnalyzeComponentStore</span></code></pre></div>
+<ul>
+<li>清理待恢复的系统：</li>
+</ul>
+<div><pre class="hljs"><code>Dism <span class="hljs-string">/image</span><span class="hljs-function">:C</span>: <span class="hljs-string">/cleanup-image</span> <span class="hljs-string">/StartComponentCleanup</span></code></pre></div>
+<ul>
+<li>修复系统：
+<ul>
+<li>其中<code>Y:\Sources\Install.wim</code>后的<code>2</code>，就是之前的标签的<code>Index</code>值。</li>
+</ul>
+</li>
+</ul>
+<div><pre class="hljs"><code>Dism <span class="hljs-regexp">/image:C: /</span>Cleanup-Image <span class="hljs-regexp">/RestoreHealth /</span><span class="hljs-keyword">source</span>:Y:\Sources\Install.wim:<span class="hljs-number">2</span> /LimitAccess</code></pre></div>
+<ul>
+<li>最后，也可以执行<code>sfc</code>再次扫描一次：</li>
+</ul>
+<div><pre class="hljs"><code>sfc /scannow /<span class="hljs-attribute">offwindir</span>=C:\windows /<span class="hljs-attribute">offbootdir</span>=Z:\</code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

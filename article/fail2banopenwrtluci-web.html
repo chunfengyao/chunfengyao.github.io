@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>使用fail2ban保护Openwrt的luci-web登录 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">使用fail2ban保护Openwrt的luci-web登录</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1714543730967"
+                    >2024-05-01 14:08</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1734411807251"
+                    >2024-12-17 13:03</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p>fail2ban靠的是日志文件，对应于luci-web的日志源码在这里：<br />
+<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511">登录失败日志</a>，<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505">登录成功日志</a></p>
+<p>生成的日志参见如下，假设攻击者IP是<code>1.1.1.1</code>，三次登录失败，最后一次登录成功</p>
+<div><pre class="hljs"><code>May  1 01:06:38 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:41 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:48 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:52 OpenWrt uwsgi-luci: [info] luci: accepted login on / for root from 1.1.1.1</code></pre></div>
+<p>由于Openwrt所包含的fail2ban配置文件，并没有包含luci-web的filter，所以，需要先自定义一个filter（比如<code>/etc/fail2ban/filter.d/luci-web.conf</code>），内容如下（部分item我加了详细的中文注释）：</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># fail2ban filter configuration for luci-web by uwsgi-luci</span>
+
+<span class="hljs-section">[INCLUDES]</span>
+<span class="hljs-comment"># Read common prefixes. If any customizations available -- read them from</span>
+<span class="hljs-comment"># common.local</span>
+<span class="hljs-attr">after</span> = common.conf
+
+<span class="hljs-comment"># 大致浏览了下fail2ban的配置文件，fail2ban自带的日志前缀%(__prefix_line)s是无法匹配到luci-web的日志信息的</span>
+<span class="hljs-comment"># 并且，为了尽可能符合fail2ban的filter配置文件模式，这里自定义了一个日志类型</span>
+<span class="hljs-section">[lt_uwsgi-luci-over-syslog-ng]</span>
+<span class="hljs-attr">__prefix_line</span> = \s+&lt;__hostname&gt;\s+&lt;__daemon_re&gt;\:\s+\[.+\]\s+luci\:\s+
+<span class="hljs-attr">datepattern</span> = {^LN-BEG}
+
+<span class="hljs-section">[Definition]</span>
+<span class="hljs-comment"># 通过logtype，让fail2ban使用我们自定义的日志类型中的前缀和日期格式</span>
+<span class="hljs-attr">logtype</span> = uwsgi-luci-over-syslog-ng
+
+<span class="hljs-comment"># 这个对应了前缀中的&lt;__daemon_re&gt;（带有一定规则的正则匹配的&lt;_daemon&gt;）</span>
+<span class="hljs-attr">_daemon</span> = uwsgi-luci
+
+<span class="hljs-comment"># 预匹配表达式</span>
+<span class="hljs-attr">prefregex</span> = ^%(__prefix_line)s&lt;F-CONTENT&gt;([Ff]ailed).+&lt;/F-CONTENT&gt;$
+
+<span class="hljs-comment"># 匹配失败登录的表达式</span>
+<span class="hljs-attr">failregex</span> = ^[Ff]ailed\s+login\s+<span class="hljs-literal">on</span>\s+/.*\s+for\s+.+\s*from\s+&lt;HOST&gt;(:\d+)?$
+
+ignoreregex =
+</code></pre></div>
+<p>另外，对于调试fail2ban的表达式，可以使用<code>fail2ban-regex</code></p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 其中/var/log/test-log是测试日志，可以通过echo去手动添加日志进行测试</span>
+fail2ban-regex --log-level=debug /var/<span class="hljs-built_in">log</span>/test-log /etc/fail2ban/filter.d/luci-web.conf</code></pre></div>
+<p>filter有了，并且，也通过<code>fail2ban-regex</code>测试通过了，就可以接下来进行jail的配置了<br />
+内容如下（由于我这边所有App都已经转到nftables了，所以，我只用了nftables版本的action，iptables的action其实也类似）:</p>
+<div><pre class="hljs"><code><span class="hljs-section">[luci]</span>
+<span class="hljs-attr">filter</span> = luci-web
+
+<span class="hljs-attr">enabled</span> = <span class="hljs-literal">true</span>
+<span class="hljs-comment"># 这里使用你自定义的日志文件路径（注意，luci默认是不把日志文件写入到本地文件的），可以使用`uci get system.@[0].log_file`查询，当然，如果你使用的是syslog-ng，日志文件的位置就在syslog-ng的配置文件中</span>
+<span class="hljs-attr">logpath</span> = /var/log/messages
+<span class="hljs-attr">maxretry</span> = <span class="hljs-number">6</span>
+<span class="hljs-attr">findtime</span> = <span class="hljs-number">5</span>m
+<span class="hljs-attr">bantime</span> = <span class="hljs-number">1</span>h
+
+<span class="hljs-comment"># incremental banning:</span>
+<span class="hljs-attr">bantime.increment</span> = <span class="hljs-literal">true</span>
+
+<span class="hljs-comment"># max banning time = permanent:</span>
+<span class="hljs-attr">bantime.maxtime</span> = -<span class="hljs-number">1</span>
+
+<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部丢弃（效果类似于主机不在线）</span>
+<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter drop"]</span>
+<span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部丢弃 </span>
+<span class="hljs-attr">action</span> = nftables-multiport[name=%(__name__)s-all, port=<span class="hljs-string">"443,80"</span>, protocol=<span class="hljs-string">"tcp,udp"</span>, blocktype=<span class="hljs-string">"counter drop"</span>]
+<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部拒绝（默认是icmp不可达）（效果类似于主机不可ping通）</span>
+<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter reject"]</span>
+<span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部拒绝（默认是icmp不可达）（效果类似于端口未开启）</span>
+<span class="hljs-comment">#action = nftables-multiport[name=%(__name__)s-all, port="443,80", protocol="tcp,udp", blocktype="counter reject"]</span>
+</code></pre></div>
+<p>注意上方的action中的blocktype，我在blocktype中加了counter（计数），翻看fail2ban的源码就能发现配置文件中的参数和最终的行为之间的关联，而加了这个counter之后可以让我们更加直观地看到在ban生效之后主机的数据包数量和大小。查看方法（基于nft）：</p>
+<div><pre class="hljs"><code>nft list table inet f2b-table</code></pre></div>
+<p>输出内容类似于：</p>
+<div><pre class="hljs"><code>table inet f2b-table {
+        set addr-set-luci-all {
+                type ipv4_addr
+                elements = { <span class="hljs-number">31.184</span><span class="hljs-number">.198</span><span class="hljs-number">.71</span>, <span class="hljs-number">58.215</span><span class="hljs-number">.203</span><span class="hljs-number">.139</span>,
+                             <span class="hljs-number">116.55</span><span class="hljs-number">.248</span><span class="hljs-number">.235</span>, <span class="hljs-number">119.167</span><span class="hljs-number">.165</span><span class="hljs-number">.54</span>,
+                             <span class="hljs-number">120.26</span><span class="hljs-number">.110</span><span class="hljs-number">.245</span>, <span class="hljs-number">120.27</span><span class="hljs-number">.151</span><span class="hljs-number">.128</span>,
+                             <span class="hljs-number">120.48</span><span class="hljs-number">.84</span><span class="hljs-number">.73</span>, <span class="hljs-number">122.194</span><span class="hljs-number">.12</span><span class="hljs-number">.206</span>,
+                             <span class="hljs-number">125.124</span><span class="hljs-number">.199</span><span class="hljs-number">.57</span>, <span class="hljs-number">182.92</span><span class="hljs-number">.165</span><span class="hljs-number">.47</span>,
+                             <span class="hljs-number">182.92</span><span class="hljs-number">.184</span><span class="hljs-number">.221</span>, <span class="hljs-number">182.92</span><span class="hljs-number">.239</span><span class="hljs-number">.50</span>,
+                             <span class="hljs-number">183.56</span><span class="hljs-number">.201</span><span class="hljs-number">.60</span>, <span class="hljs-number">193.35</span><span class="hljs-number">.18</span><span class="hljs-number">.122</span> }
+        }
+
+        chain f2b-chain {
+                type nat hook prerouting priority dstnat + <span class="hljs-number">1</span>; policy accept;
+                # 注意这里最后的<span class="hljs-string">'packets 1230 bytes 73800'</span>，就是ban后又收到了来自攻击者的<span class="hljs-number">1230</span>个数据包(约等于请求个数)
+                meta l4proto { tcp, udp } ip saddr @addr-set-luci-all counter packets <span class="hljs-number">1230</span> bytes <span class="hljs-number">73800</span> drop
+        }
+}</code></pre></div>
+<p>注意：防火墙的counter会在重启时重置为0哦！</p>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

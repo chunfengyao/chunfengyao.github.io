@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>HDLC帧、以太网帧、802.11帧-数据链路层 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/katex/katex.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">HDLC帧、以太网帧、802.11帧-数据链路层</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1661073820970"
+                    >2022-08-21 17:23</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1666328467422"
+                    >2022-10-21 13:01</time
+                  ></span
+                >
+              </div>
+              
+              <div>
+                Keywords: 
+                <span class="keyword">易忘点</span>
+                
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p><strong>帧</strong>（数据链路层，比如802.3-以太网帧、802.11-无线局域网帧、HDLC-高级链路控制协议帧）</p>
+<h2 id="无线局域网80211帧"><a title="https://www.geeksforgeeks.org/ieee-802-11-mac-frame/" href="https://www.geeksforgeeks.org/ieee-802-11-mac-frame/">无线局域网802.11帧</a></h2>
+<p><img src="/_resources/482c498dd44f436cad34261e094652e3.png" /><br />
+<img src="/_resources/6f17696cf04e4e7ba97a35e762b17a1a.png" alt="32a0fe297444538dc86794d995cca036.png" width="820" height="66" class="jop-noMdConv" /><br />
+802.11帧的<strong>最大长度2346个字节</strong><br />
+802.11帧包含这三类：</p>
+<ul>
+<li><strong>管理帧</strong>（Beacon帧/信标帧、Probe Request、Probe Response帧、Authentication帧、De-Authentication帧）</li>
+<li><strong>控制帧</strong>（RTS、CTS、ACK、PS-Poll）
+<ul>
+<li>DIFS:分布式帧间间隔（Distributed Inter-frame Spacing）</li>
+<li>RTS:请求发送控制帧（Ready To Send）</li>
+<li>SIFS:短帧间间隔（Short Inter-frame Spacing）</li>
+<li>CTS:允许发送控制帧（Clear To Send）</li>
+<li>NAV:网络分配向量（Network Allocation Vector）</li>
+</ul>
+</li>
+<li><strong>数据帧</strong><br />
+使用802.11协议的设备连接到无线网络需要经过这三步：<br />
+<strong>扫描</strong>（获取网络信息）、<strong>认证</strong>（确认身份）、<strong>连接</strong>（确定连接，交换数据）</li>
+</ul>
+<p><img src="/_resources/bb00aad5e5a44895b600d3982892e8ad.png" /></p>
+<h4 id="80211的多路访问控制-csmaca工作过程原理通过请求发送帧rts和允许发送帧cts的交换实现信道预约占用避免冲突">802.11的多路访问控制 - CSMA/CA工作过程：（原理：通过请求发送帧（RTS）和允许发送帧（CTS）的交换，实现信道预约占用避免冲突）</h4>
+<ul>
+<li>源站发送数据时：先侦听，若空闲，等待一个DIFS（分布式帧间间隔）的时间后，发送一个RTS（请求发送）<strong>控制帧</strong>。
+<ul>
+<li>该RTS包含：<strong>源地址</strong>、<strong>目的地址</strong>、本次通讯所需的<strong>持续时间</strong></li>
+</ul>
+</li>
+<li>目的站正确收到RTS：如果物理介质空闲，等待一个SIFS（短帧间间隔）时间后，发送一个CTS（允许发送）<strong>控制帧</strong>作为响应。
+<ul>
+<li>该CTS包含：本次通讯的<strong>持续时间</strong>等。</li>
+</ul>
+</li>
+<li>该链路上的其它站点：监听到两者要通讯，其它站点在持续时间内不会发送，这个时间被称为NAV（网络分配向量）
+<ul>
+<li>该NAV：是其它站根据监听到的RTS或CTS帧中的持续时间来确定的</li>
+</ul>
+</li>
+<li>源站收到CTS帧：等待一段时间后，发送数据帧，若目的站正确收到了数据帧，在等待时间后，就向源站发送<strong>ACK（确认）帧</strong></li>
+</ul>
+<p><strong>DS</strong>：Distribution System<br />
+<strong>WDS</strong>：Wireless Distribution System<br />
+<strong>AP</strong>：Access Point<br />
+<strong>STA</strong>：Station (abbreviated as STA)</p>
+<h4 id="table-2tofrom-ds-combinations-in-data-type-frames">Table 2—To/From DS combinations in data type frames</h4>
+<table>
+<thead>
+<tr>
+<th>To/From DS values</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>To DS = 1, From DS = 1</td>
+<td>Wireless distribution system (WDS) frame being distributed from one AP to another AP.</td>
+</tr>
+<tr>
+<td>To DS = 1, From DS = 0</td>
+<td>Data frame destined for the DS.</td>
+</tr>
+<tr>
+<td>To DS = 0, From DS = 1</td>
+<td>Data frame exiting the DS.</td>
+</tr>
+<tr>
+<td>To DS = 0, From DS = 0</td>
+<td>A data frame direct from one STA to another STA within the same IBSS, as well as all management and control type frames.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="table-4-address-field-contents-wlandadestination-address-wlansasource-address-wlantatransmitter-address-wlanrareceiver-address">Table 4 – Address field contents: wlan.da(Destination Address)、wlan.sa(Source Address)、wlan.ta(Transmitter Address)、wlan.ra(Receiver Address)</h4>
+<ul>
+<li><strong>DA</strong>：Destination Address</li>
+<li><strong>SA</strong>：Source Address</li>
+<li><strong>TA</strong>：Transmitter Address</li>
+<li><strong>RA</strong>：Receiver Address</li>
+<li><strong>BSSID</strong>：Base Service Set Identifier
+<ul>
+<li>一个AP所覆盖的范围构成一个BSS（基本服务集），BSSID（基本服务集标识符）用来标识BSS，表示AP的数据链路层的MAC地址。</li>
+</ul>
+</li>
+<li>识记：地址1、2、3、4都是先目的地址（接收的AP地址）再源地址（发送的AP地址）
+<ul>
+<li>然后，如果是前往DS、去往DS、在同一个DS内的，就根据情况使用BSSID来代表AP的地址。比如，如果是去往DS，则，地址1就是BSSID，地址2就是SA，然后，还要记录一下最终去向，所以记录到地址3中</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>To DS</th>
+<th>From DS</th>
+<th>Address 1(receiver)</th>
+<th>Address 2(sender)</th>
+<th>Address 3(filtering)</th>
+<th>Address 4(optional)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>RA</td>
+<td>TA</td>
+<td><strong>DA</strong></td>
+<td><strong>SA</strong></td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>RA = BSSID</td>
+<td>TA = SA</td>
+<td>DA</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>RA = DA</td>
+<td>TA = BSSID</td>
+<td>SA</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>RA = DA</td>
+<td>TA = SA</td>
+<td><strong>BSSID</strong></td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<h2 id="以太网8023">以太网802.3</h2>
+<p><strong>以太网帧802.3</strong>中，数据字段的<strong>最小长度</strong>是46字节<strong>最大长度</strong>是1500。<br />
+所以，<strong>以太网帧802.3</strong>中，整个帧的<strong>最小长度</strong>是64字节<strong>最大长度</strong>是1518。</p>
+<table>
+<thead>
+<tr>
+<th>Preamble</th>
+<th>SFD</th>
+<th>DA</th>
+<th>SA</th>
+<th>TYPE</th>
+<th>PAYLOAD</th>
+<th>PAD</th>
+<th>FCS</th>
+<th>EXT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7字节</td>
+<td>1字节</td>
+<td>6字节</td>
+<td>6字节</td>
+<td>2字节</td>
+<td>46~1500字节</td>
+<td>(填充)</td>
+<td>4字节</td>
+<td>扩展</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>传统以太网(IEEE 802.3)帧格式：</p>
+<ul>
+<li>Preamble (前导码)：7字节0x55，一串1、0间隔，用于信号同步</li>
+<li>SFD (Start Frame Delimiter)帧起始定界符：1字节0xD5(10101011)，表示一帧开始</li>
+<li><strong>DA(Destination Address/目的MAC)：6字节</strong></li>
+<li><strong>SA (Source Address/来源MAC)：6字节</strong></li>
+<li><strong>TYPE/LENGTH (类型/长度)：以太网帧（非以太网II型帧）中只表示长度，占2字节。</strong>
+<ul>
+<li>0～1500保留为长度域值（表示帧中数据长度）</li>
+<li><s>表示以太类型的数据全部大于0x0800。由于历史原因，以太网II型帧与以太网帧格式相同，在以太网II型帧中表示以太类型的字段与以太网帧中表示封装长度的字段相重合。为了避免歧义，根据IEEE 802.3x-1997规定，以太网类型必须大于1536（0x0600）。该数值是根据MTU在以太网帧最大为1500（0x05DC）而定的，该字段数值小于等于1500（0x05DC）的为以太网帧，大于等于1536（0x0600）的为以太网II型帧，而处在1501~1536的数据为未定义数据。</s></li>
+<li><s>1536～65535保留为类型域值(0x0600～0xFFFF)：</s>
+<ul>
+<li><s>0x0800=IP</s></li>
+<li><s>0x0806=ARP</s></li>
+<li><s>0x880B=PPP</s></li>
+<li><s>0x8864=PPPoE Session Stage</s></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Payload (数据)：46～1500字节，不足46字节时，需要填充到46字节</strong></li>
+<li><strong>FCS (帧校验序列)：4字节，使用CRC计算从目的MAC到数据域这部分内容而得到的校验和</strong></li>
+<li>EXT (扩展)</li>
+</ul>
+</li>
+<li>
+<p>以太网帧长度</p>
+<ul>
+<li>10Mbps以太网采用中继器时，连接的最大长度是 2500米，最多经过4个中继器，因此规定对10Mbps以太网一帧的最小发送时间为51.2微秒。这段时间所能传输的数据为512位，因此也称该时间为 512位时。这个时间定义为以太网时隙，或冲突时槽。512位＝64字节，这就是以太网帧最小64字节的原因。</li>
+<li>以太网规定，以太网帧数据域部分最小为46字节，也就是以太网帧最小是<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mtext>＋</mtext><mn>6</mn><mtext>＋</mtext><mn>2</mn><mtext>＋</mtext><mn>46</mn><mtext>＋</mtext><mn>4</mn><mtext>＝</mtext><mn>64</mn></mrow><annotation encoding="application/x-tex">6＋6＋2＋46＋4＝64</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord">6</span><span class="mord cjk_fallback">＋</span><span class="mord">6</span><span class="mord cjk_fallback">＋</span><span class="mord">2</span><span class="mord cjk_fallback">＋</span><span class="mord">46</span><span class="mord cjk_fallback">＋</span><span class="mord">4</span><span class="mord cjk_fallback">＝</span><span class="mord">64</span></span></span></span></span>。除去4个字节的FCS，因此，抓包时就是60字节。当数据字段的长度小于46字节时，MAC子层就会在数据字段的后面填充以满足数据帧长不小于64字节。由于填充数据是由MAC子层负责，也就是设备驱动程序。</li>
+</ul>
+</li>
+</ul>
+<h4 id="22-最优冲突时间">2.2 最优冲突时间</h4>
+<ul>
+<li>下面我们来估计在最坏情况下，检测到冲突所需的时间
+<ul>
+<li>A和B是网上相距最远的两个主机，设信号在A和B之间传播时延为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.13889em">T</span></span></span></span></span>，假定A在<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em"></span><span class="mord mathnormal">t</span></span></span></span></span>时刻开始发送一帧，则这个帧在<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">t+T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69841em;vertical-align:-0.08333em"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.13889em">T</span></span></span></span></span>时刻到达B，若B在<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mi>T</mi><mo>−</mo><mi>ξ</mi></mrow><annotation encoding="application/x-tex">t+T-\xi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69841em;vertical-align:-0.08333em"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em"></span><span class="mord mathnormal" style="margin-right:0.13889em">T</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em"></span><span class="mord mathnormal" style="margin-right:0.04601em">ξ</span></span></span></span></span>时刻开始发送一帧，则B在<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">t+T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69841em;vertical-align:-0.08333em"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.13889em">T</span></span></span></span></span>时就会检测到冲突，并发出阻塞信号。</li>
+<li>阻塞信号将在<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">t+2T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69841em;vertical-align:-0.08333em"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.13889em">T</span></span></span></span></span>时到达A。所以A必须在<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">t+2T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69841em;vertical-align:-0.08333em"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.13889em">T</span></span></span></span></span>时仍在发送才可以检测到冲突，所以一帧的发送时间必须大于<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">2T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.13889em">T</span></span></span></span></span>。</li>
+</ul>
+</li>
+<li><strong>按照标准，10Mbps以太网采用中继器时，连接最大长度为2500米，最多经过4个中继器(以太网中使用中继器的5-4-3-2-1原则)，因此规定对于10Mbps以太网规定一帧的最小发送时间必须为51.2μs。如果是100Mbps以太网，最小发送时间则必须为5.12μs</strong>。</li>
+<li><strong>51.2μs也就是512位数据在10Mbps以太网速率下的传播时间，常称为512位时。这个时间定义为以太网时隙。512位时=64字节，因此以太网帧的最小长度为512位时=64字节</strong>。</li>
+</ul>
+<h4 id="23-以太网帧长">2.3 以太网帧长</h4>
+<ul>
+<li>802.3-2002标准定了以太网的头结构为DA(6)+SA(6)+Len/Type(2)=14字节。</li>
+<li>帧校验序列(FCS)：4字节，使用CRC计算从目的MAC到数据域这部分内容而得到的校验和。</li>
+<li>以太网的帧开销是18字节，是“目的MAC(6)＋源MAC(6)＋Type(2)＋CRC(4)”。以太网最小帧长为64字节，那么IP报文最小为46字节，而局域网规定IP最大传输单元1500字节，实际上加上以太网帧的18字节，就是1518字节。</li>
+<li>IEEE定义了这个标准，一个碰撞域内，最远的两台机器之间的round-trip time 要小于512bit time。(来回时间小于512位时，所谓位时就是传输一个比特需要的时间)。这也是我们常说的一个碰撞域的直径。</li>
+<li>512个位时，也就是64字节的传输时间，如果以太网数据包大于或等于64个字节，就能保证碰撞信号到达A的时候，数据包还没有传完。<br />
+这就是为什么以太网要最小64个字节，同样，在正常的情况下，碰撞信号应该出现在64个字节之内，这是正常的以太网碰撞，如果碰撞信号出现在64个字节之后，叫 late collision。这是不正常的。</li>
+<li>CISCO交换机有一种转发方式叫fragment-free，叫无碎片转发，他就是检查64个字节之内有没有错误，有的话不转发，这样就排除了正常的以太网错误包。</li>
+</ul>
+<h2 id="hdlc">HDLC</h2>
+<p>HDLC中的三种站</p>
+<ul>
+<li>主站：
+<ul>
+<li>发送命令帧、接收响应帧，并负责对整个链路的控制系统的初启、流程的控制、差错检测或恢复等。</li>
+</ul>
+</li>
+<li>从站：
+<ul>
+<li>接收由主站发来的命令帧，向主站发送响应帧，并配合主站参与差错恢复等链路控制。</li>
+</ul>
+</li>
+<li>复合站：
+<ul>
+<li>既能发送、又能接收命令帧和响应帧，并且负责整个链路的控制。</li>
+</ul>
+</li>
+</ul>
+<h4 id="hdlc常用的操作方式平衡非平衡-主要是主站从站之间是否公平的意思-正常异步主站发出命令帧从站返回响应帧就是正常如果不需要主站控制就是异步方式">HDLC常用的操作方式(平衡/非平衡-主要是主站从站之间是否公平的意思。正常/异步，主站发出命令帧，从站返回响应帧，就是正常，如果不需要主站控制，就是异步方式)</h4>
+<ul>
+<li>
+<p><strong>正常响应方式NRM</strong>（Normal Response Mode）是一种非平衡数据链路操作方式，有时也称为非平衡正常响应方式。</p>
+<ul>
+<li>该操作方式使用面向终端的点到点或一点到多点的链路。</li>
+<li>在这种操作方式下，传输过程由主节点启动，从节点只有收到主节点某个命令帧后，才能作为响应向主节点传输信息。</li>
+<li>响应信息可以由一个或多个帧组成，若信息由多个帧组成，则应指出哪一帧是最后一帧。</li>
+<li>主节点负责管理整个链路，且具有轮询、选择从节点及向从节点发送命令的权利，同时也负责对超时、重发及各种恢复操作的控制。</li>
+<li><strong>主站控制整个链路的操作</strong>。</li>
+<li><strong>从站在收到主站明确的允许后才能发出响应</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>异步响应方式ARM</strong>（Asynchronous Response Mode）也是一种非平衡数据链路操作方式。</p>
+<ul>
+<li>与NRM不同的是，ARM的传输过程由从节点启动。从节点主动发送给主节点的一个或一组帧。</li>
+<li>在这种操作方式下，由从节点来控制超时和重发。</li>
+<li>该方式对采用轮询方式的多节点链路来说是必不可少的。</li>
+<li><strong>从站不必得到主站的允许就可以开始数据传输</strong>。</li>
+<li><strong>由从站来控制超时和重发</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>异步平衡方式ABM</strong>（Asynchronous Balanced Mode）是一种允许任何节点来启动传输的操作方式。</p>
+<ul>
+<li>为了提高链路传输效率，节点之间在两个方向上都需要有较高的信息传输量。在这种操作方式下，任何时候任何节点都能启动传输操作，每个节点既可以作为主节点又可作为从节点。各个节点都有相同的一组协议，任何节点都可以发送或接收命令，也可以给出应答，并且各节点对差错恢复过程都负有相同的责任。</li>
+<li>
+<h4 id="两端的复合站可以在任意时间发送和接收命令帧和响应帧">两端的复合站可以在任意时间发送和接收命令帧和响应帧。</h4>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="hdlc帧格式包含标志1个字节-地址1个字节-控制1个字节-信息若干个字节取决于最大帧长的限制-帧校验序列也叫fcs2个字节-标志1个字节">HDLC帧格式包含：标志（1个字节）、地址（1个字节）、控制（1个字节）、信息（若干个字节，取决于最大帧长的限制）、帧校验序列（也叫FCS，2个字节）、标志（1个字节）</h4>
+<p>标志：表示帧的开始和结束，取值为7E，也就是帧定界符，占1字节。</p>
+<img src="/_resources/64d0ab62b0274be1a4c2e37c600709d0.png" alt="a81c062af3f7790ca50cdde2231686f6.png" width="560" height="275" class="jop-noMdConv" />
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>长度</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Flag</strong></td>
+<td>1字节</td>
+<td>标志字段，为01111110(0x7E)的比特模式，用以标志帧的开始与结束，也可以作为帧与帧之间的填充字符。通常，在不进行帧传送的时刻，信道仍处于激活状态，在这种状态下，发送方不断地发送标志字段，而接收方则检测每一个收到的标志字段，一旦发现某个标志字段后面不再是一个标志字段，便可认为新的帧传动已经开始。采用“0比特插入法”可以实现数据的透明传输。</td>
+</tr>
+<tr>
+<td><strong>Address</strong></td>
+<td>1字节</td>
+<td>地址字段，内容取决于所采用的操作方式，有主节点、从节点、组合节点之分。每个从节点与组合节点都被分配一个唯一的地址，命令帧中的地址字段携带的是对方节点的地址，而响应帧中的地址字段所携带的地址是本节点的地址。某一地址也可分配给不止一个节点，这种地址称为组地址，利用一个组地址传输的帧能被组内所有拥有该地址的节点接收。但当一个节点或组合节点发送响应时，它仍应当用它唯一的地址。还可以用全“1”地址来表示包含所有节点的地址，称为广播地址，含有广播地址的帧传送给链路上所有的节点。另外还规定全0的地址为无节点地址，不分配给任何节点，仅作为测试用。</td>
+</tr>
+<tr>
+<td><strong>Control</strong></td>
+<td>1字节</td>
+<td>控制字段，用于构成各种命令及响应，以便对链路进行监视与控制。发送方主节点或组合节点利用控制字段来通知被寻址的从节点或组合节点执行约定的操作；相反，从节点用该字段作为对命令的响应，报告已经完成的操作或状态的变化。该字段是HDLC的关键。<br class="jop-noMdConv" />由于Control字段的构成不同，可以把HDLC帧分为三种类型：信息帧、监控帧、无编号帧，分别简称I帧(Information)、S帧(Supervisory)、U帧(Unnumbered)。<br class="jop-noMdConv" /><img src="/_resources/abae8d0ba789428bb41c22fdcf9d784b.png" alt="e19279b8fd34a6c8637091756e974a12.png" width="639" height="246" class="jop-noMdConv" /><br class="jop-noMdConv" />在控制字段中，<strong>首位是“0”则为I帧，首两位是“10”则为S帧，首两位是“11”则为U帧</strong>。<br class="jop-noMdConv" />Control字段帧中的各字段含义如下：<br class="jop-noMdConv" />- N（S）: Send Sequence Number<br class="jop-noMdConv" />- N（R）: Receive Sequence Number<br class="jop-noMdConv" />- P/F: Poll Bit command frame/Final Bit response frame<br class="jop-noMdConv" />- M: Modifier Function<br class="jop-noMdConv" />- S: Supervisory Function<br class="jop-noMdConv" />控制字段的第五位是P/F位，即轮询/终止位（Poll/Final）位。</td>
+</tr>
+<tr>
+<td><strong>Protocol</strong></td>
+<td>2字节</td>
+<td>协议字段。表示Information域中的数据封装的协议类型。</td>
+</tr>
+<tr>
+<td><strong>Information</strong></td>
+<td>0~N字节</td>
+<td>信息字段。可以是任意的二进制比特串，长度未作限定。其上限由FCS字段或通信节点的缓冲容量来决定，目前国际上用得较多的是1000～2000比特，而下限可以是0，即无信息字段。但是监控帧中不可有信息字段。</td>
+</tr>
+<tr>
+<td><strong>FCS</strong></td>
+<td>2字节</td>
+<td>FCS(Frame Check Sequence)：帧检验序列字段，可以使用16位CRC，对两个标志字段之间的整个帧的内容进行校验。FCS的生成多项式是CCITT V.41建议的<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>X</mi><mn>16</mn></msup><mo>+</mo><msup><mi>X</mi><mn>12</mn></msup><mo>+</mo><msup><mi>X</mi><mn>5</mn></msup><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X^{16}+X^{12}+X^{5}+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em">X</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">16</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em">X</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">12</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em">X</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">5</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">1</span></span></span></span></span>。</td>
+</tr>
+</tbody>
+</table>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

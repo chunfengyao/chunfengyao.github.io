@@ -1,0 +1,1243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title></title>
+        <link>undefined</link>
+        <description>undefined</description>
+        <lastBuildDate>Sun, 19 Jan 2025 07:39:37 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>Joplin Pages Publisher</generator>
+        <item>
+            <title><![CDATA[个人简历]]></title>
+            <guid>efafeec0b99046aeaabc2556dc0da8d8</guid>
+            <pubDate>Sun, 22 Dec 2024 10:10:04 GMT</pubDate>
+            <content:encoded><![CDATA[<h3 id="姚春锋">姚春锋</h3>
+<ul>
+<li><strong>概况</strong>：男 | 1996年7月  |  本科 -计算机科学与技术 | 未婚 | 177 cm | 2017年开始工作</li>
+<li><strong>个人主页</strong>：<a title="https://github.com/chunfengyao" href="https://github.com/chunfengyao">https://github.com/chunfengyao</a> |<strong>博客</strong>：<a title="https://blog.yaocf.eu.org" href="https://blog.yaocf.eu.org">https://blog.yaocf.eu.org</a></li>
+<li><strong>邮箱</strong>：<a title="mailto:jobs@yaocf.eu.org?subject=%E6%9D%A5%E8%87%AA%E4%BD%A0%E7%9A%84%E7%AE%80%E5%8E%86&amp;body=%3C%E8%AF%B7%E5%85%88%E7%AE%80%E5%8D%95%E8%AF%B4%E6%98%8E%E4%B8%80%E4%B8%8B%E6%9D%A5%E4%BF%A1%E6%96%B9%E4%BF%A1%E6%81%AF%EF%BC%8C%E8%B0%A2%E8%B0%A2%E3%80%82%3E" href="mailto:jobs@yaocf.eu.org?subject=%E6%9D%A5%E8%87%AA%E4%BD%A0%E7%9A%84%E7%AE%80%E5%8E%86&amp;body=%3C%E8%AF%B7%E5%85%88%E7%AE%80%E5%8D%95%E8%AF%B4%E6%98%8E%E4%B8%80%E4%B8%8B%E6%9D%A5%E4%BF%A1%E6%96%B9%E4%BF%A1%E6%81%AF%EF%BC%8C%E8%B0%A2%E8%B0%A2%E3%80%82%3E"><code>jobs@yaocf.eu.org</code></a> | <strong>地址</strong>：上海</li>
+<li><strong>目前/上家单位</strong>：帆书（原：樊登读书）| <strong>行业</strong>：互联网/教育 | <strong>职位</strong>：高级Android/Flutter工程师</li>
+</ul>
+<h2 id="自我评价">自我评价</h2>
+<p><strong><center class="jop-noMdConv">我的简历可能不是最好的，但我有足够强大的解决问题的能力（包括对问题原因的精准定位、以及问题解决方案的规划和动手能力），所以才能一步步走到现在的岗位。</center></strong></p>
+<h2 id="求职意向">求职意向</h2>
+<ul>
+<li><strong>目标职能</strong>：Android工程师/Flutter工程师/项目组长 | <strong>目标地点</strong>：上海、南京</li>
+</ul>
+<h2 id="开源项目经历">开源项目经历</h2>
+<h5 id="音乐播放器-httpsgithubcomrremixaplayer">音乐播放器 - <a title="https://github.com/rRemix/APlayer" href="https://github.com/rRemix/APlayer">https://github.com/rRemix/APlayer</a></h5>
+<p>重构原先的页面生命周期管理模块，修复MediaPlayer在特殊场景下的奔溃问题。</p>
+<h5 id="跨平台应用框架-httpsgithubcomflutterflutter">跨平台应用框架 - <a title="https://github.com/flutter/flutter" href="https://github.com/flutter/flutter">https://github.com/flutter/flutter</a></h5>
+<p>修复Flutter当以模块化集成时，在Jenkins上进行大规模并行构建时的资源冲突问题。修复了并行构建时，线程死锁导致的构建失败。</p>
+<h5 id="高性能私有化消息推送平台-httpsgithubcomgotifyandroid">高性能私有化消息推送平台 - <a title="https://github.com/gotify/android" href="https://github.com/gotify/android">https://github.com/gotify/android</a></h5>
+<p>替换原先在网络断开时Websocket的重连流程。添加针对网络状态的监听进一步优化重连机制。UI上的一些小优化。</p>
+<h2 id="工作经验">工作经验</h2>
+<h3 id="202405-2024-09-帆书原樊登读书-高级androidflutter工程师">2024.05-2024-09 <a title="https://www.dushu365.com" href="https://www.dushu365.com">帆书（原：樊登读书）</a>  | 高级Android/Flutter工程师</h3>
+<p><u class="jop-noMdConv">组织移动端Flutter研发组、Flutter项目架构设计</u></p>
+<ul>
+<li>带领从移动端和web端抽调的开发人员搭建适合业务需求的Flutter模块基本框架，设计相关通信接口规范和base页面</li>
+</ul>
+<p><u class="jop-noMdConv">Flutter的Rocket打包及三方库发布到私有Maven库</u></p>
+<ul>
+<li>解决升级到最新的稳定版后出现的卡死黑屏问题（so库崩溃）</li>
+<li>由于内部使用的Rocket打包基于版本号来管理maven，为了将Flutter的打包也托管到Rocket，通过geadle脚本，在打包过程中使用dart依赖的版本号来覆盖三方库生成的maven输出的版本号，并通过读取环境变量信息，推送到私有maven仓库中</li>
+</ul>
+<p><u class="jop-noMdConv">语音识别并跳转到app中一些页面的功能模块（AI Hackathon）</u></p>
+<ul>
+<li>通过关键字识别判断用户语义并完成目标跳转或给出相关建议</li>
+</ul>
+<h3 id="202207-2024-01-融梦科技-算法工程师-android架构师">2022.07-2024-01 融梦科技 | 算法工程师、Android架构师</h3>
+<p><u class="jop-noMdConv">地平线开发板适配及算法研发</u></p>
+<ul>
+<li>基于地平线开发板（C++）和人脸识别模型，编写人体运动的识别算法，根据计算得到的距离角度等数据进行运动数据的计数，并传递给前端。</li>
+<li>为业务开发组解决了以下问题：不稳定网络环境下的设备与服务器、设备与设备间的通信问题。地平线的 AI Express 项目在自定义模型工作流的情况下，帧率骤降的问题。</li>
+<li>为业务组提供的技术支持：地平线开发板对于模型导出分析报告。将地平线开发板作为服务端，连接到Android平台，作为智能相机的解决方案和实现(主要是和地平线开发人员的交流和沟通)。地平线的imx415相机模组的180p@90帧工作模式的适配。</li>
+</ul>
+<p><u class="jop-noMdConv">高通NPU的Tensor加速适配</u></p>
+<ul>
+<li>将普通业务模型量化为高通NPU支持的格式，通SNPE加载到骁龙875的平板在AIP运行时模式下进行精度损失评估和性能评估，以此判断骁龙NPU和骁龙GPU的实际加速效果(大约8~10倍)。</li>
+</ul>
+<p><u class="jop-noMdConv">脊柱弯曲判别</u></p>
+<ul>
+<li>通过深度摄像头，获取背部的深度图，将深度图基于RGB图的像素距离进行坐标转换，得到背部的3D矩阵，计算被试者是否存在脊柱侧弯。主要包括：输入(深度相机的数据流)/输出(UI展示)图片的转换和处理(主要使用了Opencv的图片存储格式转换、裁切、二值化、阈值过滤)。客户端APP主要有骨骼点的绘制，坐标绘制，以及运动判别、姿态判别算法的设计、实现、优化。</li>
+</ul>
+<p><u class="jop-noMdConv">体能测试客户端项目组</u></p>
+<ul>
+<li>推动Android架构组的建立，带领研发组处理业务难点，设计部分核心功能组件。</li>
+</ul>
+<h3 id="201909-2022-06-万达信息-互联网政企服务-android架构师-flutter架构师">2019.09-2022-06 <a title="https://www.wondersgroup.com" href="https://www.wondersgroup.com">万达信息</a> | 互联网/政企服务 | Android架构师、Flutter架构师</h3>
+<p><u class="jop-noMdConv">蛮牛健康Android基础框架重构、架构治理</u></p>
+<ul>
+<li>为了解决业务痛点，重新设计并实现了一个完整的基础架构，比如请求拦截器、页面渲染性能监视器、卡顿检测、异常检测、崩溃记录堆栈。持续的架构治理，比如代码规范、页面渲染规范、与后台接口之间的开发和联调规范。</li>
+<li>基于Git、Jenkins、版本管理平台的全自动开发平台搭建，包括：编译脚本、Git Hook、自动化CI、自动发布、全过程飞书通知。</li>
+</ul>
+<p><u class="jop-noMdConv">混合框架（web）</u></p>
+<ul>
+<li>基于DWebView针对其原生和JS交互部分进行了优化，提升了在调用失败时的用户体验，以及相互调用过程中的容错机制。加入js调用的鉴权机制，避免入驻的三方web服务过度调用App提供的方法。通过Web inspect调试CDN、HTTP2的升级情况，以及性能统计。加入调试指令，让web开发组可以在生产环境中使用特定方式强制开启Web inspect。</li>
+</ul>
+<p><u class="jop-noMdConv">混合开发框架（Flutter）</u></p>
+<ul>
+<li>自研的Flutter业务框架，路由模块、为了让业务组能快速上手，提供了代码生成的一键脚本（类似gradlew）、Flutter业务模块化管理脚本，基于Jenkins的一键CI/CD、Flutter请求降级模块（避免Flutter和原生客户端之间的数据不一致，减少对服务器的请求，减少数据冗余）、Flutter请求mock模块（分离前端和后端）、完全可拆分的Flutter运行环境（让Flutter项目可以一键脱离Android/IOS项目独立运行和调试，便于web组开发Flutter业务功能并进行测试）。</li>
+</ul>
+<p><u class="jop-noMdConv">升级到Gmssl加密算法</u></p>
+<ul>
+<li>通过JNI调用GmSSL的国密2（非对称加密，基于ECC）、国密4（对称加密）、国密3算法（消息摘要算法），对Https请求进行二次加密（类似https加密过程，但结合了部分特定需求），与后端对接升级现有加密方案并保持兼容。</li>
+</ul>
+<p><u class="jop-noMdConv">基于阿里云相册接口设计和实现的公共sdk</u></p>
+<ul>
+<li>根据阿里云Pds相册api。基于HttpUrlConnection设计并实现一个公共模块，包括阿里云相册的登录鉴权、相册列表、照片列表、获取缩略图、分片上传、上传下载进度回调、批量删除、查询状态等功能，内部使用线程池进行了请求资源的优化，并且设计并实现了内部拦截器和完整的异常处理和请求结果的订阅（使用面向回调的模式，设计成类似rxjava的使用方式）。并且，针对上传下载缓冲区进行了动态优化。</li>
+</ul>
+<p><u class="jop-noMdConv">实时聊天（IM）模块</u></p>
+<ul>
+<li>模块基于云信的IM模块，将云信的DemoApp直接改造成业务模块，通过反射以及将部分方法转换为静态方法，以模块化接入现有项目（缩短项目时间）。一方面，提升了模块稳定性，降低了接入成本（高复用），也降低了后期云信SDK升级的成本，另一方面可以隔离风险，避免后期替换其它IM提供商时需要重构。</li>
+</ul>
+<p><u class="jop-noMdConv">定制平板设备的应用开发</u></p>
+<ul>
+<li>Launcher应用、系统签名、调试性能问题</li>
+<li>与平板厂商对接，为业务组提供技术支持。帮助业务组解决的几个主要问题：system用户签名（sharedUserId）、Launcher启动时的进程被识别为32位，在部分芯片上会导致so库找不到的问题、应用的卸载安装（PackageManager）、应用的启动、Launcher与定制App的权限共享，数据共享、Launcher启动卡顿的问题、通过packageManager扫描已安装应用，并获取应用信息（名称、版本号）、调试并解决在Launcher中检测并调用系统更新失败的问题。</li>
+</ul>
+<p><u class="jop-noMdConv">基于Janus后端的IM客户端</u></p>
+<ul>
+<li>带领一个后端，一个Android开发，一个ios架构师，调研现有的一些比较成熟的webrtc的后端，并且，基于通用的webrtc通信和信令过程，搭建演示App。在初步比较后，选定了janus作为webrtc的信令后端。并基于Flutter实现一个客户端演示app，功能包含：（呼叫、被呼叫、持续）视频通话、在线人员列表展示，普通文本消息、通话质量显示。</li>
+</ul>
+<p><u class="jop-noMdConv">异常自检测、捕获</u></p>
+<ul>
+<li>使App可以全面检测异常和错误，避免由于业务开发的异常导致App崩溃或闪退。联合后端进行日志、堆内存上报和自动分析。</li>
+</ul>
+<p><u class="jop-noMdConv">Jenkins的自动打包的改造</u></p>
+<ul>
+<li>在Jenkins上部署并完善包含Flutter和多个子模块及多个渠道的自动化构建及相关webhook通知</li>
+</ul>
+<h3 id="201809-2019-09-携宁计算机科技-互联网企服-android开发工程师-android架构师">2018.09-2019-09 携宁计算机科技 | 互联网/企服 | Android开发工程师、Android架构师</h3>
+<p><u class="jop-noMdConv">来电悬浮窗</u><br />
+<u class="jop-noMdConv">Flutter嵌入（调研）</u><br />
+<u class="jop-noMdConv">华泰联合证券（内部）、国泰君安证券（内部）项目流程管理App</u></p>
+<ul>
+<li>要包括立项、评审、流转、审核、办结等一般项目的流程管理。以及新三板等特殊业务的专项流程管理。证券公司业务人员可以通过App快速申请、审批、办理。并且，通过动态化的页面下发机制，让流程办理页面完全动态可配置。</li>
+</ul>
+<p><u class="jop-noMdConv">国寿、太平等资产管理公司CRM系统客户端App</u><br />
+<u class="jop-noMdConv">投行模板App维护</u></p>
+<ul>
+<li>核心模板App的优化和维护，包括性能优化、稳定性优化、架构升级、架构维护。<br />
+华为快应用（调研）<br />
+基于WebView的混合项目优化和维护<br />
+基础业务MVP框架的升级优化</li>
+</ul>
+<h3 id="201606-201809-麦田映像科技-互联网企服-android开发工程师">2016.06-2018.09 麦田映像科技 | 互联网/企服 | Android开发工程师</h3>
+<p><u class="jop-noMdConv">线下教师课堂竞赛打分模块</u><br />
+<u class="jop-noMdConv">热修复集成（线下教师）</u></p>
+<ul>
+<li>线下教师的应用增加Tinker的集成，避免线下教师需要全量更新来修复Bug。</li>
+</ul>
+<p><u class="jop-noMdConv">业务逻辑开发</u></p>
+<ul>
+<li>基于LibGDX游戏SDK进行的游戏开发。</li>
+</ul>
+<h2 id="语言能力">语言能力</h2>
+<p>英语CET四级</p>
+<h2 id="兴趣爱好">兴趣爱好</h2>
+<p>跑步、音乐</p>
+<h2 id="技能清单">技能清单</h2>
+<ul>
+<li>★★★ Java、Kotlin、Linux、Flutter</li>
+<li>★★☆ C++、Python、docker、OpenWrt、nginx、NDK</li>
+<li>★☆☆ JavaScript</li>
+</ul>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[通过adb dump堆内存]]></title>
+            <guid>7f36a4d7f9a6432481f46a0a58faafc6</guid>
+            <pubDate>Sun, 15 Dec 2024 04:25:35 GMT</pubDate>
+            <content:encoded><![CDATA[<p>注：<code>am dumpheap</code>需满足以下条件之一：</p>
+<ul>
+<li>目标App的AndroidManifest中<code>android:debuggable=true</code></li>
+<li>系统是debuggable的（即：<code>adb shell getprop ro.debuggable</code>的结果为1）（也就是必须要是debug编译的系统）（如果手头没有debug编译的系统的话，推荐直接用模拟器，其中，以<code>Apple silicon</code>的<code>macOS</code>或者<code>ARM64</code>的<code>Windows</code>为最佳）</li>
+</ul>
+<hr />
+<p>对于release模式的真机（以前MIUI的开发版系统几乎都是debug编译的，但是从Hyper OS开始，都是release编译了），但是，如果你安装了<code>Magisk</code>，可以尝试在进入<code>su</code>后执行如下命令，临时启用<code>adb root</code>（重启后失效）：</p>
+<div><pre class="hljs"><code>resetprop ro.debuggable 1
+resetprop service.adb.root 1
+magiskpolicy --live <span class="hljs-string">'allow adbd adbd process setcurrent'</span>
+magiskpolicy --live <span class="hljs-string">'allow adbd su process dyntransition'</span>
+magiskpolicy --live <span class="hljs-string">'permissive { su }'</span>
+<span class="hljs-built_in">kill</span> -9 `ps -A | grep adbd | awk <span class="hljs-string">'{print $2}'</span>` </code></pre></div>
+<hr />
+<p>对于使用模拟器，但是<code>adb root</code>提示<code>adbd cannot run as root in production builds</code>的：参考StackOverFlow的一个回答：<br />
+Select a System Image.</p>
+<ul>
+<li>Pick any image that does NOT say “(Google Play)” in the Target column.</li>
+<li>If you depend on Google APIs (Google Sign In, Google Fit, etc.), pick an image marked with “(Google APIs)”.</li>
+<li>You might have to switch from the “Recommended” group to the “x86 Images” or “Other Images” group to find one.</li>
+</ul>
+<p>也就是说：带Google Play的镜像是不能<code>adb root</code>的，如果需要调试Google服务相关的app（比如一些依赖Google Api的app），要么<code>Lucky patcher</code>移除掉Google依赖再试。要么，下载带有(Google APIs)的镜像，注意不是ATD（Automated Test Device）。</p>
+<p>并且，在Apple silicon的macOS上，Pixel 2、Pixel Fold等设备是选不到某些镜像的。比如api-31（android-12）(Google APIs)的，目前我使用的镜像是api-31，Pixel 5，arm64，(Google APIs)。</p>
+<hr />
+<p>准备就绪后，直接运行Android Emulator、安装apk、然后在adb root之后执行heapdump：</p>
+<div><pre class="hljs"><code>adb shell <span class="hljs-string">"am dumpheap <span class="hljs-variable">${_package_name}</span> /data/local/tmp/dump.hprof"</span></code></pre></div>
+<p>Tips：可以通过如下命令跳过开机动画等无关项，并且直接后台运行，然后用scrcpy远程连接：</p>
+<div><pre class="hljs"><code>emulator -no-qt -no-window -no-audio -no-snapshot-load -no-boot-anim -avd <span class="hljs-string">"<span class="hljs-variable">${_avd_name}</span>"</span> -qemu -m 2048 -enable-kvm -cpu host</code></pre></div>
+<p>对于只需要分析字符串数据的，可以直接使用strings命令<code>strings /data/local/tmp/dump.hprof</code>，提取出文件中所有字符串，然后进行分析。<br />
+如果是要完整分析的，可以导入到Android Studio的profiler里面（配合反编译dex）进行数据分析。或者用自己趁手的工具分析（JAVA的堆内存快照分析工具）。</p>
+<p><strong>内存分析不在这里展开，有时间空闲再码一下文章</strong></p>
+<hr />
+<p>结尾顺便贴一下我用于初始化软路由中运行的docker容器（<code>androidsdk/android-31:latest</code>）中<code>emulator</code>的<code>entrypoint</code>脚本，自行查看和复制，几乎都有注释的。</p>
+<div><pre class="hljs"><code><span class="hljs-meta">#!/bin/bash</span>
+<span class="hljs-built_in">set</span> -x
+<span class="hljs-built_in">set</span> +e
+<span class="hljs-comment"># enable job control for command 'fg'</span>
+<span class="hljs-built_in">set</span> -m
+
+<span class="hljs-comment">#enble ip forward(there's no effect for this case!)</span>
+<span class="hljs-comment">#sysctl -w net.ipv4.ip_forward=1</span>
+<span class="hljs-comment">#let the package with source ip:127.0.0.1 can be decided by route filter.</span>
+<span class="hljs-comment">#sysctl -w net.ipv4.conf.all.route_localnet=1</span>
+
+<span class="hljs-keyword">if</span> [ ! -f ~/.firstboot ];<span class="hljs-keyword">then</span>
+  apt update
+  <span class="hljs-comment">#emluator -qemu -h 要用到</span>
+  apt install -y libxcursor1 libpulse0 xvfb
+  <span class="hljs-comment">#jdk</span>
+  apt install -y openjdk-17-jdk
+  apt install -y telnet nmap iptables iptables-persistent tmux lsof iputils-ping netcat
+  <span class="hljs-comment">#解决一下显卡加速的问题就好了，emulator -gpu host</span>
+  <span class="hljs-comment">#apt install -y virt-manager libxcursor1 qemu-kvm libvirt-bin ubuntu-vm-builder bridge-utils cpu-checker libva-dev vainfo</span>
+  <span class="hljs-comment">#apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils libva-dev vainfo</span>
+  <span class="hljs-comment">#service libvirtd start</span>
+  sdkmanager --install emulator
+  sdkmanager --install <span class="hljs-string">'cmdline-tools;latest'</span>
+  touch ~/.firstboot
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-comment">#如果是-read-only模式启动，emulator会把修改的内容存到/tmp/android-unknown，会导致占用大量体积的。需要清理，正常启动时不需要。</span>
+<span class="hljs-comment">#if [ -d /tmp/android-unknown ]; then</span>
+<span class="hljs-comment">#  rm -rf /tmp/android-unknown</span>
+<span class="hljs-comment">#fi</span>
+
+<span class="hljs-built_in">export</span> _avd_name=avd
+
+<span class="hljs-comment">#Avoid Error: "Running multiple emulators with the same AVD is an experimental feature."</span>
+<span class="hljs-keyword">if</span> [ -d /opt/android-sdk-linux/.android/<span class="hljs-variable">${_avd_name}</span>/<span class="hljs-variable">${_avd_name}</span>.avd ]; <span class="hljs-keyword">then</span>
+  rm /opt/android-sdk-linux/.android/<span class="hljs-variable">${_avd_name}</span>/<span class="hljs-variable">${_avd_name}</span>.avd/hardware-qemu.ini.lock || <span class="hljs-literal">true</span>
+  rm /opt/android-sdk-linux/.android/<span class="hljs-variable">${_avd_name}</span>/<span class="hljs-variable">${_avd_name}</span>.avd/multiinstance.lock || <span class="hljs-literal">true</span>
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-keyword">if</span> [ ! -f /opt/android-sdk-linux/.android/<span class="hljs-variable">${_avd_name}</span>/<span class="hljs-variable">${_avd_name}</span>.avd/config.ini ];<span class="hljs-keyword">then</span>
+  sdkmanager --install emulator
+  sdkmanager --install <span class="hljs-string">'cmdline-tools;latest'</span>
+  <span class="hljs-comment">#注意：由于代理工具依赖谷歌服务，所以，这里必须要用google_apis的镜像</span>
+  <span class="hljs-built_in">echo</span> no|avdmanager create avd -n <span class="hljs-variable">${_avd_name}</span> --abi google_apis/x86_64 -k <span class="hljs-string">"system-images;android-31;google_apis;x86_64"</span>
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-comment">#强制重写telnet的token</span>
+&gt;/root/.emulator_console_auth_token <span class="hljs-built_in">echo</span> -n <span class="hljs-string">"vGwk2RHZyv8PDqjZ"</span>
+
+emulator -no-qt -no-window -no-audio -no-snapshot-load -no-boot-anim -avd <span class="hljs-variable">${_avd_name}</span> -qemu -m 2048 -enable-kvm -cpu host &amp;
+<span class="hljs-comment">#xvfb-run emulator -gpu host -no-qt -no-window -no-audio -no-snapshot-load -no-boot-anim -avd ${_avd_name} -qemu -m 3072 -enable-kvm -cpu host &amp;</span>
+
+<span class="hljs-comment">#允许远程访问adb</span>
+{
+  <span class="hljs-comment">#iptables -F</span>
+  iptables -A FORWARD -j ACCEPT
+  iptables -A OUTPUT -j ACCEPT
+  iptables -A INPUT -j ACCEPT
+  <span class="hljs-comment">#iptables -t nat -F</span>
+  iptables -t nat -A PREROUTING -d 172.20.0.119 -j DNAT --to-destination 127.0.0.1
+  iptables -t nat -A POSTROUTING -s 127.0.0.1 -j SNAT --to-source 172.20.0.119
+}
+
+sleep 40s
+
+adb root
+
+sleep 5s
+
+<span class="hljs-keyword">if</span> [ ! -f ~/.adb_config ];<span class="hljs-keyword">then</span>
+  <span class="hljs-comment">#修改开发者选项、系统设置</span>
+  {
+    adb shell settings put global development_settings_enabled 1
+    adb shell settings put global animator_duration_scale 0.5
+    adb shell settings put global transition_animation_scale 0.5
+    adb shell settings put global window_animation_scale 0.5
+    adb shell settings put global ntp_server <span class="hljs-string">"ntp.aliyun.com"</span>
+  }
+  <span class="hljs-comment">#禁用无关软件（需要adb root后）</span>
+  {
+    <span class="hljs-comment">#gmail</span>
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.gm
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.apps.docs
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.youtube
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.calendar
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.apps.maps
+    <span class="hljs-comment">#禁用搜索框可能会导致Launcher出问题</span>
+<span class="hljs-comment">#    adb shell pm disable com.google.android.googlequicksearchbox</span>
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.apps.photos
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.apps.youtube.music
+    <span class="hljs-comment">#Chrome</span>
+    adb shell pm <span class="hljs-built_in">disable</span> com.android.chrome
+  }
+  touch ~/.adb_config
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-built_in">fg</span> || <span class="hljs-literal">true</span>
+sleep infinity
+</code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[记录攻击者在进行ssh密码爆破时使用的密码，基于fail2ban和honeypot]]></title>
+            <guid>c8d418fbe09f480f9091afa598e33110</guid>
+            <pubDate>Sun, 18 Aug 2024 07:52:13 GMT</pubDate>
+            <content:encoded><![CDATA[<p>不知道是不是大环境不好，很多人闲的，最近的ssh攻击明显比以往要多得多。</p>
+<p>这边大致列一下一些应对<code>ssh</code>密码爆破的常见方案。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方案</th>
+<th style="text-align:left">优点</th>
+<th style="text-align:left">缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">使用复杂密码</td>
+<td style="text-align:left">确实可以在一定程度上增加密码破解的复杂性</td>
+<td style="text-align:left">严谨地来说，低概率事件不等于0可能事件，所以，是不是真的有人能撞出正确的密码（即使概率真的很低）</td>
+</tr>
+<tr>
+<td style="text-align:left">使用<code>ssh-key</code></td>
+<td style="text-align:left">可以完全避免密码验证</td>
+<td style="text-align:left">对于自己使用的场景，有时候需要在外面进行密码登录时，就做不到了</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ssh</code>端口放到内网中，通过安全隧道进行访问</td>
+<td style="text-align:left">可以直接保护<code>ssh</code>服务端口</td>
+<td style="text-align:left">对于自己使用，每次都得先成功地创建隧道后才能使用</td>
+</tr>
+<tr>
+<td style="text-align:left">使用<code>fail2ban</code>之类的应用层防护</td>
+<td style="text-align:left">不影响个人使用</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">使用端口敲门（<code>knock</code>）</td>
+<td style="text-align:left">和安全隧道类似，但是，一旦敲门包成功验证，整个ip都可以访问，而不需要持续保持隧道连接</td>
+<td style="text-align:left">仅移动端场景使用时，不是很方便</td>
+</tr>
+</tbody>
+</table>
+<p>我目前主要靠复杂密码，加<code>fail2ban</code>来保护，然后，默认的<code>22</code>端口仅仅支持<code>ssh-key</code>登录。</p>
+<p>就像上面表格里列出的。我想知道密码爆破的攻击者都是用的什么密码本（大多数密码爆破都是使用的现成的或者按照规则生成的密码本，并且，密码本生成时，随着长度和复杂度上升，最终得到的密码本大小会指数级增大），于是就有了这么个需求。</p>
+<p>由于目前已经配置过<code>fail2ban</code>了（可以参考另一篇<code>fail2ban</code>的文章），在达到限制次数后，就可以直接进行端口重定向等等的操作。进行端口重定向对应<code>fail2ban</code>的<code>action</code>如下（假设目标重定向端口为<code>8022</code>）。</p>
+<div><pre class="hljs"><code><span class="hljs-comment">#将目标端口是22的请求包重定向到8022</span>
+<span class="hljs-comment">#action = nftables-multiport[name=%(__name__)s-all, port="22", protocol="tcp,udp", table_family=inet, chain_type=nat, chain_hook=prerouting, chain_priority=dstnat +1, blocktype="counter redirect to 8022"]</span>
+
+<span class="hljs-comment">#将所有端口重定向到8022</span>
+<span class="hljs-attr">action</span> = nftables-allports[name=%(__name__)s-all, protocol=<span class="hljs-string">"tcp,udp"</span>, table_family=inet, chain_type=nat, chain_hook=prerouting, chain_priority=dstnat +<span class="hljs-number">1</span>, blocktype=<span class="hljs-string">"counter redirect to 8022"</span>]
+
+<span class="hljs-comment">#直接丢掉请求包</span>
+<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter drop"]</span></code></pre></div>
+<h4 id="回到查看失败登录的密码的明文的需求">回到查看失败登录的密码的明文的需求。</h4>
+<ul>
+<li>首先想到的是，<code>sshd</code>服务是不是支持直接log记录密码。
+<ul>
+<li>结果：默认的<code>ssh</code>服务是不支持直接log密码明文的（即使是失败的登录）其实也很合理，比如意外输错了某一位密码，如果被log下来了，那么，针对log进行分析就能大幅缩小密码破解的难度。但是，可以通过手动修改<code>sshd</code>源码，然后编译，来进行记录。不过这比较麻烦，而且，升级的时候不方便，遂，该方案pass。</li>
+</ul>
+</li>
+<li>另一个方案就是通过<code>docker</code>，运行一个修改过<code>sshd</code>的容器，然后，通过端口重定向将正常的ssh登录请求重定向到这个修改后的<code>sshd</code>服务。但我觉得这还不是最优解，毕竟，一个Ubuntu容器，然后还得修改<code>sshd</code>服务，再运行这个<code>sshd</code>服务，只是为了log下来登录失败时的密码。成本颇高。</li>
+</ul>
+<h4 id="最后我们再来看一下我现在正在用的方案">最后我们再来看一下我现在正在用的方案：</h4>
+<ul>
+<li>其实，对于被攻击端，我们只需要完成<code>sshd</code>登录的过程即可，也就是，我们只需要按照<code>sshd</code>登录的过程，完成握手、交换身份指纹，然后等待客户端发送用户名和密码即可了。一旦得到用户名和密码，即可直接告知客户端：登录失败。只要整个过程中的所有特征都和原先的<code>sshd</code>服务提供的一模一样，攻击者是无法察觉到的，并且，由于握手包和接收密码的都是我们自己的代码，所以，可以对密码明文做任何我们需要的事情（比如记录到日志中去）。</li>
+</ul>
+<p>本着有现成的就不动手自己写，搜索一番，找到了一类现成的服务。蜜罐（<code>honeypot</code>），针对各种各样的服务（比如数据库、<code>nginx</code>、<code>ssh</code>），都有各个行业的前辈们开发了对应的<code>honeypot</code>服务。在尝试了好几个<code>honeypot</code>的<code>docker</code>镜像之后，找到了一个 写的比较好的：<code>wildwildangel/tiny-ssh-honeypot:edge</code>（基于<code>golang</code>，而且，是静态编译的，所以，镜像体积很小）。</p>
+<p>部署<code>docker</code>的过程就不写了，贴一下我的<code>docker-compose.yaml</code></p>
+<div><pre class="hljs"><code><span class="hljs-attr">version:</span> <span class="hljs-string">"3"</span>
+
+<span class="hljs-attr">services:</span>
+  <span class="hljs-attr">app:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">wildwildangel/tiny-ssh-honeypot:edge</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">fakessh</span>
+    <span class="hljs-comment"># 为了避免意外退出，设置了自动重启</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
+    <span class="hljs-comment"># 这个容器不需要特权</span>
+    <span class="hljs-attr">privileged:</span> <span class="hljs-literal">false</span>
+    <span class="hljs-comment">#推荐限制一下该容器的cpu使用率（防止攻击者发起dos或者dos攻击，毕竟握手包是需要有加密解密参与的，属于运算密集场景），避免cpu占用过高导致资源不可用，这边的设置相当于最多只使用'50%'的cpu资源</span>
+    <span class="hljs-attr">cpu_quota:</span> <span class="hljs-number">1000</span>
+    <span class="hljs-attr">cpu_period:</span> <span class="hljs-number">2000</span>
+    <span class="hljs-comment">#这边的cpu_count根据实际情况决定</span>
+    <span class="hljs-attr">cpu_count:</span> <span class="hljs-number">2</span>
+    <span class="hljs-comment"># 注意这里的参数，两个`-b`指定了监听地址，`-p`指定了监听端口，`--host-key`这个接下来会说到</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"-b"</span>,<span class="hljs-string">"::"</span>,<span class="hljs-string">"-b"</span>,<span class="hljs-string">"0.0.0.0"</span>,<span class="hljs-string">"-p"</span>,<span class="hljs-string">"8022"</span>,<span class="hljs-string">"--host-key"</span>,<span class="hljs-string">"/data/ssh-honeypot/keys/id_ed25519"</span>]
+    <span class="hljs-comment"># 我这边给的host网络，这个配合fail2ban会比较容易一些，否则要手动添加action去创建nat表的item才能端口重定向</span>
+    <span class="hljs-attr">network_mode:</span> <span class="hljs-string">host</span>
+    <span class="hljs-comment"># 常用的环境变量</span>
+    <span class="hljs-attr">environment:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">TZ=Asia/Shanghai</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">LANG=en_US.UTF-8</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">/data/ssh-honeypot:/data/ssh-honeypot</span>
+    <span class="hljs-attr">tmpfs:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">/tmp:exec,nosuid,nodev,size=2G</span>
+    <span class="hljs-attr">logging:</span>
+      <span class="hljs-comment"># 为了可以直接在系统日志中看到fakessh的日志，这边直接将日志也输出到syslog中</span>
+      <span class="hljs-attr">driver:</span> <span class="hljs-string">syslog</span>
+      <span class="hljs-comment"># https://docs.docker.com/config/containers/logging/syslog/</span>
+      <span class="hljs-attr">options:</span>
+        <span class="hljs-attr">syslog-address:</span> <span class="hljs-string">"udp://localhost:514"</span></code></pre></div>
+<p>说一下<code>--host-key</code>参数，在我们第一次登录到一个<code>ssh</code>主机时会有一个提示信息，指示了<code>ssh</code>主机的指纹信息。所以，如果不指定这个参数，密码爆破的攻击者在被重定向到新端口后，就会收到<code>ssh</code>客户端提示，主机的指纹变了。所以，如果是处理的比较精细的攻击者，是可以通过该行为判断出来，自己已经被重定向了。于是，就可以停止继续爆破，或者跟换ip地址进行爆破。然而，指定了这个参数后，对于攻击者来说，是察觉不出来，自己的登录请求已经进入<code>honeypot</code>进行处理了。</p>
+<h4 id="按照如上所示配置完成后">按照如上所示配置完成后。</h4>
+<ul>
+<li>=&gt; 攻击者发起密码爆破</li>
+<li>=&gt; 请求由<code>sshd</code>进行处理</li>
+<li>=&gt; 失败超过指定次数</li>
+<li>=&gt; <code>fail2ban</code>将请求重定向到<code>honeypot</code></li>
+<li>=&gt; 攻击者接下来尝试的所有密码都将被记录并且永远是登录失败。</li>
+</ul>
+<h4 id="最后贴一段最近抓取到的密码爆破记录docker-compose-logs-f-grep-login-attempt-for-user">最后贴一段最近抓取到的密码爆破记录<code>docker-compose logs -f |grep 'login attempt for user:'</code></h4>
+<div><pre class="hljs"><code>2024-08-17 00:02:19 tiny-ssh-honeypot: [120.26.121.171:45426 =&gt; 172.16.0.1:22]: login attempt for user: root (password: abcd12345)
+2024-08-17 00:02:22 tiny-ssh-honeypot: [120.26.121.171:40580 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 1q2w3e4r?)
+2024-08-17 00:02:26 tiny-ssh-honeypot: [120.26.121.171:40582 =&gt; 172.16.0.1:22]: login attempt for user: root (password: kakashka)
+2024-08-17 00:02:26 tiny-ssh-honeypot: [192.109.206.13:41464 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure66666)
+2024-08-17 00:02:29 tiny-ssh-honeypot: [120.26.121.171:40586 =&gt; 172.16.0.1:22]: login attempt for user: root (password: asdasdasd)
+2024-08-17 00:02:32 tiny-ssh-honeypot: [120.26.121.171:48980 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Wz123456)
+2024-08-17 00:02:33 tiny-ssh-honeypot: [192.109.206.13:42812 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure666666)
+2024-08-17 00:02:35 tiny-ssh-honeypot: [120.26.121.171:48988 =&gt; 172.16.0.1:22]: login attempt for user: root (password: S0f1a007!)
+2024-08-17 00:02:38 tiny-ssh-honeypot: [120.26.121.171:49000 =&gt; 172.16.0.1:22]: login attempt for user: root (password: alexander)
+2024-08-17 00:02:40 tiny-ssh-honeypot: [192.109.206.13:44160 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure6666666)
+2024-08-17 00:02:41 tiny-ssh-honeypot: [120.26.121.171:41726 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 8R!ghTs!d3@123)
+2024-08-17 00:02:44 tiny-ssh-honeypot: [120.26.121.171:41742 =&gt; 172.16.0.1:22]: login attempt for user: root (password: #EDC2wsx1qaz)
+2024-08-17 00:02:47 tiny-ssh-honeypot: [192.109.206.13:45508 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure66666666)
+2024-08-17 00:02:47 tiny-ssh-honeypot: [120.26.121.171:41754 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Az123456)
+2024-08-17 00:02:51 tiny-ssh-honeypot: [120.26.121.171:58158 =&gt; 172.16.0.1:22]: login attempt for user: root (password: test_1234)
+2024-08-17 00:02:54 tiny-ssh-honeypot: [120.26.121.171:58170 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 741852)
+2024-08-17 00:02:54 tiny-ssh-honeypot: [192.109.206.13:46856 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure8888)
+2024-08-17 00:02:57 tiny-ssh-honeypot: [120.26.121.171:58176 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Ab123456!)
+2024-08-17 00:03:01 tiny-ssh-honeypot: [120.26.121.171:50416 =&gt; 172.16.0.1:22]: login attempt for user: root (password: aaaAAA111)
+2024-08-17 00:03:02 tiny-ssh-honeypot: [192.109.206.13:48204 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure88888)
+2024-08-17 00:03:04 tiny-ssh-honeypot: [120.26.121.171:50420 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Salam@123)
+2024-08-17 00:03:07 tiny-ssh-honeypot: [120.26.121.171:50426 =&gt; 172.16.0.1:22]: login attempt for user: root (password: asdzxc123)
+2024-08-17 00:03:10 tiny-ssh-honeypot: [120.26.121.171:57214 =&gt; 172.16.0.1:22]: login attempt for user: root (password: QWer!@34)
+2024-08-17 00:03:11 tiny-ssh-honeypot: [192.109.206.13:49552 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure888888)
+2024-08-17 00:03:13 tiny-ssh-honeypot: [120.26.121.171:57226 =&gt; 172.16.0.1:22]: login attempt for user: root (password: rootme)
+2024-08-17 00:03:16 tiny-ssh-honeypot: [192.109.206.13:50900 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure8888888)
+2024-08-17 00:03:17 tiny-ssh-honeypot: [120.26.121.171:57238 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 1qaz2wsx3edc)
+2024-08-17 00:03:20 tiny-ssh-honeypot: [120.26.121.171:55384 =&gt; 172.16.0.1:22]: login attempt for user: root (password: rahasia123)
+2024-08-17 00:03:23 tiny-ssh-honeypot: [120.26.121.171:55390 =&gt; 172.16.0.1:22]: login attempt for user: root (password: meiyou)
+2024-08-17 00:03:24 tiny-ssh-honeypot: [192.109.206.13:52248 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure88888888)
+2024-08-17 00:03:26 tiny-ssh-honeypot: [120.26.121.171:55394 =&gt; 172.16.0.1:22]: login attempt for user: root (password: dev)
+2024-08-17 00:03:30 tiny-ssh-honeypot: [120.26.121.171:55404 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Jj123456)
+2024-08-17 00:03:31 tiny-ssh-honeypot: [192.109.206.13:53596 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure9999)
+2024-08-17 00:03:33 tiny-ssh-honeypot: [120.26.121.171:55028 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 192837465)
+2024-08-17 00:03:36 tiny-ssh-honeypot: [120.26.121.171:55030 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 1qaz3edc)
+2024-08-17 00:03:38 tiny-ssh-honeypot: [192.109.206.13:54944 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure99999)
+2024-08-17 00:03:40 tiny-ssh-honeypot: [120.26.121.171:55034 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Aabb1234)
+2024-08-17 00:03:43 tiny-ssh-honeypot: [120.26.121.171:32906 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Zaq12wsx)
+2024-08-17 00:03:46 tiny-ssh-honeypot: [192.109.206.13:56292 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure999999)
+2024-08-17 00:03:46 tiny-ssh-honeypot: [120.26.121.171:32920 =&gt; 172.16.0.1:22]: login attempt for user: root (password: wangwang)
+2024-08-17 00:03:50 tiny-ssh-honeypot: [120.26.121.171:32922 =&gt; 172.16.0.1:22]: login attempt for user: root (password: !@#QWEasdzxc)
+2024-08-17 00:03:53 tiny-ssh-honeypot: [120.26.121.171:49870 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qqq123...)
+2024-08-17 00:03:53 tiny-ssh-honeypot: [192.109.206.13:57640 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure9999999)
+2024-08-17 00:03:56 tiny-ssh-honeypot: [120.26.121.171:49886 =&gt; 172.16.0.1:22]: login attempt for user: root (password: !Password)
+2024-08-17 00:04:00 tiny-ssh-honeypot: [120.26.121.171:49900 =&gt; 172.16.0.1:22]: login attempt for user: root (password: P@ss1234)
+2024-08-17 00:04:00 tiny-ssh-honeypot: [192.109.206.13:58988 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Azure99999999)
+2024-08-17 00:04:03 tiny-ssh-honeypot: [120.26.121.171:58396 =&gt; 172.16.0.1:22]: login attempt for user: root (password: panasonic)
+2024-08-17 00:04:06 tiny-ssh-honeypot: [120.26.121.171:58400 =&gt; 172.16.0.1:22]: login attempt for user: root (password: changeme12)
+2024-08-17 00:04:09 tiny-ssh-honeypot: [192.109.206.13:60336 =&gt; 172.16.0.1:22]: login attempt for user: root (password: azureuser)
+2024-08-17 00:04:10 tiny-ssh-honeypot: [120.26.121.171:58412 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Slave@123)
+2024-08-17 00:04:13 tiny-ssh-honeypot: [120.26.121.171:47070 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 1@admin)
+2024-08-17 00:04:15 tiny-ssh-honeypot: [192.109.206.13:33452 =&gt; 172.16.0.1:22]: login attempt for user: root (password: B2@fK0@dC3%h)
+2024-08-17 00:04:16 tiny-ssh-honeypot: [120.26.121.171:47086 =&gt; 172.16.0.1:22]: login attempt for user: root (password: pwd@1234)
+2024-08-17 00:04:19 tiny-ssh-honeypot: [120.26.121.171:47096 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qwe12345678)
+2024-08-17 00:04:22 tiny-ssh-honeypot: [120.26.121.171:41082 =&gt; 172.16.0.1:22]: login attempt for user: root (password: secret)
+2024-08-17 00:04:23 tiny-ssh-honeypot: [192.109.206.13:34800 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Ba123456@)
+2024-08-17 00:04:25 tiny-ssh-honeypot: [120.26.121.171:41090 =&gt; 172.16.0.1:22]: login attempt for user: root (password: P@ssw0rd12345)
+2024-08-17 00:04:28 tiny-ssh-honeypot: [120.26.121.171:41092 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 1q2w3e4r@)
+2024-08-17 00:04:31 tiny-ssh-honeypot: [120.26.121.171:50778 =&gt; 172.16.0.1:22]: login attempt for user: root (password: vs123456)
+2024-08-17 00:04:32 tiny-ssh-honeypot: [192.109.206.13:36148 =&gt; 172.16.0.1:22]: login attempt for user: root (password: backup@2022)
+2024-08-17 00:04:35 tiny-ssh-honeypot: [120.26.121.171:50784 =&gt; 172.16.0.1:22]: login attempt for user: root (password: password123456789)
+2024-08-17 00:04:37 tiny-ssh-honeypot: [192.109.206.13:37496 =&gt; 172.16.0.1:22]: login attempt for user: root (password: backup@2023)
+2024-08-17 00:04:38 tiny-ssh-honeypot: [120.26.121.171:50788 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bagabu)
+2024-08-17 00:04:41 tiny-ssh-honeypot: [120.26.121.171:48968 =&gt; 172.16.0.1:22]: login attempt for user: root (password: admin.123)
+2024-08-17 00:04:44 tiny-ssh-honeypot: [120.26.121.171:48972 =&gt; 172.16.0.1:22]: login attempt for user: root (password: xiaokang)
+2024-08-17 00:04:45 tiny-ssh-honeypot: [192.109.206.13:38844 =&gt; 172.16.0.1:22]: login attempt for user: root (password: backup@2024)
+2024-08-17 00:04:48 tiny-ssh-honeypot: [120.26.121.171:48978 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Windows@2024)
+2024-08-17 00:04:51 tiny-ssh-honeypot: [120.26.121.171:36530 =&gt; 172.16.0.1:22]: login attempt for user: root (password: !QAZxsw23edc)
+2024-08-17 00:04:53 tiny-ssh-honeypot: [192.109.206.13:40192 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bagabu)
+2024-08-17 00:04:55 tiny-ssh-honeypot: [120.26.121.171:36540 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Test_123456)
+2024-08-17 00:04:59 tiny-ssh-honeypot: [120.26.121.171:36546 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Ga123456.)
+2024-08-17 00:04:59 tiny-ssh-honeypot: [192.109.206.13:41540 =&gt; 172.16.0.1:22]: login attempt for user: root (password: baidu123)
+2024-08-17 00:05:02 tiny-ssh-honeypot: [120.26.121.171:41790 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Test@2023)
+2024-08-17 00:05:06 tiny-ssh-honeypot: [120.26.121.171:41794 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 19901005Re13!)
+2024-08-17 00:05:06 tiny-ssh-honeypot: [192.109.206.13:42888 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Baidu@123)
+2024-08-17 00:05:09 tiny-ssh-honeypot: [120.26.121.171:41808 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Root123..)
+2024-08-17 00:05:12 tiny-ssh-honeypot: [120.26.121.171:36188 =&gt; 172.16.0.1:22]: login attempt for user: root (password: mercury)
+2024-08-17 00:05:14 tiny-ssh-honeypot: [192.109.206.13:44236 =&gt; 172.16.0.1:22]: login attempt for user: root (password: baidu@123)
+2024-08-17 00:05:15 tiny-ssh-honeypot: [120.26.121.171:36200 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Qwerty123#)
+2024-08-17 00:05:18 tiny-ssh-honeypot: [120.26.121.171:36210 =&gt; 172.16.0.1:22]: login attempt for user: root (password: @a123456)
+2024-08-17 00:05:21 tiny-ssh-honeypot: [192.109.206.13:45584 =&gt; 172.16.0.1:22]: login attempt for user: root (password: baison)
+2024-08-17 00:05:22 tiny-ssh-honeypot: [120.26.121.171:49336 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Qwer123$)
+2024-08-17 00:05:25 tiny-ssh-honeypot: [120.26.121.171:49338 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qweasdzxc123!@#)
+2024-08-17 00:05:28 tiny-ssh-honeypot: [120.26.121.171:49344 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Aa!123456)
+2024-08-17 00:05:29 tiny-ssh-honeypot: [192.109.206.13:46932 =&gt; 172.16.0.1:22]: login attempt for user: root (password: banana)
+2024-08-17 00:05:31 tiny-ssh-honeypot: [120.26.121.171:52790 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 22222222)
+2024-08-17 00:05:35 tiny-ssh-honeypot: [120.26.121.171:52796 =&gt; 172.16.0.1:22]: login attempt for user: root (password: python)
+2024-08-17 00:05:36 tiny-ssh-honeypot: [192.109.206.13:48280 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bananapi)
+2024-08-17 00:05:38 tiny-ssh-honeypot: [120.26.121.171:52798 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Google.com)
+2024-08-17 00:05:41 tiny-ssh-honeypot: [120.26.121.171:44110 =&gt; 172.16.0.1:22]: login attempt for user: root (password: aA!123456)
+2024-08-17 00:05:43 tiny-ssh-honeypot: [192.109.206.13:49628 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bandung)
+2024-08-17 00:05:44 tiny-ssh-honeypot: [120.26.121.171:44120 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Jp123456)
+2024-08-17 00:05:47 tiny-ssh-honeypot: [120.26.121.171:44134 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Qaz@1234)
+2024-08-17 00:05:50 tiny-ssh-honeypot: [192.109.206.13:50976 =&gt; 172.16.0.1:22]: login attempt for user: root (password: batman)
+2024-08-17 00:05:50 tiny-ssh-honeypot: [120.26.121.171:59080 =&gt; 172.16.0.1:22]: login attempt for user: root (password: install123)
+2024-08-17 00:05:54 tiny-ssh-honeypot: [120.26.121.171:59082 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Password1234)
+2024-08-17 00:05:57 tiny-ssh-honeypot: [192.109.206.13:52324 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bawodu)
+2024-08-17 00:05:57 tiny-ssh-honeypot: [120.26.121.171:59098 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Cx123456)
+2024-08-17 00:06:01 tiny-ssh-honeypot: [120.26.121.171:55466 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qaz@123!)
+2024-08-17 00:06:04 tiny-ssh-honeypot: [120.26.121.171:55470 =&gt; 172.16.0.1:22]: login attempt for user: root (password: wzdxidc123!@#)
+2024-08-17 00:06:05 tiny-ssh-honeypot: [192.109.206.13:53672 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bb112211)
+2024-08-17 00:06:07 tiny-ssh-honeypot: [120.26.121.171:55476 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Abc!@#456)
+2024-08-17 00:06:10 tiny-ssh-honeypot: [120.26.121.171:55490 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Qqqqqqq1)
+2024-08-17 00:06:13 tiny-ssh-honeypot: [192.109.206.13:55020 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bb123456)
+2024-08-17 00:06:13 tiny-ssh-honeypot: [120.26.121.171:49266 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 123456@a)
+2024-08-17 00:06:16 tiny-ssh-honeypot: [120.26.121.171:49282 =&gt; 172.16.0.1:22]: login attempt for user: root (password: nagiosxi)
+2024-08-17 00:06:19 tiny-ssh-honeypot: [120.26.121.171:49288 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Aa111222)
+2024-08-17 00:06:21 tiny-ssh-honeypot: [192.109.206.13:56368 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bb123456!)
+2024-08-17 00:06:22 tiny-ssh-honeypot: [120.26.121.171:55504 =&gt; 172.16.0.1:22]: login attempt for user: root (password: zdsoft2020@winupon.com)
+2024-08-17 00:06:26 tiny-ssh-honeypot: [120.26.121.171:55516 =&gt; 172.16.0.1:22]: login attempt for user: root (password: AAAbbb123456)
+2024-08-17 00:06:27 tiny-ssh-honeypot: [192.109.206.13:57716 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bb@147258)
+2024-08-17 00:06:29 tiny-ssh-honeypot: [120.26.121.171:55532 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Pa$$word)
+2024-08-17 00:06:32 tiny-ssh-honeypot: [120.26.121.171:39134 =&gt; 172.16.0.1:22]: login attempt for user: root (password: electric)
+2024-08-17 00:06:35 tiny-ssh-honeypot: [120.26.121.171:39150 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Rm123456)
+2024-08-17 00:06:35 tiny-ssh-honeypot: [192.109.206.13:59064 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bd2020@)!$0518)
+2024-08-17 00:06:39 tiny-ssh-honeypot: [120.26.121.171:39164 =&gt; 172.16.0.1:22]: login attempt for user: root (password: !QAZxsw2#EDCvfr4)
+2024-08-17 00:06:42 tiny-ssh-honeypot: [120.26.121.171:39586 =&gt; 172.16.0.1:22]: login attempt for user: root (password: abc123456@)
+2024-08-17 00:06:43 tiny-ssh-honeypot: [192.109.206.13:60412 =&gt; 172.16.0.1:22]: login attempt for user: root (password: beijing2008)
+2024-08-17 00:06:46 tiny-ssh-honeypot: [120.26.121.171:39598 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qazwsx456)
+2024-08-17 00:06:48 tiny-ssh-honeypot: [192.109.206.13:33528 =&gt; 172.16.0.1:22]: login attempt for user: root (password: beijing@123)
+2024-08-17 00:06:49 tiny-ssh-honeypot: [120.26.121.171:39608 =&gt; 172.16.0.1:22]: login attempt for user: root (password: vk@123456)
+2024-08-17 00:06:52 tiny-ssh-honeypot: [120.26.121.171:52184 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 1qaz@2WSX)
+2024-08-17 00:06:57 tiny-ssh-honeypot: [120.26.121.171:52192 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Pc123456)
+2024-08-17 00:06:57 tiny-ssh-honeypot: [192.109.206.13:34876 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Berbidvps.ir)
+2024-08-17 00:07:00 tiny-ssh-honeypot: [120.26.121.171:45966 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Mima@2024)
+2024-08-17 00:07:04 tiny-ssh-honeypot: [120.26.121.171:45968 =&gt; 172.16.0.1:22]: login attempt for user: root (password: password#123)
+2024-08-17 00:07:06 tiny-ssh-honeypot: [192.109.206.13:36224 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bf123456)
+2024-08-17 00:07:07 tiny-ssh-honeypot: [120.26.121.171:45978 =&gt; 172.16.0.1:22]: login attempt for user: root (password: root-123)
+2024-08-17 00:07:11 tiny-ssh-honeypot: [120.26.121.171:37124 =&gt; 172.16.0.1:22]: login attempt for user: root (password: zero)
+2024-08-17 00:07:13 tiny-ssh-honeypot: [192.109.206.13:37572 =&gt; 172.16.0.1:22]: login attempt for user: root (password: BFidc!@#456)
+2024-08-17 00:07:14 tiny-ssh-honeypot: [120.26.121.171:37134 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 123qaz!@#)
+2024-08-17 00:07:18 tiny-ssh-honeypot: [120.26.121.171:37146 =&gt; 172.16.0.1:22]: login attempt for user: root (password: user21)
+2024-08-17 00:07:18 tiny-ssh-honeypot: [192.109.206.13:38920 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bgj948888)
+2024-08-17 00:07:21 tiny-ssh-honeypot: [120.26.121.171:42200 =&gt; 172.16.0.1:22]: login attempt for user: root (password: daniel12)
+2024-08-17 00:07:24 tiny-ssh-honeypot: [120.26.121.171:42204 =&gt; 172.16.0.1:22]: login attempt for user: root (password: abc123#@!)
+2024-08-17 00:07:25 tiny-ssh-honeypot: [192.109.206.13:40268 =&gt; 172.16.0.1:22]: login attempt for user: root (password: BHRT**56$wx*%*St)
+2024-08-17 00:07:27 tiny-ssh-honeypot: [120.26.121.171:42214 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 19890101)
+2024-08-17 00:07:32 tiny-ssh-honeypot: [120.26.121.171:41316 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 0RY%GWa^MC34E*Fp1A)
+2024-08-17 00:07:32 tiny-ssh-honeypot: [192.109.206.13:41616 =&gt; 172.16.0.1:22]: login attempt for user: root (password: BHU*nji9)
+2024-08-17 00:07:35 tiny-ssh-honeypot: [120.26.121.171:41324 =&gt; 172.16.0.1:22]: login attempt for user: root (password: QWEasdzxc123)
+2024-08-17 00:07:38 tiny-ssh-honeypot: [120.26.121.171:41328 =&gt; 172.16.0.1:22]: login attempt for user: root (password: @12345678)
+2024-08-17 00:07:40 tiny-ssh-honeypot: [192.109.206.13:42964 =&gt; 172.16.0.1:22]: login attempt for user: root (password: birgit)
+2024-08-17 00:07:42 tiny-ssh-honeypot: [120.26.121.171:45174 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 4rfv%TGB6yhn)
+2024-08-17 00:07:45 tiny-ssh-honeypot: [120.26.121.171:45182 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Qwerty123456)
+2024-08-17 00:07:48 tiny-ssh-honeypot: [120.26.121.171:45198 =&gt; 172.16.0.1:22]: login attempt for user: root (password: florian1)
+2024-08-17 00:07:49 tiny-ssh-honeypot: [192.109.206.13:44312 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bismillah)
+2024-08-17 00:07:52 tiny-ssh-honeypot: [120.26.121.171:34622 =&gt; 172.16.0.1:22]: login attempt for user: root (password: www.hao123)
+2024-08-17 00:07:55 tiny-ssh-honeypot: [192.109.206.13:45660 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bismillah@123)
+2024-08-17 00:07:55 tiny-ssh-honeypot: [120.26.121.171:34626 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 644612Pp)
+2024-08-17 00:07:59 tiny-ssh-honeypot: [120.26.121.171:34640 =&gt; 172.16.0.1:22]: login attempt for user: root (password: root@888)
+2024-08-17 00:08:02 tiny-ssh-honeypot: [192.109.206.13:47008 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bjdv@2023)
+2024-08-17 00:08:02 tiny-ssh-honeypot: [120.26.121.171:37434 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Root2023)
+2024-08-17 00:08:05 tiny-ssh-honeypot: [120.26.121.171:37436 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qazqaz)
+2024-08-17 00:08:09 tiny-ssh-honeypot: [120.26.121.171:37448 =&gt; 172.16.0.1:22]: login attempt for user: root (password: legend)
+2024-08-17 00:08:10 tiny-ssh-honeypot: [192.109.206.13:48356 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Blackberry1)
+2024-08-17 00:08:12 tiny-ssh-honeypot: [120.26.121.171:33372 =&gt; 172.16.0.1:22]: login attempt for user: root (password: dell-123)
+2024-08-17 00:08:16 tiny-ssh-honeypot: [120.26.121.171:33388 =&gt; 172.16.0.1:22]: login attempt for user: root (password: root!@#123)
+2024-08-17 00:08:17 tiny-ssh-honeypot: [192.109.206.13:49704 =&gt; 172.16.0.1:22]: login attempt for user: root (password: blackjack)
+2024-08-17 00:08:19 tiny-ssh-honeypot: [120.26.121.171:33398 =&gt; 172.16.0.1:22]: login attempt for user: root (password: igor)
+2024-08-17 00:08:22 tiny-ssh-honeypot: [120.26.121.171:59712 =&gt; 172.16.0.1:22]: login attempt for user: root (password: yy123456)
+2024-08-17 00:08:25 tiny-ssh-honeypot: [192.109.206.13:51052 =&gt; 172.16.0.1:22]: login attempt for user: root (password: blink182)
+2024-08-17 00:08:26 tiny-ssh-honeypot: [120.26.121.171:59716 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Google12345)
+2024-08-17 00:08:30 tiny-ssh-honeypot: [120.26.121.171:59724 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Wang1997)
+2024-08-17 00:08:32 tiny-ssh-honeypot: [192.109.206.13:52400 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bonjour)
+2024-08-17 00:08:33 tiny-ssh-honeypot: [120.26.121.171:42416 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 1234567890Aa)
+2024-08-17 00:08:36 tiny-ssh-honeypot: [120.26.121.171:42422 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Abcde!@#$%)
+2024-08-17 00:08:38 tiny-ssh-honeypot: [192.109.206.13:53748 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bonuscloud2019)
+2024-08-17 00:08:40 tiny-ssh-honeypot: [120.26.121.171:42432 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Oracle@123)
+2024-08-17 00:08:43 tiny-ssh-honeypot: [120.26.121.171:49592 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 123abc,.)
+2024-08-17 00:08:46 tiny-ssh-honeypot: [192.109.206.13:55096 =&gt; 172.16.0.1:22]: login attempt for user: root (password: boyun@123)
+2024-08-17 00:08:47 tiny-ssh-honeypot: [120.26.121.171:49602 =&gt; 172.16.0.1:22]: login attempt for user: root (password: abcd=1234)
+2024-08-17 00:08:50 tiny-ssh-honeypot: [120.26.121.171:59410 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 123asd123)
+2024-08-17 00:08:53 tiny-ssh-honeypot: [192.109.206.13:56444 =&gt; 172.16.0.1:22]: login attempt for user: root (password: BPBOSD2025@*)
+2024-08-17 00:08:54 tiny-ssh-honeypot: [120.26.121.171:59420 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qwe123.com)
+2024-08-17 00:08:57 tiny-ssh-honeypot: [120.26.121.171:59430 =&gt; 172.16.0.1:22]: login attempt for user: root (password: abc1234567)
+2024-08-17 00:09:01 tiny-ssh-honeypot: [120.26.121.171:42576 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Xp.123456)
+2024-08-17 00:09:02 tiny-ssh-honeypot: [192.109.206.13:57792 =&gt; 172.16.0.1:22]: login attempt for user: root (password: BPBOSD888@*)
+2024-08-17 00:09:05 tiny-ssh-honeypot: [120.26.121.171:42592 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Qwe@123456)
+2024-08-17 00:09:08 tiny-ssh-honeypot: [120.26.121.171:42604 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 77585200)
+2024-08-17 00:09:09 tiny-ssh-honeypot: [192.109.206.13:59140 =&gt; 172.16.0.1:22]: login attempt for user: root (password: brain)
+2024-08-17 00:09:12 tiny-ssh-honeypot: [120.26.121.171:45368 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 19880203)
+2024-08-17 00:09:15 tiny-ssh-honeypot: [120.26.121.171:45376 =&gt; 172.16.0.1:22]: login attempt for user: root (password: testpw)
+2024-08-17 00:09:16 tiny-ssh-honeypot: [192.109.206.13:60488 =&gt; 172.16.0.1:22]: login attempt for user: root (password: broadguam1)
+2024-08-17 00:09:19 tiny-ssh-honeypot: [120.26.121.171:45392 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qaz123!@#)
+2024-08-17 00:09:22 tiny-ssh-honeypot: [120.26.121.171:49492 =&gt; 172.16.0.1:22]: login attempt for user: root (password: global@123)
+2024-08-17 00:09:22 tiny-ssh-honeypot: [192.109.206.13:33604 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bss)
+2024-08-17 00:09:26 tiny-ssh-honeypot: [120.26.121.171:49504 =&gt; 172.16.0.1:22]: login attempt for user: root (password: system32)
+2024-08-17 00:09:30 tiny-ssh-honeypot: [192.109.206.13:34952 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bt123456)
+2024-08-17 00:09:30 tiny-ssh-honeypot: [120.26.121.171:49514 =&gt; 172.16.0.1:22]: login attempt for user: root (password: He123456)
+2024-08-17 00:09:33 tiny-ssh-honeypot: [120.26.121.171:45010 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 101010)
+2024-08-17 00:09:36 tiny-ssh-honeypot: [120.26.121.171:45012 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 123459)
+2024-08-17 00:09:38 tiny-ssh-honeypot: [192.109.206.13:36300 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bt@123456)
+2024-08-17 00:09:40 tiny-ssh-honeypot: [120.26.121.171:45026 =&gt; 172.16.0.1:22]: login attempt for user: root (password: q1q1q1q1q1)
+2024-08-17 00:09:43 tiny-ssh-honeypot: [120.26.121.171:57526 =&gt; 172.16.0.1:22]: login attempt for user: root (password: sq123!@#)
+2024-08-17 00:09:45 tiny-ssh-honeypot: [192.109.206.13:37648 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bubu1986)
+2024-08-17 00:09:47 tiny-ssh-honeypot: [120.26.121.171:57538 =&gt; 172.16.0.1:22]: login attempt for user: root (password: P@ssword!)
+2024-08-17 00:09:51 tiny-ssh-honeypot: [120.26.121.171:57250 =&gt; 172.16.0.1:22]: login attempt for user: root (password: chenjian)
+2024-08-17 00:09:53 tiny-ssh-honeypot: [192.109.206.13:38996 =&gt; 172.16.0.1:22]: login attempt for user: root (password: bugaosuni)
+2024-08-17 00:09:54 tiny-ssh-honeypot: [120.26.121.171:57266 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qaz123WSX)
+2024-08-17 00:09:57 tiny-ssh-honeypot: [120.26.121.171:57272 =&gt; 172.16.0.1:22]: login attempt for user: root (password: razor)
+2024-08-17 00:10:01 tiny-ssh-honeypot: [192.109.206.13:40344 =&gt; 172.16.0.1:22]: login attempt for user: root (password: butterfly)
+2024-08-17 00:10:02 tiny-ssh-honeypot: [120.26.121.171:47996 =&gt; 172.16.0.1:22]: login attempt for user: root (password: butterfly)
+2024-08-17 00:10:05 tiny-ssh-honeypot: [120.26.121.171:47998 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Ubuntu@2023)
+2024-08-17 00:10:08 tiny-ssh-honeypot: [120.26.121.171:48000 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qazxsw1234)
+2024-08-17 00:10:09 tiny-ssh-honeypot: [192.109.206.13:41692 =&gt; 172.16.0.1:22]: login attempt for user: root (password: buzhidao)
+2024-08-17 00:10:12 tiny-ssh-honeypot: [120.26.121.171:50768 =&gt; 172.16.0.1:22]: login attempt for user: root (password: admin2018)
+2024-08-17 00:10:14 tiny-ssh-honeypot: [192.109.206.13:43040 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Buzz0ff123)
+2024-08-17 00:10:15 tiny-ssh-honeypot: [120.26.121.171:50780 =&gt; 172.16.0.1:22]: login attempt for user: root (password: vps12)
+2024-08-17 00:10:18 tiny-ssh-honeypot: [120.26.121.171:50782 =&gt; 172.16.0.1:22]: login attempt for user: root (password: tang)
+2024-08-17 00:10:22 tiny-ssh-honeypot: [120.26.121.171:59158 =&gt; 172.16.0.1:22]: login attempt for user: root (password: root2023!)
+2024-08-17 00:10:22 tiny-ssh-honeypot: [192.109.206.13:44388 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Bx123456)
+2024-08-17 00:10:25 tiny-ssh-honeypot: [120.26.121.171:59174 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Cloud1234)
+2024-08-17 00:10:28 tiny-ssh-honeypot: [120.26.121.171:59180 =&gt; 172.16.0.1:22]: login attempt for user: root (password: magnum)
+2024-08-17 00:10:29 tiny-ssh-honeypot: [192.109.206.13:45736 =&gt; 172.16.0.1:22]: login attempt for user: root (password: c0mpl#x)
+2024-08-17 00:10:32 tiny-ssh-honeypot: [120.26.121.171:46102 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 12345678a!)
+2024-08-17 00:10:35 tiny-ssh-honeypot: [120.26.121.171:46114 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qQ123456)
+2024-08-17 00:10:36 tiny-ssh-honeypot: [192.109.206.13:47084 =&gt; 172.16.0.1:22]: login attempt for user: root (password: c9p5au8naa)
+2024-08-17 00:10:39 tiny-ssh-honeypot: [120.26.121.171:46124 =&gt; 172.16.0.1:22]: login attempt for user: root (password: aA12345678)
+2024-08-17 00:10:43 tiny-ssh-honeypot: [120.26.121.171:43020 =&gt; 172.16.0.1:22]: login attempt for user: root (password: matrix)
+2024-08-17 00:10:43 tiny-ssh-honeypot: [192.109.206.13:48432 =&gt; 172.16.0.1:22]: login attempt for user: root (password: CactiEZ)
+2024-08-17 00:10:46 tiny-ssh-honeypot: [120.26.121.171:43026 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 123456qaZ)
+2024-08-17 00:10:49 tiny-ssh-honeypot: [120.26.121.171:43028 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Power:Asdasdbgt)
+2024-08-17 00:10:51 tiny-ssh-honeypot: [192.109.206.13:49780 =&gt; 172.16.0.1:22]: login attempt for user: root (password: cactifans.org)
+2024-08-17 00:10:53 tiny-ssh-honeypot: [120.26.121.171:44392 =&gt; 172.16.0.1:22]: login attempt for user: root (password: pass@123)
+2024-08-17 00:10:56 tiny-ssh-honeypot: [120.26.121.171:44404 =&gt; 172.16.0.1:22]: login attempt for user: root (password: killer123)
+2024-08-17 00:10:58 tiny-ssh-honeypot: [192.109.206.13:51128 =&gt; 172.16.0.1:22]: login attempt for user: root (password: calvin)
+2024-08-17 00:11:00 tiny-ssh-honeypot: [120.26.121.171:44414 =&gt; 172.16.0.1:22]: login attempt for user: root (password: senha)
+2024-08-17 00:11:04 tiny-ssh-honeypot: [120.26.121.171:37840 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Server2016)
+2024-08-17 00:11:05 tiny-ssh-honeypot: [192.109.206.13:52476 =&gt; 172.16.0.1:22]: login attempt for user: root (password: caonima)
+2024-08-17 00:11:07 tiny-ssh-honeypot: [120.26.121.171:37854 =&gt; 172.16.0.1:22]: login attempt for user: root (password: su198671@)
+2024-08-17 00:11:10 tiny-ssh-honeypot: [120.26.121.171:34634 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 1Qaz2wsx)
+2024-08-17 00:11:14 tiny-ssh-honeypot: [120.26.121.171:34638 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Login123!)
+2024-08-17 00:11:15 tiny-ssh-honeypot: [192.109.206.13:53824 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Caonima123)
+2024-08-17 00:11:17 tiny-ssh-honeypot: [120.26.121.171:34642 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Qwerasdf123)
+2024-08-17 00:11:20 tiny-ssh-honeypot: [192.109.206.13:55172 =&gt; 172.16.0.1:22]: login attempt for user: root (password: carlos123)
+2024-08-17 00:11:20 tiny-ssh-honeypot: [120.26.121.171:46682 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Abc#1234)
+2024-08-17 00:11:24 tiny-ssh-honeypot: [120.26.121.171:46698 =&gt; 172.16.0.1:22]: login attempt for user: root (password: google123)
+2024-08-17 00:11:27 tiny-ssh-honeypot: [192.109.206.13:56520 =&gt; 172.16.0.1:22]: login attempt for user: root (password: cartorio)
+2024-08-17 00:11:27 tiny-ssh-honeypot: [120.26.121.171:46704 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 12345@Qwert)
+2024-08-17 00:11:31 tiny-ssh-honeypot: [120.26.121.171:59374 =&gt; 172.16.0.1:22]: login attempt for user: root (password: t00r)
+2024-08-17 00:11:34 tiny-ssh-honeypot: [120.26.121.171:59386 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Xu123456)
+2024-08-17 00:11:36 tiny-ssh-honeypot: [192.109.206.13:57868 =&gt; 172.16.0.1:22]: login attempt for user: root (password: casa)
+2024-08-17 00:11:38 tiny-ssh-honeypot: [120.26.121.171:59392 =&gt; 172.16.0.1:22]: login attempt for user: root (password: zZ123456)
+2024-08-17 00:11:41 tiny-ssh-honeypot: [120.26.121.171:51996 =&gt; 172.16.0.1:22]: login attempt for user: root (password: temporal)
+2024-08-17 00:11:42 tiny-ssh-honeypot: [192.109.206.13:59216 =&gt; 172.16.0.1:22]: login attempt for user: root (password: casa123)
+2024-08-17 00:11:44 tiny-ssh-honeypot: [120.26.121.171:52012 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qwerty11)
+2024-08-17 00:11:48 tiny-ssh-honeypot: [120.26.121.171:52020 =&gt; 172.16.0.1:22]: login attempt for user: root (password: 19890613)
+2024-08-17 00:11:49 tiny-ssh-honeypot: [192.109.206.13:60564 =&gt; 172.16.0.1:22]: login attempt for user: root (password: casper)
+2024-08-17 00:11:51 tiny-ssh-honeypot: [120.26.121.171:52948 =&gt; 172.16.0.1:22]: login attempt for user: root (password: asd123321)
+2024-08-17 00:11:55 tiny-ssh-honeypot: [120.26.121.171:52950 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Yhsj_Bz@2022)
+2024-08-17 00:11:56 tiny-ssh-honeypot: [192.109.206.13:33680 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Cc123456.)
+2024-08-17 00:11:59 tiny-ssh-honeypot: [120.26.121.171:52964 =&gt; 172.16.0.1:22]: login attempt for user: root (password: qweasd@123)
+2024-08-17 00:12:02 tiny-ssh-honeypot: [120.26.121.171:46010 =&gt; 172.16.0.1:22]: login attempt for user: root (password: woaini520)
+2024-08-17 00:12:04 tiny-ssh-honeypot: [192.109.206.13:35028 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Cd123456)
+2024-08-17 00:12:05 tiny-ssh-honeypot: [120.26.121.171:46026 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Sj123456!)
+2024-08-17 00:12:08 tiny-ssh-honeypot: [120.26.121.171:46040 =&gt; 172.16.0.1:22]: login attempt for user: root (password: tc123456)
+2024-08-17 00:12:11 tiny-ssh-honeypot: [192.109.206.13:36376 =&gt; 172.16.0.1:22]: login attempt for user: root (password: cde3CDE#vfr4)
+2024-08-17 00:12:12 tiny-ssh-honeypot: [120.26.121.171:57978 =&gt; 172.16.0.1:22]: login attempt for user: root (password: AAbbcc123)
+2024-08-17 00:12:15 tiny-ssh-honeypot: [120.26.121.171:57990 =&gt; 172.16.0.1:22]: login attempt for user: root (password: !Aa123456)
+2024-08-17 00:12:19 tiny-ssh-honeypot: [120.26.121.171:58004 =&gt; 172.16.0.1:22]: login attempt for user: root (password: ubuntu2019)
+2024-08-17 00:12:20 tiny-ssh-honeypot: [192.109.206.13:37724 =&gt; 172.16.0.1:22]: login attempt for user: root (password: cdnjiasu@886699)
+2024-08-17 00:12:22 tiny-ssh-honeypot: [120.26.121.171:51380 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Yi123456)
+2024-08-17 00:12:26 tiny-ssh-honeypot: [120.26.121.171:51386 =&gt; 172.16.0.1:22]: login attempt for user: root (password: Al123456.)
+2024-08-17 00:12:28 tiny-ssh-honeypot: [192.109.206.13:39072 =&gt; 172.16.0.1:22]: login attempt for user: root (password: CDtianrun888)</code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[自尊发展的三个阶段：条件自尊、独立型自尊、无条件自尊]]></title>
+            <guid>824c72c473364fb5a96bd8d9fb5a06c0</guid>
+            <pubDate>Mon, 12 Aug 2024 23:35:54 GMT</pubDate>
+            <content:encoded><![CDATA[<p>美国心理学家泰勒·本·沙哈尔，将自尊的成长分为三个阶段：</p>
+<h2 id="第一阶段依赖型自尊条件自尊">第一阶段：依赖型自尊（条件自尊）</h2>
+<p>指的是依赖他人肯定和表扬而产生的自尊，把生活的动力归结于他人的看法。<br />
+比如，就业时，会倾向高名望、高地位的工作；选择伴侣时，主要考虑别人是否肯定、是否喜欢。</p>
+<h2 id="第二阶段独立型自尊">第二阶段：独立型自尊</h2>
+<p>指的是不依靠他人的看法，自我产生的自尊。<br />
+对自己的评判，是根据自我的标准，比如，我很清楚自己的学习是否努力、工作是否用心。<br />
+尽管别人对此有很多看法，但最终是由自己来衡量的。<br />
+这样的人在思考自己能力大小时，不会与他人比较，而是和过去的自己比较。</p>
+<h2 id="第三阶段无条件自尊">第三阶段：无条件自尊</h2>
+<p>指的是既不依靠他人的看法，也不陷入自我的评判，根本就不需要对自尊进行评价。<br />
+比如，写一本书，依赖型自尊较强的人，会和其他书籍进行比较，动力来自他人的赞扬和肯定；<br />
+独立型自尊较强的人，满足感来自个人写作水平的进步，由自己来决定书写的好坏；<br />
+而无条件自尊较强的人，写书的目的很简单：就是当有好的想法时，希望能用书呈现出来。</p>
+<h3 id="第二-第三阶段的自尊并不是轻易就能达到的境界是一个需要时间-精力自我有意识培养从失败中吸取经验的缓慢过程">第二、第三阶段的自尊并不是轻易就能达到的境界，是一个需要时间、精力，自我有意识培养，从失败中吸取经验的缓慢过程。</h3>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Flutter三种默认BuildType]]></title>
+            <guid>73989c3fa92148599035484b5c3860e3</guid>
+            <pubDate>Wed, 10 Jul 2024 00:15:13 GMT</pubDate>
+            <content:encoded><![CDATA[<p>刚巧最近在处理Android端Debug模式下add-2-app运行时的一个问题：</p>
+<div><pre class="hljs"><code>[FATAL:flutter/runtime/dart_vm_initializer.cc(22)] Error while initializing the Dart VM: Precompiled runtime requires a precompiled snapshot</code></pre></div>
+<p>从报错信息不难看出，这是release运行模式下没有找到预编译的可执行文件。但是，实际上编译的时候指定的是Debug模式。</p>
+<blockquote>
+<p>最终问题还是解决了，原先项目（低版本Flutter）在项目集成的时候，把release模式下的libflutter.so库文件放到了项目中（相当于本地so库），于是，戏剧化的一幕出现了，无论是升级Flutter版本，亦或是打debug的包进行调试，由于本地so库的优先级要高于三方库依赖（比如Flutter）中的so库优先级。在编译使用了pickFirst的情况下（其实早该发现这个问题的，因为之前调试问题的时候就有提示libflutter.so库存在两份，但是，按照常规处理方式，一般都是直接pickFirst了事，但是这个项目的依赖方式确实有点少见），就会导致debug运行时，使用了release的so库，于是release的so库会去尝试在debug环境下寻找release的资源文件，这当然是找不到的，于是就有了上面的错误。</p>
+</blockquote>
+<ul>
+<li>Flutter默认提供三种BuildType：Debug、Release、Profile，其中
+<ul>
+<li>Debug：主要用于调试，特点：运行速度较慢，基于Dart的JIT模式(Just-in-Time)（比如Python、JavaScript的V8引擎）
+<ul>
+<li>JIT 模式下，能动态下发和执行代码，不用考虑所使用的机器架构。</li>
+</ul>
+</li>
+<li>Release：主要用于发布，特点：基于Dart的AOT模式(Ahead-of-Time)（比如GoLang、C、CPP），即，编译为目标平台的机器码后再执行（可以选择去除符号表）</li>
+<li>Profile：主要用于release下的性能跟踪：基于Debug的运行环境，但是，使用AOT模式编译，不支持调试，但是支持几乎所有的性能监听组件</li>
+</ul>
+</li>
+</ul>
+<p>我们今天主要讲Debug和Release，首先看下官方文档中的说明：</p>
+<ul>
+<li>对于Debug：
+<ul>
+<li><strong>Assertions are enabled.</strong></li>
+<li>Service extensions are enabled.</li>
+<li><strong>Compilation is optimized for fast development and run cycles (but not for execution speed, binary size, or deployment).</strong></li>
+<li><strong>Debugging is enabled, and tools supporting source level debugging (such as DevTools) can connect to the process.</strong></li>
+</ul>
+</li>
+<li>对于Release：
+<ul>
+<li><strong>Assertions are disabled.</strong></li>
+<li><strong>Debugging information is stripped out.</strong></li>
+<li><strong>Debugging is disabled.</strong></li>
+<li><strong>Compilation is optimized for fast startup, fast execution, and small package sizes.</strong></li>
+<li>Service extensions are disabled.</li>
+</ul>
+</li>
+<li>对于Profile：
+<ul>
+<li><strong>Some service extensions, such as the one that enables the performance overlay, are enabled.</strong></li>
+<li>Tracing is enabled, and tools supporting source-level debugging (such as DevTools) can connect to the process.</li>
+</ul>
+</li>
+</ul>
+<p>然后我们大致看下编译进最终安装包中的文件有哪些，以及他们的结构，这里只看下Android端，其他端类似（基于flutter3.19版本）：<br />
+Debug模式：</p>
+<div><pre class="hljs"><code>.
+├── AndroidManifest.xml
+.
+.
+.
+├── R.txt
+├── assets
+│   └── flutter_assets
+│       ├── isolate_snapshot_data
+│       ├── kernel_blob.bin
+│       └── vm_snapshot_data
+├── classes.jar
+└── libs
+    └── libs.jar</code></pre></div>
+<p>Release：</p>
+<div><pre class="hljs"><code>.
+├── AndroidManifest.xml
+.
+.
+.
+├── R.txt
+├── arm64-v8a
+├── armeabi-v7a
+├── classes.jar
+├── jni
+│   ├── arm64-v8a
+│   │   └── libapp.so
+│   ├── armeabi-v7a
+│   │   └── libapp.so
+│   └── x86_64
+│       └── libapp.so
+└── x86_64</code></pre></div>
+<p>除了这些之外，还有一个flutter_embedding也会参与编译。</p>
+<p>我们先大致看下编译时中间产物目录的情况<br />
+<img src="/_resources/2f6e9376a8a847c5a1ca37ebe5cc2437.png" alt="19a1d45184f598772e2e46a27df8b7c5.png" width="853" height="505" class="jop-noMdConv" /></p>
+<p>从源码来看，编译中会执行如下指令来生成编译产物：</p>
+<p>Debug模式下：</p>
+<ul>
+<li><code>flutter build bundle</code>，将相关文件，比如: assets、vm_snapshot_data、isolate_snapshot_data（这俩文件我们在下一段release部分的app-aot-blobs的aot编译模式时一起看） 和 kernel_blob.bin放入 flutter_assets 目录中。业务代码被生成在 kernel_blob.bin 中（app.dill），这里就和release不一样，app.dill或者kernel_blob.bin并不会继续编译为二进制，所以，debug模式下的编译速度也是要远远快于release的。</li>
+</ul>
+<p>Release模式下：</p>
+<ul>
+<li><code>flutter build aot</code>（会先生成 app.dill，随后也会生成snpshot，但是和debug的snapshot不一样，分为两种模式：<code>app-aot-assemble</code> 和 <code>app-aot-blobs</code>。对于iOS 或者手动添加了 <code>--build-shared-library</code> 参数的会使用 <code>app-aot-assemble</code>。
+<ul>
+<li>生成app.dill，我们来看下简化的命令，剔除了一些参数）: <code>dart frontend_server.dart.snapshot --output-dill app.dill packages:main.dart</code>。</li>
+<li><code>app-aot-assemble</code>模式: <code>flutter build aot --build-shared-library</code>（这种模式下，会将产物编译为二进制文件，在 iOS 上为 App.framework，Android 上则为 app.so）</li>
+<li><code>app-aot-blobs</code>模式（Android 默认使用的模式，但是在 Flutter SDK 1.7.x 也已经改成 app-aot-assemble 模式。）会生成如下四个文件
+<ul>
+<li><code>isolate_snapshot_data</code>：
+<ul>
+<li>表示 isolate 堆存储区的初始状态和特定的信息。和 vm_snapshot_data 配合，更快的启动 Dart VM。</li>
+</ul>
+</li>
+<li><code>isolate_snapshot_instr</code>:
+<ul>
+<li>包含由 Dart isolate 执行的 AOT 代码。</li>
+</ul>
+</li>
+<li><code>vm_snapshot_data</code>:
+<ul>
+<li>表示 isolates 之间的共享的 Dart 堆存储区的初始状态，用于更快的启动 Dart VM。</li>
+</ul>
+</li>
+<li><code>vm_snapshot_instr</code>:
+<ul>
+<li>包含 VM 中所有的 isolates 之间共享的常见例程的指令</li>
+</ul>
+</li>
+<li><strong>isolate_snapshot_data 和 isolate_snapshot_instr 跟业务相关，而 vm_snapshot_data 和 vm_snapshot_instr 则是跟 VM 相关，无关业务。</strong></li>
+</ul>
+</li>
+<li>区别：assemble不需要 Dart VM 环境，只需要 Dart Runtime，所以，执行速度较快，但是，无法动态执行代码。这也是AppStore的限制，导致iOS只能试用assemble模式：<code>App Store does not allow dispatch binary executable code.</code></li>
+</ul>
+</li>
+<li><code>flutter build bundle --precompiled</code>: 几乎同debug，区别是release会指定 <code>--precompiled</code>，所以，只会生成assets，并且打包。而debug模式下，由于没有 <code>--precompiled</code>（也就是没有经历build aot的过程），所以，需要生成<code>vm_snapshot_data</code>、<code>isolate_snapshot_data</code>。</li>
+</ul>
+<p>这边要区别一下JS端：</p>
+<ul>
+<li>JS端的release是通过dart2js（前身是一个名为<a title="https://ariya.io/2012/02/using-the-new-frog-compiler-from-dart-editor" href="https://ariya.io/2012/02/using-the-new-frog-compiler-from-dart-editor">frog</a>的库）编译为js文件运行的，和原生的debug、release有较大的区别。
+<ul>
+<li>比如手动编译某个项目的main.dart
+<ul>
+<li><code>dart compile js -O4 -o out/flutter.main.js web/main.dart</code>
+<ul>
+<li>其中<code>-O4</code>是使用等级为4的编译优化</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Openwrt中通过对Dnsmasq进行DUMP来排查dns缓存问题]]></title>
+            <guid>f1baff6a14074fe49e99f54fe58a26b0</guid>
+            <pubDate>Wed, 03 Jul 2024 00:05:00 GMT</pubDate>
+            <content:encoded><![CDATA[<p>首先Openwrt中开启Dnsmasq的日志功能。</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
+uci <span class="hljs-built_in">set</span> dhcp.cfg01411c.logqueries=<span class="hljs-string">'1'</span>
+uci commit
+
+<span class="hljs-comment"># 当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
+uci <span class="hljs-built_in">set</span> dhcp.@dnsmasq[0].logqueries=<span class="hljs-string">'1'</span>
+uci commit</code></pre></div>
+<p>这会让<code>Openwrt</code>生成的配置文件中的<code>log-queries</code>变为启用状态。</p>
+<p>然后重启Dnsmasq</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 重启</span>
+/etc/init.d/dnsmasq restart</code></pre></div>
+<p>重启/重载完可以检查下配置文件是不是正确生成了：</p>
+<div><pre class="hljs"><code>grep <span class="hljs-string">"log-queries"</span> /var/etc/dnsmasq.conf*</code></pre></div>
+<p>然后开俩终端<br />
+终端一用于监视日志</p>
+<div><pre class="hljs"><code>logread -f</code></pre></div>
+<p>终端二用于发送信号量，以触发dump</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 调用pidof子命令获取Dnsmasq的进程号，再给对应进程发送SIGUSR1信号</span>
+<span class="hljs-built_in">kill</span> -SIGUSR1 `pidof /usr/sbin/dnsmasq`</code></pre></div>
+<p>然后即可看到dump内容，大致如下</p>
+<div><pre class="hljs"><code>Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: time 3487
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cache size 150, 0/163 cache insertions re-used unexpired cache entries.
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: queries forwarded 98, queries answered locally 38
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: queries for authoritative zones 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-query subqueries HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-query crypto work HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-RRSet signature fails HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: pool memory in use 0, max 88, allocated 2200
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: child processes for TCP requests: in use 0, highest since last SIGUSR1 0, max allowed 20.
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: server 127.0.0.1#5333: queries sent 98, retried 0, failed 0, nxdomain replies 3, avg. latency 597ms
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: Host                           Address                                  Flags      Expires                  Source
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ------------------------------ ---------------------------------------- ---------- ------------------------ ------------
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: mtalk.google.com               mobile-gtalk.l.google.com                CF         62
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-localhost                  ::1                                      6F I   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: upp-cdn.itunes-apple.com.akadn ioshost.qtlcdn.com                       CF         4294967112
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-loopback                   ::1                                      6F I   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-allnodes.lan               ff02::1                                  6FRI   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: assis.local.lan                                                         !F I   H   0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: clients4.google.com            clients.l.google.com                     CF         4294967271
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ipcdn-lb.apple.com.akadns.net  ioshost.qtlcdn.com                       CF         4294967292
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ajax.googleapis.com            142.250.189.234                          4F         4294967269
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: live.github.com                140.82.112.25                            4F         3
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 172.217.164.106                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.191.74                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.202                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.234                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.188.10                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.191.42                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.214.138                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.32.42                            4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.170                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.72.202                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.234                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.170                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.202                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: googlehosted.l.googleuserconte 142.250.189.161                          4F         98
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: lh3.googleusercontent.com      googlehosted.l.googleusercontent.com     CF         4294967261
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.cookielaw.org              104.19.178.52                            4F         4294967283
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.cookielaw.org              104.19.177.52                            4F         4294967283
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.sstatic.net                104.18.40.222                            4F         78
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.sstatic.net                172.64.147.34                            4F         78
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: i.sstatic.net                  104.18.41.33                             4F         4294967135
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: i.sstatic.net                  172.64.146.223                           4F         4294967135
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: mobile-gtalk.l.google.com      142.251.2.188                            4F         62
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: clients.l.google.com           142.250.189.174                          4F         4294967271
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.191.42                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.170                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.191.74                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 172.217.164.106                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.202                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.72.202                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.214.138                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.170                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.234                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.234                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.202                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.32.42                            4F         4294967248</code></pre></div>
+<p>然后排查dns缓存问题即可</p>
+<p>排查完之后，需要关闭的话，如下：</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
+uci del dhcp.cfg01411c.logqueries
+uci commit
+
+<span class="hljs-comment"># 当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
+uci del dhcp.@dnsmasq[0].logqueries
+uci commit</code></pre></div>
+<p>然后重启Dnsmasq</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 重启</span>
+/etc/init.d/dnsmasq restart</code></pre></div>
+<h3 id="根据打印的信息可知290版本的dnsmasq是可以通过reload来清空dns缓存的">根据打印的信息可知，2.90版本的Dnsmasq是可以通过reload来清空dns缓存的。</h3>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Andriod - 通过adb执行JAVA程序（包含main入口的java文件）]]></title>
+            <guid>2d3f56eee8bd416e9f2dae3238b1ebf2</guid>
+            <pubDate>Sun, 16 Jun 2024 09:41:38 GMT</pubDate>
+            <content:encoded><![CDATA[<ul>
+<li>首先编写JAVA文件 - 该代码作用：通过adb执行java关闭屏幕</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-keyword">import</span> android.annotation.SuppressLint;
+<span class="hljs-keyword">import</span> android.os.IBinder;
+<span class="hljs-keyword">import</span> android.os.Build;
+<span class="hljs-keyword">import</span> java.lang.reflect.Method;
+<span class="hljs-keyword">import</span> java.lang.reflect.InvocationTargetException;
+
+<span class="hljs-meta">@SuppressLint("PrivateApi")</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DisplayControl</span> {
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Class&lt;?&gt; CLASS;
+    <span class="hljs-keyword">static</span> {
+        <span class="hljs-keyword">try</span> {
+            CLASS = Class.forName(<span class="hljs-string">"android.view.SurfaceControl"</span>);
+        } <span class="hljs-keyword">catch</span> (ClassNotFoundException e) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AssertionError</span>(e);
+        }
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> <span class="hljs-keyword">throws</span> Exception {
+        System.out.println(<span class="hljs-string">"===&gt; Target Mode: "</span> + args[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">switch</span> (Integer.parseInt(args[<span class="hljs-number">0</span>])){
+                     <span class="hljs-comment">// &lt;https://android.googlesource.com/platform/frameworks/base/+/bcf48ed/core/java/android/view/SurfaceControl.java#224&gt;</span>
+            <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:
+                System.out.println(<span class="hljs-string">"POWER_MODE_OFF."</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+                System.out.println(<span class="hljs-string">"POWER_MODE_DOZE."</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+                System.out.println(<span class="hljs-string">"POWER_MODE_NORMAL."</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:
+                System.out.println(<span class="hljs-string">"POWER_MODE_DOZE_SUSPEND."</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">default</span>:
+                System.out.println(<span class="hljs-string">"Not supported value."</span>);
+                <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> CLASS.getMethod(<span class="hljs-string">"setDisplayPowerMode"</span>, IBinder.class, <span class="hljs-type">int</span>.class);
+        <span class="hljs-keyword">try</span> {
+            method.invoke(<span class="hljs-literal">null</span>, getBuiltInDisplay(),Integer.parseInt(args[<span class="hljs-number">0</span>]));
+        } <span class="hljs-keyword">catch</span> (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Method <span class="hljs-title function_">getGetBuiltInDisplayMethod</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> NoSuchMethodException {
+        Method getBuiltInDisplayMethod;
+        <span class="hljs-comment">// the method signature has changed in Android Q</span>
+        <span class="hljs-comment">// &lt;https://github.com/Genymobile/scrcpy/issues/586&gt;</span>
+        <span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.Q) {
+            getBuiltInDisplayMethod = CLASS.getMethod(<span class="hljs-string">"getBuiltInDisplay"</span>, <span class="hljs-type">int</span>.class);
+        } <span class="hljs-keyword">else</span> {
+            getBuiltInDisplayMethod = CLASS.getMethod(<span class="hljs-string">"getInternalDisplayToken"</span>);
+        }
+        <span class="hljs-keyword">return</span> getBuiltInDisplayMethod;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> IBinder <span class="hljs-title function_">getBuiltInDisplay</span><span class="hljs-params">()</span> {
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> getGetBuiltInDisplayMethod();
+            <span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.Q) {
+                <span class="hljs-comment">// call getBuiltInDisplay(0)</span>
+                <span class="hljs-keyword">return</span> (IBinder) method.invoke(<span class="hljs-literal">null</span>, <span class="hljs-number">0</span>);
+            }
+            <span class="hljs-comment">// call getInternalDisplayToken()</span>
+            <span class="hljs-keyword">return</span> (IBinder) method.invoke(<span class="hljs-literal">null</span>);
+        } <span class="hljs-keyword">catch</span> (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+        }
+    }
+}
+</code></pre></div>
+<ul>
+<li>然后编译，通过-cp指定android.jar的路径</li>
+</ul>
+<div><pre class="hljs"><code>javac -<span class="hljs-built_in">source</span> 1.8 -target 1.8 ./DisplayControl.java -cp <span class="hljs-string">"<span class="hljs-variable">$ANDROID_HOME</span>/platforms/android-33/android.jar"</span></code></pre></div>
+<ul>
+<li>然后将class文件打包为dex（Dalvik可执行文件）</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-string">"<span class="hljs-variable">$ANDROID_HOME</span>/build-tools/27.0.3/dx"</span> --dex --output ./DisplayControl.dex ./DisplayControl.class</code></pre></div>
+<ul>
+<li>将文件推送到设备的tmp目录（有权限，并且可以添加可执行权限）</li>
+</ul>
+<div><pre class="hljs"><code>adb push DisplayControl.dex /data/<span class="hljs-built_in">local</span>/tmp/</code></pre></div>
+<ul>
+<li>执行（其中：/data/local/tmp/DisplayControl.dex是dex路径，最后的DisplayControl是包含main方法的类名）</li>
+</ul>
+<div><pre class="hljs"><code>adb shell CLASSPATH=/data/<span class="hljs-built_in">local</span>/tmp/DisplayControl.dex app_process / DisplayControl</code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[HomeAssistant优化]]></title>
+            <guid>ed06cd4fadac48e9b51ff7b5fbd216dc</guid>
+            <pubDate>Sun, 05 May 2024 11:56:58 GMT</pubDate>
+            <content:encoded><![CDATA[<h2 id="注意所有牵扯到编辑configurationyaml的都得重启生效">注意：所有牵扯到编辑<code>configuration.yaml</code>的，都得重启生效</h2>
+<h3 id="设置ha的请求通过http_proxy发送不包含连接设备的请求">设置HA的请求通过http_proxy发送（不包含连接设备的请求）</h3>
+<div><pre class="hljs"><code>vi /config/custom_components/hacs/base.py
+<span class="hljs-comment"># search: `self.session.get`</span>
+<span class="hljs-comment"># add this line(http proxy only socks5 will not work) in parameters list</span>
+`proxy=<span class="hljs-string">"http://10.0.0.1:12333"</span>, `
+</code></pre></div>
+<hr />
+<h3 id="添加基于rest-api的自定义通知平台">添加基于<code>REST-api</code>的自定义通知平台</h3>
+<ul>
+<li>编辑<code>configuration.yaml</code></li>
+<li>添加如下内容，注意：<code>${__gotify_host_port_url}</code>、<code>${__gotify_api_key}</code>替换为自己的配置：</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-attr">notify:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">gotify</span>
+    <span class="hljs-attr">platform:</span> <span class="hljs-string">rest</span>
+    <span class="hljs-attr">resource:</span> <span class="hljs-string">${__gotify_host_port_url}/message</span>
+    <span class="hljs-attr">method:</span> <span class="hljs-string">POST_JSON</span>
+    <span class="hljs-attr">headers:</span>
+      <span class="hljs-attr">X-Gotify-Key:</span> <span class="hljs-string">${__gotify_api_key}</span>
+    <span class="hljs-attr">message_param_name:</span> <span class="hljs-string">message</span>
+    <span class="hljs-attr">title_param_name:</span> <span class="hljs-string">title</span>
+    <span class="hljs-attr">data:</span>
+      <span class="hljs-attr">priority:</span> <span class="hljs-number">7</span>
+      <span class="hljs-attr">extras:</span>
+        <span class="hljs-attr">client::display:</span>
+          <span class="hljs-attr">contentType:</span> <span class="hljs-string">"text/markdown"</span></code></pre></div>
+<hr />
+<h3 id="将自动化配置和设备配置添加到侧边栏步骤如下">将自动化配置和设备配置添加到侧边栏，步骤如下：</h3>
+<ul>
+<li>开启高级模式（点击用户头像，常规设置中，高级模式）</li>
+<li>编辑<code>configuration.yaml</code>（如果你有add-on，也可以用<code>File Editor</code>进行编辑）</li>
+<li>添加如下内容：</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-attr">panel_custom:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">panel_integrations</span>
+    <span class="hljs-attr">sidebar_title:</span> <span class="hljs-string">设备与服务</span>
+    <span class="hljs-attr">sidebar_icon:</span> <span class="hljs-string">mdi:devices</span>
+    <span class="hljs-attr">url_path:</span> <span class="hljs-string">'config/integrations'</span>
+    <span class="hljs-attr">module_url:</span> <span class="hljs-string">/api/hassio/app/entrypoint.js</span>
+    <span class="hljs-attr">embed_iframe:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">require_admin:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">panel_automations</span>
+    <span class="hljs-attr">sidebar_title:</span> <span class="hljs-string">自动化与场景</span>
+    <span class="hljs-attr">sidebar_icon:</span> <span class="hljs-string">mdi:robot</span>
+    <span class="hljs-attr">url_path:</span> <span class="hljs-string">'config/automation'</span>
+    <span class="hljs-attr">module_url:</span> <span class="hljs-string">/api/hassio/app/entrypoint.js</span>
+    <span class="hljs-attr">embed_iframe:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">require_admin:</span> <span class="hljs-literal">true</span></code></pre></div>
+<ul>
+<li>最终效果如下：<br />
+<img src="/_resources/3a9e4d073d8349b99d32503d75f90e78.png" /></li>
+</ul>
+<hr />
+<h3 id="添加wakeonlan通过幻数包远程唤醒主机">添加WakeOnLan（通过幻数包远程唤醒主机）</h3>
+<ul>
+<li>编辑<code>configuration.yaml</code>，添加如下内容，注意：<code>00:00:00:00:00:00</code>、<code>x.x.x.x</code>、<code>${__host_alias}</code>换成自己的配置：</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-attr">switch:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">platform:</span> <span class="hljs-string">wake_on_lan</span>
+    <span class="hljs-attr">mac:</span> <span class="hljs-string">"00:00:00:00:00:00"</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">"${__host_alias}"</span>
+    <span class="hljs-attr">host:</span> <span class="hljs-string">"x.x.x.x"</span>
+<span class="hljs-comment">#    broadcast_address: "10.0.255.255"</span></code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[使用stun进行NAT类型探测]]></title>
+            <guid>d6829effd51b44028a970b59e1790b2c</guid>
+            <pubDate>Sat, 04 May 2024 23:16:34 GMT</pubDate>
+            <content:encoded><![CDATA[<p><img src="/_resources/9f75a44f82514c38b03abe53e586ece7.svg" /></p>
+<p>对于使用pystun3进行NAT Type测试，请注意：</p>
+<ul>
+<li>按<code>rfc 3489</code>的标准：探测客户端网络的NAT类型是需要两个公网地址的（通过dns能查询到同一个address family的两个公网地址，比如两个公网ipv4）</li>
+<li>按<code>rfc 5389</code>的标准：是否需要两个公网IP，取决于客户端的NAT穿透模式</li>
+</ul>
+<p>所以，如果你只有一个公网IP，那么，pystun3（只支持<code>rfc 3489</code>）就不需要尝试了（其实，对于其它一些早期的stun客户端软件-包括一些VoIP客户端，大部分只支持<code>rfc 3489</code>，将pystun3用于这些客户端排查错误还是有用的）。</p>
+<p>另外，实际上，在进行比如基于webrtc的p2p连接时，是不需要得到具体的NAT类型的，对于stun服务来说只需要得到公网地址即可，所以，如果你只有一个公网IP地址，是不影响webrtc的使用的。</p>
+<p>通过js连接turn服务器进行测试</p>
+<div><pre class="hljs"><code><span class="hljs-keyword">function</span> <span class="hljs-title function_">checkTURNServer</span>(<span class="hljs-params">turnConfig, timeout</span>){ 
+
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>){
+
+    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){
+        <span class="hljs-keyword">if</span>(promiseResolved) <span class="hljs-keyword">return</span>;
+        <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">false</span>);
+        promiseResolved = <span class="hljs-literal">true</span>;
+    }, timeout || <span class="hljs-number">5000</span>);
+
+    <span class="hljs-keyword">var</span> promiseResolved = <span class="hljs-literal">false</span>
+      , myPeerConnection = <span class="hljs-variable language_">window</span>.<span class="hljs-property">RTCPeerConnection</span> || <span class="hljs-variable language_">window</span>.<span class="hljs-property">mozRTCPeerConnection</span> || <span class="hljs-variable language_">window</span>.<span class="hljs-property">webkitRTCPeerConnection</span>   <span class="hljs-comment">//compatibility for firefox and chrome</span>
+      , pc = <span class="hljs-keyword">new</span> <span class="hljs-title function_">myPeerConnection</span>({<span class="hljs-attr">iceServers</span>:[turnConfig]})
+      , noop = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){};
+    pc.<span class="hljs-title function_">createDataChannel</span>(<span class="hljs-string">""</span>);    <span class="hljs-comment">//create a bogus data channel</span>
+    pc.<span class="hljs-title function_">createOffer</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">sdp</span>){
+      <span class="hljs-keyword">if</span>(sdp.<span class="hljs-property">sdp</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'typ relay'</span>) &gt; -<span class="hljs-number">1</span>){ <span class="hljs-comment">// sometimes sdp contains the ice candidates...</span>
+        promiseResolved = <span class="hljs-literal">true</span>;
+        <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">true</span>);
+      }
+      pc.<span class="hljs-title function_">setLocalDescription</span>(sdp, noop, noop);
+    }, noop);    <span class="hljs-comment">// create offer and set local description</span>
+    pc.<span class="hljs-property">onicecandidate</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">ice</span>){  <span class="hljs-comment">//listen for candidate events</span>
+      <span class="hljs-keyword">if</span>(promiseResolved || !ice || !ice.<span class="hljs-property">candidate</span> || !ice.<span class="hljs-property">candidate</span>.<span class="hljs-property">candidate</span> || !(ice.<span class="hljs-property">candidate</span>.<span class="hljs-property">candidate</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'typ relay'</span>)&gt;-<span class="hljs-number">1</span>))  <span class="hljs-keyword">return</span>;
+      promiseResolved = <span class="hljs-literal">true</span>;
+      <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">true</span>);
+    };
+  });   
+}
+
+<span class="hljs-title function_">checkTURNServer</span>({
+    <span class="hljs-attr">url</span>: <span class="hljs-string">'turn:127.0.0.1:3478'</span>,
+    <span class="hljs-attr">username</span>: <span class="hljs-string">'test'</span>,
+    <span class="hljs-attr">credential</span>: <span class="hljs-string">'test'</span>
+}).<span class="hljs-title function_">then</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">bool</span>){
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'is my TURN server active? '</span>, bool? <span class="hljs-string">'yes'</span>:<span class="hljs-string">'no'</span>);
+}).<span class="hljs-title function_">catch</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">error</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">console</span>));</code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[使用fail2ban保护Openwrt的luci-web登录]]></title>
+            <guid>f13995c60eaf488490ade8d058f8c9ad</guid>
+            <pubDate>Wed, 01 May 2024 06:08:50 GMT</pubDate>
+            <content:encoded><![CDATA[<p>fail2ban靠的是日志文件，对应于luci-web的日志源码在这里：<br />
+<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511">登录失败日志</a>，<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505">登录成功日志</a></p>
+<p>生成的日志参见如下，假设攻击者IP是<code>1.1.1.1</code>，三次登录失败，最后一次登录成功</p>
+<div><pre class="hljs"><code>May  1 01:06:38 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:41 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:48 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
+May  1 01:06:52 OpenWrt uwsgi-luci: [info] luci: accepted login on / for root from 1.1.1.1</code></pre></div>
+<p>由于Openwrt所包含的fail2ban配置文件，并没有包含luci-web的filter，所以，需要先自定义一个filter（比如<code>/etc/fail2ban/filter.d/luci-web.conf</code>），内容如下（部分item我加了详细的中文注释）：</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># fail2ban filter configuration for luci-web by uwsgi-luci</span>
+
+<span class="hljs-section">[INCLUDES]</span>
+<span class="hljs-comment"># Read common prefixes. If any customizations available -- read them from</span>
+<span class="hljs-comment"># common.local</span>
+<span class="hljs-attr">after</span> = common.conf
+
+<span class="hljs-comment"># 大致浏览了下fail2ban的配置文件，fail2ban自带的日志前缀%(__prefix_line)s是无法匹配到luci-web的日志信息的</span>
+<span class="hljs-comment"># 并且，为了尽可能符合fail2ban的filter配置文件模式，这里自定义了一个日志类型</span>
+<span class="hljs-section">[lt_uwsgi-luci-over-syslog-ng]</span>
+<span class="hljs-attr">__prefix_line</span> = \s+&lt;__hostname&gt;\s+&lt;__daemon_re&gt;\:\s+\[.+\]\s+luci\:\s+
+<span class="hljs-attr">datepattern</span> = {^LN-BEG}
+
+<span class="hljs-section">[Definition]</span>
+<span class="hljs-comment"># 通过logtype，让fail2ban使用我们自定义的日志类型中的前缀和日期格式</span>
+<span class="hljs-attr">logtype</span> = uwsgi-luci-over-syslog-ng
+
+<span class="hljs-comment"># 这个对应了前缀中的&lt;__daemon_re&gt;（带有一定规则的正则匹配的&lt;_daemon&gt;）</span>
+<span class="hljs-attr">_daemon</span> = uwsgi-luci
+
+<span class="hljs-comment"># 预匹配表达式</span>
+<span class="hljs-attr">prefregex</span> = ^%(__prefix_line)s&lt;F-CONTENT&gt;([Ff]ailed).+&lt;/F-CONTENT&gt;$
+
+<span class="hljs-comment"># 匹配失败登录的表达式</span>
+<span class="hljs-attr">failregex</span> = ^[Ff]ailed\s+login\s+<span class="hljs-literal">on</span>\s+/.*\s+for\s+.+\s*from\s+&lt;HOST&gt;(:\d+)?$
+
+ignoreregex =
+</code></pre></div>
+<p>另外，对于调试fail2ban的表达式，可以使用<code>fail2ban-regex</code></p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 其中/var/log/test-log是测试日志，可以通过echo去手动添加日志进行测试</span>
+fail2ban-regex --log-level=debug /var/<span class="hljs-built_in">log</span>/test-log /etc/fail2ban/filter.d/luci-web.conf</code></pre></div>
+<p>filter有了，并且，也通过<code>fail2ban-regex</code>测试通过了，就可以接下来进行jail的配置了<br />
+内容如下（由于我这边所有App都已经转到nftables了，所以，我只用了nftables版本的action，iptables的action其实也类似）:</p>
+<div><pre class="hljs"><code><span class="hljs-section">[luci]</span>
+<span class="hljs-attr">filter</span> = luci-web
+
+<span class="hljs-attr">enabled</span> = <span class="hljs-literal">true</span>
+<span class="hljs-comment"># 这里使用你自定义的日志文件路径（注意，luci默认是不把日志文件写入到本地文件的），可以使用`uci get system.@[0].log_file`查询，当然，如果你使用的是syslog-ng，日志文件的位置就在syslog-ng的配置文件中</span>
+<span class="hljs-attr">logpath</span> = /var/log/messages
+<span class="hljs-attr">maxretry</span> = <span class="hljs-number">6</span>
+<span class="hljs-attr">findtime</span> = <span class="hljs-number">5</span>m
+<span class="hljs-attr">bantime</span> = <span class="hljs-number">1</span>h
+
+<span class="hljs-comment"># incremental banning:</span>
+<span class="hljs-attr">bantime.increment</span> = <span class="hljs-literal">true</span>
+
+<span class="hljs-comment"># max banning time = permanent:</span>
+<span class="hljs-attr">bantime.maxtime</span> = -<span class="hljs-number">1</span>
+
+<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部丢弃（效果类似于主机不在线）</span>
+<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter drop"]</span>
+<span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部丢弃 </span>
+<span class="hljs-attr">action</span> = nftables-multiport[name=%(__name__)s-all, port=<span class="hljs-string">"443,80"</span>, protocol=<span class="hljs-string">"tcp,udp"</span>, blocktype=<span class="hljs-string">"counter drop"</span>]
+<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部拒绝（默认是icmp不可达）（效果类似于主机不可ping通）</span>
+<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter reject"]</span>
+<span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部拒绝（默认是icmp不可达）（效果类似于端口未开启）</span>
+<span class="hljs-comment">#action = nftables-multiport[name=%(__name__)s-all, port="443,80", protocol="tcp,udp", blocktype="counter reject"]</span>
+</code></pre></div>
+<p>注意上方的action中的blocktype，我在blocktype中加了counter（计数），翻看fail2ban的源码就能发现配置文件中的参数和最终的行为之间的关联，而加了这个counter之后可以让我们更加直观地看到在ban生效之后主机的数据包数量和大小。查看方法（基于nft）：</p>
+<div><pre class="hljs"><code>nft list table inet f2b-table</code></pre></div>
+<p>输出内容类似于：</p>
+<div><pre class="hljs"><code>table inet f2b-table {
+        set addr-set-luci-all {
+                type ipv4_addr
+                elements = { <span class="hljs-number">31.184</span><span class="hljs-number">.198</span><span class="hljs-number">.71</span>, <span class="hljs-number">58.215</span><span class="hljs-number">.203</span><span class="hljs-number">.139</span>,
+                             <span class="hljs-number">116.55</span><span class="hljs-number">.248</span><span class="hljs-number">.235</span>, <span class="hljs-number">119.167</span><span class="hljs-number">.165</span><span class="hljs-number">.54</span>,
+                             <span class="hljs-number">120.26</span><span class="hljs-number">.110</span><span class="hljs-number">.245</span>, <span class="hljs-number">120.27</span><span class="hljs-number">.151</span><span class="hljs-number">.128</span>,
+                             <span class="hljs-number">120.48</span><span class="hljs-number">.84</span><span class="hljs-number">.73</span>, <span class="hljs-number">122.194</span><span class="hljs-number">.12</span><span class="hljs-number">.206</span>,
+                             <span class="hljs-number">125.124</span><span class="hljs-number">.199</span><span class="hljs-number">.57</span>, <span class="hljs-number">182.92</span><span class="hljs-number">.165</span><span class="hljs-number">.47</span>,
+                             <span class="hljs-number">182.92</span><span class="hljs-number">.184</span><span class="hljs-number">.221</span>, <span class="hljs-number">182.92</span><span class="hljs-number">.239</span><span class="hljs-number">.50</span>,
+                             <span class="hljs-number">183.56</span><span class="hljs-number">.201</span><span class="hljs-number">.60</span>, <span class="hljs-number">193.35</span><span class="hljs-number">.18</span><span class="hljs-number">.122</span> }
+        }
+
+        chain f2b-chain {
+                type nat hook prerouting priority dstnat + <span class="hljs-number">1</span>; policy accept;
+                # 注意这里最后的<span class="hljs-string">'packets 1230 bytes 73800'</span>，就是ban后又收到了来自攻击者的<span class="hljs-number">1230</span>个数据包(约等于请求个数)
+                meta l4proto { tcp, udp } ip saddr @addr-set-luci-all counter packets <span class="hljs-number">1230</span> bytes <span class="hljs-number">73800</span> drop
+        }
+}</code></pre></div>
+<p>注意：防火墙的counter会在重启时重置为0哦！</p>
+]]></content:encoded>
+        </item>
+    </channel>
+</rss>

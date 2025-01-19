@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>机器学习-复习笔记 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/katex/katex.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">机器学习-复习笔记</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1650262374309"
+                    >2022-04-18 14:12</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1711247656046"
+                    >2024-03-24 10:34</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><ul>
+<li>主要公式：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>w</mi><mi>x</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">f(x)=wx+b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.10764em">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em"></span><span class="mord mathnormal" style="margin-right:0.02691em">w</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em"></span><span class="mord mathnormal">b</span></span></span></span></span>，其中 <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mtext>为</mtext><mi>w</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi><mo separator="true">,</mo><mi>b</mi><mtext>为</mtext><mi>b</mi><mi>i</mi><mi>a</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">w 为 weight, b 为 bias</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em"></span><span class="mord mathnormal" style="margin-right:0.02691em">w</span><span class="mord cjk_fallback">为</span><span class="mord mathnormal" style="margin-right:0.02691em">w</span><span class="mord mathnormal">e</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em">g</span><span class="mord mathnormal">h</span><span class="mord mathnormal">t</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal">b</span><span class="mord cjk_fallback">为</span><span class="mord mathnormal">bia</span><span class="mord mathnormal">s</span></span></span></span></span></li>
+</ul>
+<h2 id="regressionlinear">Regression(Linear)：</h2>
+<ul>
+<li>使用<code>neuron</code>进行串联和叠加，从<code>Function set</code>中寻找到最符合<code>Training data</code>和<code>Training data's label</code>的函数（利用了幂级数展开式可以逼近目标函数的特点）</li>
+</ul>
+<h2 id="multi-class-classification">Multi-Class Classification：</h2>
+<ul>
+<li>
+<p>基本思路都是转化成<code>Binary-Class Classification</code>来处理</p>
+</li>
+<li>
+<p><code>OvR(One-vs.-rest)</code>方式：将每个class都当成一个<code>Binary-Class Classification</code>来处理，然后将，当进行多分类时，需要将所有的二分类分类器应用于一个未知样本<code>x</code>，<code>x</code>的最终分类类别即为产生最大置信度的分类器所对应的标签<em>k</em>：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle scriptlevel="0" displaystyle="true"><mover accent="true"><mi>y</mi><mo>^</mo></mover><mo>=</mo><mi>arg</mi><mo>⁡</mo><munder><mrow><mi>max</mi><mo>⁡</mo></mrow><mrow><mi>k</mi><mo>∈</mo><mn>1</mn><mo>…</mo><mi>K</mi></mrow></munder><msub><mi>f</mi><mi>k</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mstyle></mrow><annotation encoding="application/x-tex">\displaystyle {\hat {y}}=\arg \max _{k\in 1\ldots K}f_{k}(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.69444em"><span style="top:-3em"><span class="pstrut" style="height:3em"></span><span class="mord mathnormal" style="margin-right:0.03588em">y</span></span><span style="top:-3em"><span class="pstrut" style="height:3em"></span><span class="accent-body" style="left:-0.19444em"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1.529478em;vertical-align:-0.7794779999999999em"></span><span class="mop">ar<span style="margin-right:0.01389em">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.43055999999999994em"><span style="top:-2.347892em;margin-left:0em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em">k</span><span class="mrel mtight">∈</span><span class="mord mtight">1</span><span class="minner mtight">…</span><span class="mord mathnormal mtight" style="margin-right:0.07153em">K</span></span></span></span><span style="top:-3em"><span class="pstrut" style="height:3em"></span><span><span class="mop">max</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7794779999999999em"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span></p>
+</li>
+<li>
+<p><code>OvO(One-vs.-one)</code>方式：对于一个K类多分类问题，训练<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo stretchy="false">(</mo><mi>K</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mi mathvariant="normal">/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">K(K−1)/2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord">1</span><span class="mclose">)</span><span class="mord">/2</span></span></span></span></span> 个二分类分类器</p>
+</li>
+</ul>
+<h2 id="multi-label-classification">Multi-Label Classification</h2>
+<ul>
+<li>这里方法很多，我记得最开始讲到这部分的时候给的方案是直接叠<code>fully connection</code>，然后直接<code>train</code>。</li>
+</ul>
+<h2 id="loss-functions">Loss functions：</h2>
+<ul>
+<li>Loss Function描述的是：当前的神经网络的参数所组成的函数与目标函数（最佳函数）之间的距离，记作：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo>∗</mo></msup><mo>=</mo><mi>a</mi><mi>r</mi><mi>g</mi><mi>m</mi><mi>i</mi><mi>n</mi><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x^*=argminf(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.688696em;vertical-align:0em"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.688696em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em">r</span><span class="mord mathnormal" style="margin-right:0.03588em">g</span><span class="mord mathnormal">min</span><span class="mord mathnormal" style="margin-right:0.10764em">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span>，意为：找到<code>Loss Function</code>最小的参数<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo>∗</mo></msup><mtext>，使得</mtext><mi>f</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mo>∗</mo></msup><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^*，使得f(x^*)=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.688696em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mord cjk_fallback">，使得</span><span class="mord mathnormal" style="margin-right:0.10764em">f</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.688696em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">0</span></span></span></span></span></li>
+<li>常见的：
+<ul>
+<li>Root mean square error(标准差-根方差)，有的时候也用方差（一般用于计算标量的差异）</li>
+<li>Cross Entropy
+<ul>
+<li>一般用于计算向量或者数组类型的预测输出和真实输出之间的差异，此类输出大多无法使用均值进行比较。</li>
+<li>其中<code>Entropy</code>表示的是：在当前概率分布<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi></mrow><annotation encoding="application/x-tex">P</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.13889em">P</span></span></span></span></span>情况下，如果要表示当前事件（属于分布<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi></mrow><annotation encoding="application/x-tex">P</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.13889em">P</span></span></span></span></span>）的信息，平均（期望）所需要使用的<code>bit</code>位数。</li>
+<li>Cross表示的是两个<code>Entropy</code>之间的差异，即：当前事件在两个不同的分布之间的<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">H</mi><mo stretchy="false">(</mo><mi>P</mi><mo separator="true">,</mo><mi>P</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="double-struck">H</mi><mo stretchy="false">(</mo><mi>P</mi><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><msub><mo>∑</mo><mi>k</mi></msub><msub><mi>P</mi><mi>k</mi></msub><mo>∗</mo><mi>l</mi><mi>o</mi><mi>g</mi><mo stretchy="false">(</mo><msub><mi>P</mi><mi>k</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathbb{H}(P,P)=\mathbb{H}(P)=-\sum_{k}P_k*log(P_k)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathbb">H</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em">P</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.13889em">P</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathbb">H</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em">P</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1.0497100000000001em;vertical-align:-0.29971000000000003em"></span><span class="mord">−</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1863979999999999em"><span style="top:-2.40029em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.29971000000000003em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.01968em">l</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03588em">g</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>，其中<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="double-struck">H</mi><mo stretchy="false">(</mo><mi>P</mi><mo separator="true">,</mo><mi>P</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathbb{H}(P,P)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathbb">H</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em">P</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.13889em">P</span><span class="mclose">)</span></span></span></span></span>表示两个<code>Entropy</code>相同，即这种情况下的<code>Cross Entropy</code>等价于事件k在等不P中的<code>Entropy</code>。</li>
+<li>比如：在Image classification中，定义输出向量，第一维度为猫属，第二维度是狗属，第三维度是人属。假设一张图片的真实结果是<code>[0，1，0]</code>，预测结果为<code>[0.5，0.3，0.2]</code>（经过<code>Softmax</code>归一后），如果是使用均值计算预测的Vector和实际的<code>Vector</code>之间的<code>Loss function</code>的话，Loss为<code>0</code>。</li>
+</ul>
+</li>
+<li>KL divergence <img src="/_resources/6c19e760ecfa4d96b80334ec081d00ee.png" alt="9df1d23aa7a755df56b1799637407f24.png" width="391" height="216" class="jop-noMdConv" />
+<ul>
+<li>通俗点：<code>divergence</code>描述的是一个向量场的聚集程度，如上述图片所示。如果<code>divergence</code>大于0，则向量场中的向量大多是向外（发散）的。<code>divergence</code>小于<code>0</code>则为大多数向内。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="back-propagation">Back propagation：</h2>
+<ul>
+<li>Differential’s Chain Rule
+<ul>
+<li>直接对整个神经网络(规模较大的)进行求微分（gradient）几乎不可能，所以，使用微分的链式法则，先对某一条连接输入和输出的路径求微分，而一条路径上又有多个神经元，根据链式法则，可以将他们的微分相乘，即可求得当前路径上的微分，而起前面的神经元的变化会影响后面的神经元的变化，所以，可以先从最后一个节点开始计算微分（因为最后一个只受输出的影响，不受前向节点的影响），然后倒数第二个，以此类推。</li>
+</ul>
+</li>
+</ul>
+<h2 id="gradient-descent">Gradient Descent：</h2>
+<ul>
+<li>过程：1、首先给所有参数一个随机初始值。2、计算神经网络的<code>gradient</code>（每个变量（参数）的偏导数的和），3、然后根据<code>Gradient Vector</code>的方向，乘上<code>Learning rate</code>，更新未知参数的值。重复步骤2、3，直到<code>gradient</code>为0（理想情况下为0，一般是设置一个很小的阈值就行了，因为需要<code>learning rate</code>足够小才能真正走到0）。</li>
+<li>training Tips：
+<ul>
+<li>自适应Learning rate（可以让gradient值较大时，learning rate小一些 - 可以避免错过Stationary point，gradient值较小时，learning rate大一些 - 此时函数值变化率小，可以体提升每次learning的距离）。</li>
+<li>Stationary point应对方案：
+<ul>
+<li>将当前的gradient方向加上上一次的gradient方向，形成新的gradient，再进行前进。也就是靠惯性，冲过<code>Stationary point</code>。</li>
+<li><s>在遇到<code>Stationary point</code>的时候，继续按照上一次的<code>gradient Vector</code>走一个<code>learning rate</code>的距离。根据更新完之后再次计算出的<code>gradient Vector</code>也是可以判断出是不是<code>Stationary point</code>的。(和上一个Tip差不多，而且，上一个方案不需要做额外判断，适合计算机)</s></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="activation-functions">Activation functions：</h2>
+<ul>
+<li>sigmoid <img src="/_resources/21cf914e9fd24631b619ec9f1833a255.png" alt="41e2f51fe3270298fce3b0c7cd041346.png" width="464" height="232" class="jop-noMdConv" />
+<ul>
+<li>公式：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle scriptlevel="0" displaystyle="true"><mi>S</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>t</mi></mrow></msup></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\displaystyle S(t)={\frac {1}{1+e^{-t}}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.05764em">S</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:2.09077em;vertical-align:-0.7693300000000001em"></span><span class="mord"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em"><span style="top:-2.314em"><span class="pstrut" style="height:3em"></span><span class="mord"><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.719556em"><span style="top:-2.989em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.677em"><span class="pstrut" style="height:3em"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693300000000001em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></span></li>
+</ul>
+</li>
+<li>softmax <img src="/_resources/8cf48acd5c2d42a98dac8c82d4617d16.png" alt="af48fa211fc89bb81058ccece4cff51c.png" width="271" height="182" class="jop-noMdConv" />
+<ul>
+<li>是逻辑函数的一种推广。它能将一个含任意实数的K维向量 <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">z</mi></mrow><annotation encoding="application/x-tex">\mathbf {z}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.44444em;vertical-align:0em"></span><span class="mord mathbf">z</span></span></span></span></span> “压缩”到另一个K维实向量 <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo stretchy="false">(</mo><mi mathvariant="bold">z</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\sigma (\mathbf {z} )</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.03588em">σ</span><span class="mopen">(</span><span class="mord mathbf">z</span><span class="mclose">)</span></span></span></span></span>中，使得每一个元素的范围都在<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(0,1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></span>之间，并且所有元素的和为1(也可视为一个 (k-1)维的hyperplane或subspace)。该函数的形式通常按下面的式子给出：</li>
+<li>公式：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo stretchy="false">(</mo><mi mathvariant="bold">z</mi><msub><mo stretchy="false">)</mo><mi>j</mi></msub><mo>=</mo><mfrac><msup><mi>e</mi><msub><mi>z</mi><mi>j</mi></msub></msup><mrow><msubsup><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></msubsup><msup><mi>e</mi><msub><mi>z</mi><mi>k</mi></msub></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">\sigma (\mathbf {z} )_{j}=\frac {e^{z_{j}}}{\sum _{k=1}^{K}e^{z_{k}}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em"></span><span class="mord mathnormal" style="margin-right:0.03588em">σ</span><span class="mopen">(</span><span class="mord mathbf">z</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1.593957em;vertical-align:-0.654672em"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.939285em"><span style="top:-2.570335em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mop op-symbol small-op mtight" style="position:relative;top:-0.0000050000000000050004em">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8852357142857143em"><span style="top:-2.1785614285714283em;margin-left:0em;margin-right:0.07142857142857144em"><span class="pstrut" style="height:2.5em"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em">k</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-2.8971428571428572em;margin-right:0.07142857142857144em"><span class="pstrut" style="height:2.5em"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em">K</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.32143857142857146em"><span></span></span></span></span></span></span><span class="mspace mtight" style="margin-right:0.19516666666666668em"></span><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6650357142857143em"><span style="top:-2.8574928571428573em;margin-right:0.07142857142857144em"><span class="pstrut" style="height:2.5em"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.04398em">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em"><span style="top:-2.3448em;margin-left:-0.04398em;margin-right:0.1em"><span class="pstrut" style="height:2.69444em"></span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.34963999999999995em"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.394em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7789785714285715em"><span style="top:-2.9714357142857146em;margin-right:0.07142857142857144em"><span class="pstrut" style="height:2.5em"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.04398em">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em"><span style="top:-2.3448em;margin-left:-0.04398em;margin-right:0.1em"><span class="pstrut" style="height:2.65952em"></span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.5091600000000001em"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.654672em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span> 其中，<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mn>1</mn><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mi>K</mi><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">j = 1, …, K.</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em"></span><span class="mord mathnormal" style="margin-right:0.05724em">j</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="mord">.</span></span></span></span></span></li>
+</ul>
+</li>
+<li>ReLU（整流线性单位函数-Rectified Linear Unit） <img src="/_resources/d0cb009362bf4851a8715ddbd2071c6d.png" alt="c59ced6a579fb856cd74396840eb5d87.png" width="270" height="153" class="jop-noMdConv" />
+<ul>
+<li>公式：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle scriptlevel="0" displaystyle="true"><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>max</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mi>x</mi><mo stretchy="false">)</mo></mstyle></mrow><annotation encoding="application/x-tex">\displaystyle f(x)=\max(0,x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.10764em">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mop">max</span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span></li>
+</ul>
+</li>
+</ul>
+<h2 id="batch-normalization">Batch normalization： <img src="/_resources/964c374337cc4da6a1c5c08fb6efed38.png" alt="1d76082be0749500f78172c06ead25f4.png" width="474" height="388" class="jop-noMdConv" /></h2>
+<ul>
+<li><code>Batch</code>是每次训练的数据单位那个<code>Batch</code>。</li>
+<li><code>BN layer</code>的<code>normalize</code>操作是将它前一个<code>hidden layer</code>（类似<code>PCA</code>的<code>re-centering</code>和<code>re-scaling</code>，但是有点不一样，<code>normalization</code>不会压缩<code>dimension</code>）的<code>output</code>进行<code>normalize</code>处理（上图步骤3），然后使用参数<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi></mrow><annotation encoding="application/x-tex">\gamma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em"></span><span class="mord mathnormal" style="margin-right:0.05556em">γ</span></span></span></span></span>和<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi></mrow><annotation encoding="application/x-tex">\beta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em"></span><span class="mord mathnormal" style="margin-right:0.05278em">β</span></span></span></span></span>进行<code>scale</code>以及<code>shift</code>，作为<code>BN layer</code>的输出(<code>forward layer</code>中的每一个<code>output</code>，都会经过<code>BN layer</code>的<code>normalize</code>，所以，<code>BN</code>并不会改变<code>forward layer</code>的<code>output</code>个数)。</li>
+</ul>
+<h2 id="pcaprincipal-component-analysis-dimension-reduction">PCA（Principal component analysis - Dimension Reduction）:</h2>
+<ul>
+<li>
+<p>降低数据维度的方法，保留数据的主要特征，将不是很重要的特征进行压缩。可以减少训练的时间，只在部分场景下需要使用。</p>
+</li>
+<li>
+<p>过程：</p>
+<ul>
+<li>去平均值，即每一个数据的每一维特征的值减去对应维度的平均值</li>
+<li>计算协方差矩阵</li>
+<li>计算协方差矩阵的特征值与特征向量</li>
+<li>对特征值从大到小排序</li>
+<li>保留最大的一个特征向量</li>
+<li>将数据转换到个特征向量构建的新空间中</li>
+</ul>
+</li>
+<li>
+<p>一般的算法过程：</p>
+<ul>
+<li>对数据进行归一化处理</li>
+<li>计算归一化后的数据集的协方差矩阵</li>
+<li>计算协方差矩阵的特征值和特征向量</li>
+<li>保留最重要的<code>k</code>个特征（通常<code>k</code>要小于<code>n</code>）</li>
+<li>找出<code>k</code>个特征值相应的特征向量</li>
+<li>将<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>∗</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m*n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.46528em;vertical-align:0em"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em"></span><span class="mord mathnormal">n</span></span></span></span></span>的数据集乘以<code>k</code>个<code>n</code>维的特征向量的特征向量<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>n</mi><mo>∗</mo><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(n*k)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal" style="margin-right:0.03148em">k</span><span class="mclose">)</span></span></span></span></span>，得到最后降维的数据</li>
+</ul>
+</li>
+<li>
+<p>准则</p>
+<ul>
+<li>最近重构性：样本集中所有点，重构后的点距离原来的点的误差之和最小。</li>
+<li>最大可分性：样本在低维空间的投影尽可能分开。</li>
+</ul>
+</li>
+<li>
+<p>优点：使得数据集更易使用、降低算法的计算开销、去除噪声、使得结果容易理解、完全无参数限制</p>
+</li>
+<li>
+<p>缺点：</p>
+<ul>
+<li>如果用户对观测对象有一定的先验知识，掌握了数据的一些特征，却无法通过参数化等方法对处理过程进行干预，可能会得不到预期的效果，效率也不高</li>
+<li>特征值分解有一些局限性，比如变换的矩阵必须是方阵</li>
+<li>在非高斯分布情况下，PCA方法得出的主元可能并不是最优的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="regularization">Regularization：</h2>
+<ul>
+<li>
+<p>L1和L2<code>Regularization</code>的目的是通过减少<code>neuron</code>的权重从而减少模型的复杂度，一定程度上可以减少过拟合的可能（毕竟模型复杂度降低了）</p>
+</li>
+<li>
+<p>L2<code>Regularization</code>：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><msub><mi>L</mi><mn>0</mn></msub><mo>+</mo><mfrac><mi>λ</mi><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><msub><mo>∑</mo><mi>w</mi></msub><msup><mi>w</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">L=L_0+\frac{\lambda}{2n}\sum_{w}w^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:1.2251079999999999em;vertical-align:-0.345em"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801079999999999em"><span style="top:-2.6550000000000002em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mathnormal mtight">n</span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.394em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">λ</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.0016819999999999613em"><span style="top:-2.40029em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.29971000000000003em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span>，<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">L_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span></span></span></span></span>代表原始的<code>Loss function</code>，后面一项是<code>L2 Regularization</code>项，即：所有参数<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.02691em">w</span></span></span></span></span>（<code>Weight</code>）的平方和，除以<code>training set</code>的大小<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em"></span><span class="mord mathnormal">n</span></span></span></span></span>，<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em"></span><span class="mord mathnormal">λ</span></span></span></span></span>是<code>Regularization</code>的系数，用于权衡<code>Regularization</code>和<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">L_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span></span></span></span></span>的<code>weight</code>。<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">L2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal">L</span><span class="mord">2</span></span></span></span></span>中的<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">\frac{1}{2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em"><span style="top:-2.6550000000000002em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.394em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>是为了抵消<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.02691em">w</span></span></span></span></span>求导产生的<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em"></span><span class="mord">2</span></span></span></span></span>。</p>
+</li>
+<li>
+<p>L1<code>Regularization</code>：<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><msub><mi>L</mi><mn>0</mn></msub><mo>+</mo><mfrac><mi>λ</mi><mi>n</mi></mfrac><msub><mo>∑</mo><mi>w</mi></msub><mi mathvariant="normal">∣</mi><mi>w</mi><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">L=L_0+\frac{\lambda}{n}\sum_w|w|</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em"></span></span><span class="base"><span class="strut" style="height:1.2251079999999999em;vertical-align:-0.345em"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801079999999999em"><span style="top:-2.6550000000000002em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.394em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">λ</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.0016819999999999613em"><span style="top:-2.40029em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.29971000000000003em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.02691em">w</span><span class="mord">∣</span></span></span></span></span>，</p>
+</li>
+<li>
+<h4 id="early-stopping">Early Stopping</h4>
+<ul>
+<li>在<code>training set</code>和<code>validation set</code>上，每次<code>epoch</code>之后计算<code>validation set</code>上的<code>accuracy</code>，记录最佳的<code>validation accuracy</code>(记录最小错误率)，当连续<code>10</code>次<code>epoch</code>(对所有训练数据的一轮遍历)（或者更多次）没达到最佳<code>accuracy</code>时，你可以认为<code>training</code>不会再优化网络，此时使用<code>early stopping</code>停止继续<code>training</code></li>
+</ul>
+</li>
+<li>
+<h4 id="dropout">Dropout</h4>
+<ul>
+<li>在训练时，<code>dropout</code>随机选择一部分神经元，使其<code>weight</code>为<code>0</code>，不参与本次优化迭代。随机失活减少了每次参与优化迭代的<code>neuron</code>数目，使网络的有效大小变小。</li>
+<li>作用：
+<ul>
+<li>降低<code>neuron</code>之间耦合。因为<code>neuron</code>会被随机置零，所以每个<code>neuron</code>不能依赖于其他<code>neuron</code>，这会迫使每个<code>neuron</code>自身要能提取到合适的特征。</li>
+<li>网络集成。<code>dropout</code>可以看作在训练时每次迭代定义出一个新的网络，这些网络共享权值。在测试时的网络是这些网络的集成。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="knn">KNN：</h2>
+<ul>
+<li>将前一刻的输出和当前的输入一起输入到<code>neural network</code>中。</li>
+<li>也有一些变种的KNN：
+<ul>
+<li>比如有持续累加的，即每次有新的处理都加到<code>memory</code>中去。
+<ul>
+<li>以及更加复杂的：设置了写入<code>memory</code>的<code>gateway</code>，读取<code>memory</code>的<code>gateway</code>，冲掉<code>memory</code>的<code>gateway</code>（即：写入<code>gateway</code>虽然打开，但是实际上<code>memory</code>未写入）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="cnnconvolutional-neural-network">CNN(Convolutional Neural Network)：</h2>
+<ul>
+<li>关键的就几个地方：
+<ul>
+<li>Convolution kernel</li>
+<li>Max pooling</li>
+<li>Activation function（一般就直接用softmax）</li>
+<li>Padding（针对图片边缘）</li>
+</ul>
+</li>
+</ul>
+<h2 id="self-attention">Self-attention：</h2>
+<ul>
+<li>
+<p>首先，<code>attention</code>的<code>input</code>是<code>embedding</code>之后的输出，所以，准确来说，它是用来记录<code>input</code>的不同<code>feature</code>间的<code>relation</code>的。类似<code>KNN</code>，但是<code>attention</code>可以做到更广的上下文的关系记录。而且，标准的<code>KNN</code>是无法反向记录<code>input</code>之间的<code>feature</code>的。</p>
+</li>
+<li>
+<p>公式：</p>
+<ul>
+<li><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>t</mi><mi>t</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mo stretchy="false">(</mo><mi>Q</mi><mo separator="true">,</mo><mi>K</mi><mo separator="true">,</mo><mi>V</mi><mo stretchy="false">)</mo><mo>=</mo><mi>s</mi><mi>o</mi><mi>f</mi><mi>t</mi><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac><mo stretchy="false">)</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">Attention(Q,K,V)=softmax(\frac{QK^T}{\sqrt{d_k}})V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em"></span><span class="mord mathnormal">A</span><span class="mord mathnormal">tt</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mopen">(</span><span class="mord mathnormal">Q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.22222em">V</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em"></span></span><span class="base"><span class="strut" style="height:1.627473em;vertical-align:-0.538em"></span><span class="mord mathnormal">so</span><span class="mord mathnormal" style="margin-right:0.10764em">f</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ma</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.089473em"><span style="top:-2.5864385em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord sqrt mtight"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8622307142857143em"><span class="svg-align" style="top:-3em"><span class="pstrut" style="height:3em"></span><span class="mord mtight" style="padding-left:0.833em"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em"><span style="top:-2.3487714285714287em;margin-left:0em;margin-right:0.07142857142857144em"><span class="pstrut" style="height:2.5em"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15122857142857138em"><span></span></span></span></span></span></span></span></span><span style="top:-2.8222307142857144em"><span class="pstrut" style="height:3em"></span><span class="hide-tail mtight" style="min-width:0.853em;height:1.08em"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewbox="0 0 400000 1080" preserveaspectratio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.17776928571428574em"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em"><span class="pstrut" style="height:3em"></span><span class="frac-line" style="border-bottom-width:0.04em"></span></span><span style="top:-3.446108em"><span class="pstrut" style="height:3em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">Q</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9190928571428572em"><span style="top:-2.931em;margin-right:0.07142857142857144em"><span class="pstrut" style="height:2.5em"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em">T</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.538em"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.22222em">V</span></span></span></span></span></li>
+</ul>
+</li>
+<li>
+<p>针对当前输入，生成了三个未知参数，<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo separator="true">,</mo><mi>K</mi><mo separator="true">,</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">Q,K,V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em"></span><span class="mord mathnormal">Q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.22222em">V</span></span></span></span></span>，目前自己的理解是:</p>
+<ul>
+<li>首先<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo separator="true">,</mo><mi>K</mi><mo separator="true">,</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">Q,K,V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em"></span><span class="mord mathnormal">Q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.22222em">V</span></span></span></span></span>都是<code>vector</code>，都是在对<code>input(embedded vector)</code>进行<code>linear transform</code>的过程中<code>learn</code>出来的参数（<code>linear transform</code>之后，依旧是<code>vector</code>）。两个<code>vector</code>相乘，如果同向，则为正值，否则负值，且，平行时，相乘的绝对值最大。所以<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">QK^T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.035771em;vertical-align:-0.19444em"></span><span class="mord mathnormal">Q</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413309999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em">T</span></span></span></span></span></span></span></span></span></span></span></span>（这里的<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>K</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">K^T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8413309999999999em;vertical-align:0em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413309999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em">T</span></span></span></span></span></span></span></span></span></span></span></span>是为了让<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo separator="true">,</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">Q,K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em"></span><span class="mord mathnormal">Q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.07153em">K</span></span></span></span></span>可以相乘）可以理解为保存了<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo separator="true">,</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">Q,K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em"></span><span class="mord mathnormal">Q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em"></span><span class="mord mathnormal" style="margin-right:0.07153em">K</span></span></span></span></span>之间的相似程度，然后使用<code>softmax</code>进行<code>normalization</code>，然后再乘以<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em"></span><span class="mord mathnormal" style="margin-right:0.22222em">V</span></span></span></span></span>，就可以的到加了<code>weight</code>之后的最终<code>feature</code>。（<code>Q</code>代表当前<code>input</code>，<code>K</code>代表其它<code>input</code>，相乘之后可以提取出自己和其它<code>input</code>之间的<code>relation</code>，<code>V</code>本身是一个<code>learn</code>出来的权重，代表着当前<code>input</code>在最终输出中的重要性，所以，<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">QK^T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.035771em;vertical-align:-0.19444em"></span><span class="mord mathnormal">Q</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413309999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em">T</span></span></span></span></span></span></span></span></span></span></span></span>在经过<code>softmax</code>之后，和V相乘，就可以将<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">QK^T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.035771em;vertical-align:-0.19444em"></span><span class="mord mathnormal">Q</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413309999999999em"><span style="top:-3.063em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em">T</span></span></span></span></span></span></span></span></span></span></span></span>提取到的<code>relation</code>附加到当前<code>input</code>上）</li>
+</ul>
+</li>
+</ul>
+<h2 id="transformer">Transformer</h2>
+<ul>
+<li>
+<p>Encoder(from original paper)：<img src="/_resources/59e57e28057847cda20ff758d628ee92.png" alt="d3e00d68739b0144893e1e70743e0cab.png" width="529" height="397" class="jop-noMdConv" /></p>
+<ul>
+<li><strong>Input</strong></li>
+<li>Positional Encoding(let attention can catch the position infomation)</li>
+<li>Self-Attention(Multi-Head) -&gt; Residual(sum layer input vector and the output of previous steop as the final output) -&gt; layer normalization</li>
+<li>feed forward(fully-connect) NN -&gt; Residual(same as before one) -&gt; layer normalization(same as before)</li>
+<li><strong>Output</strong></li>
+<li>loop <strong>N</strong> times</li>
+</ul>
+</li>
+<li>
+<p>Decoder(from original paper) <img src="/_resources/1452a56db40442328242729790c19601.png" alt="cba7a906de72b85e60b9c683de48894c.png" width="580" height="435" class="jop-noMdConv" /></p>
+<ul>
+<li>difference of encoder:
+<ul>
+<li>masked Multi-head attention:由于在Decoder中，输入是不停迭代（第一次输入begin。第二次把第一次的输出拼接在第一次的输入-begin后面，作为输入。第三次把第二次的输出拼接在第二次的输入后面，作为输入），所以，每一次的输入都是不知道右侧的输入情况的（因为要这一轮之后才知道右侧是什么），所以，这边使用了masked Multi-head attention，即计算attention时，只考虑自己和自己左侧的输入的关系，而不是考虑整个自己和输入中每一个元素的关系。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>connection of encoder/decoder <img src="/_resources/c0bc2e44fb1c48c88532cb16c879bba2.png" alt="216eafada29a0df47e326f5c6f64d56a.png" width="539" height="404" class="jop-noMdConv" /></p>
+<ul>
+<li>cross attention <img src="/_resources/4a7c5de0a21241df9a605b71f4905c5a.png" alt="2f0b546392678d11a1cff9268ee960fc.png" width="485" height="364" class="jop-noMdConv" /></li>
+</ul>
+</li>
+</ul>
+<h2 id="auto-encoder">Auto-Encoder</h2>
+<ul>
+<li>Input -&gt; NN Encoder -&gt; code -&gt; NN Decoder -&gt; output</li>
+<li>Loss function: input as close as possible with output</li>
+</ul>
+<h2 id="gan">GAN</h2>
+<ul>
+<li>Generator：</li>
+<li>Discriminator：</li>
+<li>Training Tips：</li>
+</ul>
+<h2 id="unsupervised-learning">Unsupervised learning</h2>
+<ul>
+<li>Generative Models:
+<ul>
+<li>
+<h5 id="pixelrnn">PixelRNN</h5>
+</li>
+<li>
+<p>GAN</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>BERT</p>
+<ul>
+<li>Train BERT
+<ul>
+<li>Mask input -&gt; train BERT to restore the masked word -&gt; done</li>
+</ul>
+</li>
+<li>Use BERT
+<ul>
+<li>Append a Linear Transfomer on BERT’s output -&gt; train Linear Transfomer’s params(make BERT’s params with pre-trained network’s initial params) to Fine-tune the BERT’s params -&gt; done</li>
+</ul>
+</li>
+</ul>
+<p>GPT</p>
+<ul>
+<li>Train GPT
+<ul>
+<li>Reorder the input sentences from an article or an paragraph randomly -&gt; train GPT to restore the right order -&gt; done</li>
+</ul>
+</li>
+<li>Use GPT
+<ul>
+<li>Similar to BERT</li>
+</ul>
+</li>
+</ul>
+<p>Auto-Encoder</p>
+<ul>
+<li>Dimension Reduction</li>
+</ul>
+<p>Adversarial Attack</p>
+<ul>
+<li>
+<p>Attacks:</p>
+<ul>
+<li>
+<p>Non-targeted:</p>
+</li>
+<li>
+<p>Targeted</p>
+</li>
+<li>
+<p>Universal Adversarial Attack:</p>
+</li>
+<li>
+<p>Black box attach</p>
+</li>
+<li>
+<p>White box attach</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Defensive:</p>
+<ul>
+<li>Passive Defense
+<ul>
+<li>Image Compression</li>
+<li>Generator: generate new image from generator as training data</li>
+</ul>
+</li>
+<li>Proactive Defense
+<ul>
+<li>Randomization: combine more than one Passive Defense randomly.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Explainable Machine Learing:</p>
+<ul>
+<li>Local Explainable(Why does Neural Network think the image is a cat?):
+<ul>
+<li>Saliency Map:
+<ul>
+<li>SmoothGrad: average multiple Saliency Map,then you will get smoothly Saliency Map(with all the light point as closer as possible).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<h2 id="global-explainablewhat-does-a-cat-look-like">Global Explainable(What does a “cat” look like?):</h2>
+</li>
+</ul>
+<p>Domain Adaptation:</p>
+<ul>
+<li>Domain shift: Training and testing data have a little difference</li>
+<li>Transfer learing:</li>
+</ul>
+<p>RL(Reinforcement Learning):</p>
+<ul>
+<li>
+<p>Base component:</p>
+<ul>
+<li>
+<p>Value Function(reward function):</p>
+</li>
+<li>
+<p>Actor:</p>
+</li>
+<li>
+<p>Environment:</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Policy Gradient:</p>
+</li>
+<li>
+<p>Actor Critic:</p>
+</li>
+<li>
+<p>Imitation - Learning from expert(Inverse RL):</p>
+<ul>
+<li>Similar to GAN</li>
+</ul>
+</li>
+</ul>
+<p>Long Life Learning:</p>
+<ul>
+<li>Catastrophic Forgetting:
+<ul>
+<li>why</li>
+<li>how to fix it
+<ul>
+<li>add guard(<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">b_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em"><span></span></span></span></span></span></span></span></span></span></span>) for every parameter,prevent another task’s learning data modify current parameters too much.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Network Compress:</p>
+<ul>
+<li>Network Pruning:</li>
+<li></li>
+</ul>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

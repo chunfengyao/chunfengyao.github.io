@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>Openwrt中通过对Dnsmasq进行DUMP来排查dns缓存问题 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">Openwrt中通过对Dnsmasq进行DUMP来排查dns缓存问题</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1719965100006"
+                    >2024-07-03 08:05</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1734411836470"
+                    >2024-12-17 13:03</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p>首先Openwrt中开启Dnsmasq的日志功能。</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
+uci <span class="hljs-built_in">set</span> dhcp.cfg01411c.logqueries=<span class="hljs-string">'1'</span>
+uci commit
+
+<span class="hljs-comment"># 当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
+uci <span class="hljs-built_in">set</span> dhcp.@dnsmasq[0].logqueries=<span class="hljs-string">'1'</span>
+uci commit</code></pre></div>
+<p>这会让<code>Openwrt</code>生成的配置文件中的<code>log-queries</code>变为启用状态。</p>
+<p>然后重启Dnsmasq</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 重启</span>
+/etc/init.d/dnsmasq restart</code></pre></div>
+<p>重启/重载完可以检查下配置文件是不是正确生成了：</p>
+<div><pre class="hljs"><code>grep <span class="hljs-string">"log-queries"</span> /var/etc/dnsmasq.conf*</code></pre></div>
+<p>然后开俩终端<br />
+终端一用于监视日志</p>
+<div><pre class="hljs"><code>logread -f</code></pre></div>
+<p>终端二用于发送信号量，以触发dump</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 调用pidof子命令获取Dnsmasq的进程号，再给对应进程发送SIGUSR1信号</span>
+<span class="hljs-built_in">kill</span> -SIGUSR1 `pidof /usr/sbin/dnsmasq`</code></pre></div>
+<p>然后即可看到dump内容，大致如下</p>
+<div><pre class="hljs"><code>Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: time 3487
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cache size 150, 0/163 cache insertions re-used unexpired cache entries.
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: queries forwarded 98, queries answered locally 38
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: queries for authoritative zones 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-query subqueries HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-query crypto work HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-RRSet signature fails HWM 0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: pool memory in use 0, max 88, allocated 2200
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: child processes for TCP requests: in use 0, highest since last SIGUSR1 0, max allowed 20.
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: server 127.0.0.1#5333: queries sent 98, retried 0, failed 0, nxdomain replies 3, avg. latency 597ms
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: Host                           Address                                  Flags      Expires                  Source
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ------------------------------ ---------------------------------------- ---------- ------------------------ ------------
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: mtalk.google.com               mobile-gtalk.l.google.com                CF         62
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-localhost                  ::1                                      6F I   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: upp-cdn.itunes-apple.com.akadn ioshost.qtlcdn.com                       CF         4294967112
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-loopback                   ::1                                      6F I   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-allnodes.lan               ff02::1                                  6FRI   H   0                        /etc/hosts
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: assis.local.lan                                                         !F I   H   0
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: clients4.google.com            clients.l.google.com                     CF         4294967271
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ipcdn-lb.apple.com.akadns.net  ioshost.qtlcdn.com                       CF         4294967292
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ajax.googleapis.com            142.250.189.234                          4F         4294967269
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: live.github.com                140.82.112.25                            4F         3
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 172.217.164.106                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.191.74                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.202                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.234                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.188.10                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.191.42                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.214.138                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.32.42                            4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.170                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.72.202                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.234                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.170                           4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.202                          4F         19
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: googlehosted.l.googleuserconte 142.250.189.161                          4F         98
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: lh3.googleusercontent.com      googlehosted.l.googleusercontent.com     CF         4294967261
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.cookielaw.org              104.19.178.52                            4F         4294967283
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.cookielaw.org              104.19.177.52                            4F         4294967283
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.sstatic.net                104.18.40.222                            4F         78
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.sstatic.net                172.64.147.34                            4F         78
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: i.sstatic.net                  104.18.41.33                             4F         4294967135
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: i.sstatic.net                  172.64.146.223                           4F         4294967135
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: mobile-gtalk.l.google.com      142.251.2.188                            4F         62
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: clients.l.google.com           142.250.189.174                          4F         4294967271
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.191.42                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.170                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.191.74                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 172.217.164.106                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.202                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.72.202                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.214.138                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.170                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.234                           4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.234                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.202                          4F         4294967248
+Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.32.42                            4F         4294967248</code></pre></div>
+<p>然后排查dns缓存问题即可</p>
+<p>排查完之后，需要关闭的话，如下：</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
+uci del dhcp.cfg01411c.logqueries
+uci commit
+
+<span class="hljs-comment"># 当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
+uci del dhcp.@dnsmasq[0].logqueries
+uci commit</code></pre></div>
+<p>然后重启Dnsmasq</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 重启</span>
+/etc/init.d/dnsmasq restart</code></pre></div>
+<h3 id="根据打印的信息可知290版本的dnsmasq是可以通过reload来清空dns缓存的">根据打印的信息可知，2.90版本的Dnsmasq是可以通过reload来清空dns缓存的。</h3>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

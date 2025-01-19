@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>Flutter三种默认BuildType - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">Flutter三种默认BuildType</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1720570513212"
+                    >2024-07-10 08:15</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1734411766499"
+                    >2024-12-17 13:02</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p>刚巧最近在处理Android端Debug模式下add-2-app运行时的一个问题：</p>
+<div><pre class="hljs"><code>[FATAL:flutter/runtime/dart_vm_initializer.cc(22)] Error while initializing the Dart VM: Precompiled runtime requires a precompiled snapshot</code></pre></div>
+<p>从报错信息不难看出，这是release运行模式下没有找到预编译的可执行文件。但是，实际上编译的时候指定的是Debug模式。</p>
+<blockquote>
+<p>最终问题还是解决了，原先项目（低版本Flutter）在项目集成的时候，把release模式下的libflutter.so库文件放到了项目中（相当于本地so库），于是，戏剧化的一幕出现了，无论是升级Flutter版本，亦或是打debug的包进行调试，由于本地so库的优先级要高于三方库依赖（比如Flutter）中的so库优先级。在编译使用了pickFirst的情况下（其实早该发现这个问题的，因为之前调试问题的时候就有提示libflutter.so库存在两份，但是，按照常规处理方式，一般都是直接pickFirst了事，但是这个项目的依赖方式确实有点少见），就会导致debug运行时，使用了release的so库，于是release的so库会去尝试在debug环境下寻找release的资源文件，这当然是找不到的，于是就有了上面的错误。</p>
+</blockquote>
+<ul>
+<li>Flutter默认提供三种BuildType：Debug、Release、Profile，其中
+<ul>
+<li>Debug：主要用于调试，特点：运行速度较慢，基于Dart的JIT模式(Just-in-Time)（比如Python、JavaScript的V8引擎）
+<ul>
+<li>JIT 模式下，能动态下发和执行代码，不用考虑所使用的机器架构。</li>
+</ul>
+</li>
+<li>Release：主要用于发布，特点：基于Dart的AOT模式(Ahead-of-Time)（比如GoLang、C、CPP），即，编译为目标平台的机器码后再执行（可以选择去除符号表）</li>
+<li>Profile：主要用于release下的性能跟踪：基于Debug的运行环境，但是，使用AOT模式编译，不支持调试，但是支持几乎所有的性能监听组件</li>
+</ul>
+</li>
+</ul>
+<p>我们今天主要讲Debug和Release，首先看下官方文档中的说明：</p>
+<ul>
+<li>对于Debug：
+<ul>
+<li><strong>Assertions are enabled.</strong></li>
+<li>Service extensions are enabled.</li>
+<li><strong>Compilation is optimized for fast development and run cycles (but not for execution speed, binary size, or deployment).</strong></li>
+<li><strong>Debugging is enabled, and tools supporting source level debugging (such as DevTools) can connect to the process.</strong></li>
+</ul>
+</li>
+<li>对于Release：
+<ul>
+<li><strong>Assertions are disabled.</strong></li>
+<li><strong>Debugging information is stripped out.</strong></li>
+<li><strong>Debugging is disabled.</strong></li>
+<li><strong>Compilation is optimized for fast startup, fast execution, and small package sizes.</strong></li>
+<li>Service extensions are disabled.</li>
+</ul>
+</li>
+<li>对于Profile：
+<ul>
+<li><strong>Some service extensions, such as the one that enables the performance overlay, are enabled.</strong></li>
+<li>Tracing is enabled, and tools supporting source-level debugging (such as DevTools) can connect to the process.</li>
+</ul>
+</li>
+</ul>
+<p>然后我们大致看下编译进最终安装包中的文件有哪些，以及他们的结构，这里只看下Android端，其他端类似（基于flutter3.19版本）：<br />
+Debug模式：</p>
+<div><pre class="hljs"><code>.
+├── AndroidManifest.xml
+.
+.
+.
+├── R.txt
+├── assets
+│   └── flutter_assets
+│       ├── isolate_snapshot_data
+│       ├── kernel_blob.bin
+│       └── vm_snapshot_data
+├── classes.jar
+└── libs
+    └── libs.jar</code></pre></div>
+<p>Release：</p>
+<div><pre class="hljs"><code>.
+├── AndroidManifest.xml
+.
+.
+.
+├── R.txt
+├── arm64-v8a
+├── armeabi-v7a
+├── classes.jar
+├── jni
+│   ├── arm64-v8a
+│   │   └── libapp.so
+│   ├── armeabi-v7a
+│   │   └── libapp.so
+│   └── x86_64
+│       └── libapp.so
+└── x86_64</code></pre></div>
+<p>除了这些之外，还有一个flutter_embedding也会参与编译。</p>
+<p>我们先大致看下编译时中间产物目录的情况<br />
+<img src="/_resources/2f6e9376a8a847c5a1ca37ebe5cc2437.png" alt="19a1d45184f598772e2e46a27df8b7c5.png" width="853" height="505" class="jop-noMdConv" /></p>
+<p>从源码来看，编译中会执行如下指令来生成编译产物：</p>
+<p>Debug模式下：</p>
+<ul>
+<li><code>flutter build bundle</code>，将相关文件，比如: assets、vm_snapshot_data、isolate_snapshot_data（这俩文件我们在下一段release部分的app-aot-blobs的aot编译模式时一起看） 和 kernel_blob.bin放入 flutter_assets 目录中。业务代码被生成在 kernel_blob.bin 中（app.dill），这里就和release不一样，app.dill或者kernel_blob.bin并不会继续编译为二进制，所以，debug模式下的编译速度也是要远远快于release的。</li>
+</ul>
+<p>Release模式下：</p>
+<ul>
+<li><code>flutter build aot</code>（会先生成 app.dill，随后也会生成snpshot，但是和debug的snapshot不一样，分为两种模式：<code>app-aot-assemble</code> 和 <code>app-aot-blobs</code>。对于iOS 或者手动添加了 <code>--build-shared-library</code> 参数的会使用 <code>app-aot-assemble</code>。
+<ul>
+<li>生成app.dill，我们来看下简化的命令，剔除了一些参数）: <code>dart frontend_server.dart.snapshot --output-dill app.dill packages:main.dart</code>。</li>
+<li><code>app-aot-assemble</code>模式: <code>flutter build aot --build-shared-library</code>（这种模式下，会将产物编译为二进制文件，在 iOS 上为 App.framework，Android 上则为 app.so）</li>
+<li><code>app-aot-blobs</code>模式（Android 默认使用的模式，但是在 Flutter SDK 1.7.x 也已经改成 app-aot-assemble 模式。）会生成如下四个文件
+<ul>
+<li><code>isolate_snapshot_data</code>：
+<ul>
+<li>表示 isolate 堆存储区的初始状态和特定的信息。和 vm_snapshot_data 配合，更快的启动 Dart VM。</li>
+</ul>
+</li>
+<li><code>isolate_snapshot_instr</code>:
+<ul>
+<li>包含由 Dart isolate 执行的 AOT 代码。</li>
+</ul>
+</li>
+<li><code>vm_snapshot_data</code>:
+<ul>
+<li>表示 isolates 之间的共享的 Dart 堆存储区的初始状态，用于更快的启动 Dart VM。</li>
+</ul>
+</li>
+<li><code>vm_snapshot_instr</code>:
+<ul>
+<li>包含 VM 中所有的 isolates 之间共享的常见例程的指令</li>
+</ul>
+</li>
+<li><strong>isolate_snapshot_data 和 isolate_snapshot_instr 跟业务相关，而 vm_snapshot_data 和 vm_snapshot_instr 则是跟 VM 相关，无关业务。</strong></li>
+</ul>
+</li>
+<li>区别：assemble不需要 Dart VM 环境，只需要 Dart Runtime，所以，执行速度较快，但是，无法动态执行代码。这也是AppStore的限制，导致iOS只能试用assemble模式：<code>App Store does not allow dispatch binary executable code.</code></li>
+</ul>
+</li>
+<li><code>flutter build bundle --precompiled</code>: 几乎同debug，区别是release会指定 <code>--precompiled</code>，所以，只会生成assets，并且打包。而debug模式下，由于没有 <code>--precompiled</code>（也就是没有经历build aot的过程），所以，需要生成<code>vm_snapshot_data</code>、<code>isolate_snapshot_data</code>。</li>
+</ul>
+<p>这边要区别一下JS端：</p>
+<ul>
+<li>JS端的release是通过dart2js（前身是一个名为<a title="https://ariya.io/2012/02/using-the-new-frog-compiler-from-dart-editor" href="https://ariya.io/2012/02/using-the-new-frog-compiler-from-dart-editor">frog</a>的库）编译为js文件运行的，和原生的debug、release有较大的区别。
+<ul>
+<li>比如手动编译某个项目的main.dart
+<ul>
+<li><code>dart compile js -O4 -o out/flutter.main.js web/main.dart</code>
+<ul>
+<li>其中<code>-O4</code>是使用等级为4的编译优化</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

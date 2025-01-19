@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>使用stun进行NAT类型探测 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">使用stun进行NAT类型探测</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1714864594864"
+                    >2024-05-05 07:16</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1734411863347"
+                    >2024-12-17 13:04</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p><img src="/_resources/9f75a44f82514c38b03abe53e586ece7.svg" /></p>
+<p>对于使用pystun3进行NAT Type测试，请注意：</p>
+<ul>
+<li>按<code>rfc 3489</code>的标准：探测客户端网络的NAT类型是需要两个公网地址的（通过dns能查询到同一个address family的两个公网地址，比如两个公网ipv4）</li>
+<li>按<code>rfc 5389</code>的标准：是否需要两个公网IP，取决于客户端的NAT穿透模式</li>
+</ul>
+<p>所以，如果你只有一个公网IP，那么，pystun3（只支持<code>rfc 3489</code>）就不需要尝试了（其实，对于其它一些早期的stun客户端软件-包括一些VoIP客户端，大部分只支持<code>rfc 3489</code>，将pystun3用于这些客户端排查错误还是有用的）。</p>
+<p>另外，实际上，在进行比如基于webrtc的p2p连接时，是不需要得到具体的NAT类型的，对于stun服务来说只需要得到公网地址即可，所以，如果你只有一个公网IP地址，是不影响webrtc的使用的。</p>
+<p>通过js连接turn服务器进行测试</p>
+<div><pre class="hljs"><code><span class="hljs-keyword">function</span> <span class="hljs-title function_">checkTURNServer</span>(<span class="hljs-params">turnConfig, timeout</span>){ 
+
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>){
+
+    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){
+        <span class="hljs-keyword">if</span>(promiseResolved) <span class="hljs-keyword">return</span>;
+        <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">false</span>);
+        promiseResolved = <span class="hljs-literal">true</span>;
+    }, timeout || <span class="hljs-number">5000</span>);
+
+    <span class="hljs-keyword">var</span> promiseResolved = <span class="hljs-literal">false</span>
+      , myPeerConnection = <span class="hljs-variable language_">window</span>.<span class="hljs-property">RTCPeerConnection</span> || <span class="hljs-variable language_">window</span>.<span class="hljs-property">mozRTCPeerConnection</span> || <span class="hljs-variable language_">window</span>.<span class="hljs-property">webkitRTCPeerConnection</span>   <span class="hljs-comment">//compatibility for firefox and chrome</span>
+      , pc = <span class="hljs-keyword">new</span> <span class="hljs-title function_">myPeerConnection</span>({<span class="hljs-attr">iceServers</span>:[turnConfig]})
+      , noop = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){};
+    pc.<span class="hljs-title function_">createDataChannel</span>(<span class="hljs-string">""</span>);    <span class="hljs-comment">//create a bogus data channel</span>
+    pc.<span class="hljs-title function_">createOffer</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">sdp</span>){
+      <span class="hljs-keyword">if</span>(sdp.<span class="hljs-property">sdp</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'typ relay'</span>) &gt; -<span class="hljs-number">1</span>){ <span class="hljs-comment">// sometimes sdp contains the ice candidates...</span>
+        promiseResolved = <span class="hljs-literal">true</span>;
+        <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">true</span>);
+      }
+      pc.<span class="hljs-title function_">setLocalDescription</span>(sdp, noop, noop);
+    }, noop);    <span class="hljs-comment">// create offer and set local description</span>
+    pc.<span class="hljs-property">onicecandidate</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">ice</span>){  <span class="hljs-comment">//listen for candidate events</span>
+      <span class="hljs-keyword">if</span>(promiseResolved || !ice || !ice.<span class="hljs-property">candidate</span> || !ice.<span class="hljs-property">candidate</span>.<span class="hljs-property">candidate</span> || !(ice.<span class="hljs-property">candidate</span>.<span class="hljs-property">candidate</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'typ relay'</span>)&gt;-<span class="hljs-number">1</span>))  <span class="hljs-keyword">return</span>;
+      promiseResolved = <span class="hljs-literal">true</span>;
+      <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">true</span>);
+    };
+  });   
+}
+
+<span class="hljs-title function_">checkTURNServer</span>({
+    <span class="hljs-attr">url</span>: <span class="hljs-string">'turn:127.0.0.1:3478'</span>,
+    <span class="hljs-attr">username</span>: <span class="hljs-string">'test'</span>,
+    <span class="hljs-attr">credential</span>: <span class="hljs-string">'test'</span>
+}).<span class="hljs-title function_">then</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">bool</span>){
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'is my TURN server active? '</span>, bool? <span class="hljs-string">'yes'</span>:<span class="hljs-string">'no'</span>);
+}).<span class="hljs-title function_">catch</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">error</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">console</span>));</code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

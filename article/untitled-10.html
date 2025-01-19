@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>二进制原码、反码、补码 - chunfeng.yao</title>
+  </head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">二进制原码、反码、补码</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1662771296556"
+                    >2022-09-10 08:54</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1665556652525"
+                    >2022-10-12 14:37</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><ol>
+<li>
+<p>原码：</p>
+<ul>
+<li>原码是指将最高位作为符号位(0表示正，1表示负)，其它数字位代表数值本身的绝对值的数字表示方式。</li>
+<li>例如：数字6 在计算机中原码表示为：0 000 0110</li>
+<li>其中，第一个数字0是符号位，0表示正数，0 000110是数字6的二进制数据表示。</li>
+<li>数字－6 在计算机中原码表示为：1 000 0110</li>
+<li>以上是在8位计算机中的原码表示，如果在32位或16位计算机中，表示方法也是一样的，只是多了几个数字0而已。</li>
+<li><strong>例如</strong>，在32位 计算机中数字6 的原码表示为：00000000 0000 0000 0000 0000 0000 0110</li>
+<li>在16位 计算机中数字6 的原码表示为：00000000 0000 0110</li>
+</ul>
+</li>
+<li>
+<p>反码：</p>
+<ul>
+<li>反码表示规则为：如果是正数，则表示方法和原码一样；如果是负数，符号位不变，其余各位取反，则得到这个数字的反码表示形式。</li>
+<li><strong>例如</strong>，数字6 在8位 计算机中的反码就是它的原码：00000110</li>
+<li>数字－6 在 8位计算机中的反码为：11111001</li>
+</ul>
+</li>
+<li>
+<p>补码</p>
+<ul>
+<li>补码是计算机表示数据的一般方式，其规则为：如果是整数，则表示方法和原码一样；如果是负数，则将数字的反码加上1(相当于将原码数值位取反然后在最低位加1)。</li>
+<li><strong>例如</strong>：数字6 在8位 计算机中的补码就是它的原码：00000110</li>
+<li>数字－6 在8 位 计算机中的补码为：1111 1010</li>
+</ul>
+</li>
+</ol>
+<p><strong>注意</strong>：</p>
+<ul>
+<li>0的原码的最高位可以是1也可以是0。即，0的原码有两个。</li>
+<li>0的反码也是，可以是全0，也可以是全1。即，0的反码有两个。</li>
+<li>但是0的补码只有一个，即全0</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

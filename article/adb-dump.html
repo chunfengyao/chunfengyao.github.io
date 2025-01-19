@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>通过adb dump堆内存 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">通过adb dump堆内存</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1734236735928"
+                    >2024-12-15 12:25</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1734662630977"
+                    >2024-12-20 10:43</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p>注：<code>am dumpheap</code>需满足以下条件之一：</p>
+<ul>
+<li>目标App的AndroidManifest中<code>android:debuggable=true</code></li>
+<li>系统是debuggable的（即：<code>adb shell getprop ro.debuggable</code>的结果为1）（也就是必须要是debug编译的系统）（如果手头没有debug编译的系统的话，推荐直接用模拟器，其中，以<code>Apple silicon</code>的<code>macOS</code>或者<code>ARM64</code>的<code>Windows</code>为最佳）</li>
+</ul>
+<hr />
+<p>对于release模式的真机（以前MIUI的开发版系统几乎都是debug编译的，但是从Hyper OS开始，都是release编译了），但是，如果你安装了<code>Magisk</code>，可以尝试在进入<code>su</code>后执行如下命令，临时启用<code>adb root</code>（重启后失效）：</p>
+<div><pre class="hljs"><code>resetprop ro.debuggable 1
+resetprop service.adb.root 1
+magiskpolicy --live <span class="hljs-string">'allow adbd adbd process setcurrent'</span>
+magiskpolicy --live <span class="hljs-string">'allow adbd su process dyntransition'</span>
+magiskpolicy --live <span class="hljs-string">'permissive { su }'</span>
+<span class="hljs-built_in">kill</span> -9 `ps -A | grep adbd | awk <span class="hljs-string">'{print $2}'</span>` </code></pre></div>
+<hr />
+<p>对于使用模拟器，但是<code>adb root</code>提示<code>adbd cannot run as root in production builds</code>的：参考StackOverFlow的一个回答：<br />
+Select a System Image.</p>
+<ul>
+<li>Pick any image that does NOT say “(Google Play)” in the Target column.</li>
+<li>If you depend on Google APIs (Google Sign In, Google Fit, etc.), pick an image marked with “(Google APIs)”.</li>
+<li>You might have to switch from the “Recommended” group to the “x86 Images” or “Other Images” group to find one.</li>
+</ul>
+<p>也就是说：带Google Play的镜像是不能<code>adb root</code>的，如果需要调试Google服务相关的app（比如一些依赖Google Api的app），要么<code>Lucky patcher</code>移除掉Google依赖再试。要么，下载带有(Google APIs)的镜像，注意不是ATD（Automated Test Device）。</p>
+<p>并且，在Apple silicon的macOS上，Pixel 2、Pixel Fold等设备是选不到某些镜像的。比如api-31（android-12）(Google APIs)的，目前我使用的镜像是api-31，Pixel 5，arm64，(Google APIs)。</p>
+<hr />
+<p>准备就绪后，直接运行Android Emulator、安装apk、然后在adb root之后执行heapdump：</p>
+<div><pre class="hljs"><code>adb shell <span class="hljs-string">"am dumpheap <span class="hljs-variable">${_package_name}</span> /data/local/tmp/dump.hprof"</span></code></pre></div>
+<p>Tips：可以通过如下命令跳过开机动画等无关项，并且直接后台运行，然后用scrcpy远程连接：</p>
+<div><pre class="hljs"><code>emulator -no-qt -no-window -no-audio -no-snapshot-load -no-boot-anim -avd <span class="hljs-string">"<span class="hljs-variable">${_avd_name}</span>"</span> -qemu -m 2048 -enable-kvm -cpu host</code></pre></div>
+<p>对于只需要分析字符串数据的，可以直接使用strings命令<code>strings /data/local/tmp/dump.hprof</code>，提取出文件中所有字符串，然后进行分析。<br />
+如果是要完整分析的，可以导入到Android Studio的profiler里面（配合反编译dex）进行数据分析。或者用自己趁手的工具分析（JAVA的堆内存快照分析工具）。</p>
+<p><strong>内存分析不在这里展开，有时间空闲再码一下文章</strong></p>
+<hr />
+<p>结尾顺便贴一下我用于初始化软路由中运行的docker容器（<code>androidsdk/android-31:latest</code>）中<code>emulator</code>的<code>entrypoint</code>脚本，自行查看和复制，几乎都有注释的。</p>
+<div><pre class="hljs"><code><span class="hljs-meta">#!/bin/bash</span>
+<span class="hljs-built_in">set</span> -x
+<span class="hljs-built_in">set</span> +e
+<span class="hljs-comment"># enable job control for command 'fg'</span>
+<span class="hljs-built_in">set</span> -m
+
+<span class="hljs-comment">#enble ip forward(there's no effect for this case!)</span>
+<span class="hljs-comment">#sysctl -w net.ipv4.ip_forward=1</span>
+<span class="hljs-comment">#let the package with source ip:127.0.0.1 can be decided by route filter.</span>
+<span class="hljs-comment">#sysctl -w net.ipv4.conf.all.route_localnet=1</span>
+
+<span class="hljs-keyword">if</span> [ ! -f ~/.firstboot ];<span class="hljs-keyword">then</span>
+  apt update
+  <span class="hljs-comment">#emluator -qemu -h 要用到</span>
+  apt install -y libxcursor1 libpulse0 xvfb
+  <span class="hljs-comment">#jdk</span>
+  apt install -y openjdk-17-jdk
+  apt install -y telnet nmap iptables iptables-persistent tmux lsof iputils-ping netcat
+  <span class="hljs-comment">#解决一下显卡加速的问题就好了，emulator -gpu host</span>
+  <span class="hljs-comment">#apt install -y virt-manager libxcursor1 qemu-kvm libvirt-bin ubuntu-vm-builder bridge-utils cpu-checker libva-dev vainfo</span>
+  <span class="hljs-comment">#apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils libva-dev vainfo</span>
+  <span class="hljs-comment">#service libvirtd start</span>
+  sdkmanager --install emulator
+  sdkmanager --install <span class="hljs-string">'cmdline-tools;latest'</span>
+  touch ~/.firstboot
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-comment">#如果是-read-only模式启动，emulator会把修改的内容存到/tmp/android-unknown，会导致占用大量体积的。需要清理，正常启动时不需要。</span>
+<span class="hljs-comment">#if [ -d /tmp/android-unknown ]; then</span>
+<span class="hljs-comment">#  rm -rf /tmp/android-unknown</span>
+<span class="hljs-comment">#fi</span>
+
+<span class="hljs-built_in">export</span> _avd_name=avd
+
+<span class="hljs-comment">#Avoid Error: "Running multiple emulators with the same AVD is an experimental feature."</span>
+<span class="hljs-keyword">if</span> [ -d /opt/android-sdk-linux/.android/<span class="hljs-variable">${_avd_name}</span>/<span class="hljs-variable">${_avd_name}</span>.avd ]; <span class="hljs-keyword">then</span>
+  rm /opt/android-sdk-linux/.android/<span class="hljs-variable">${_avd_name}</span>/<span class="hljs-variable">${_avd_name}</span>.avd/hardware-qemu.ini.lock || <span class="hljs-literal">true</span>
+  rm /opt/android-sdk-linux/.android/<span class="hljs-variable">${_avd_name}</span>/<span class="hljs-variable">${_avd_name}</span>.avd/multiinstance.lock || <span class="hljs-literal">true</span>
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-keyword">if</span> [ ! -f /opt/android-sdk-linux/.android/<span class="hljs-variable">${_avd_name}</span>/<span class="hljs-variable">${_avd_name}</span>.avd/config.ini ];<span class="hljs-keyword">then</span>
+  sdkmanager --install emulator
+  sdkmanager --install <span class="hljs-string">'cmdline-tools;latest'</span>
+  <span class="hljs-comment">#注意：由于代理工具依赖谷歌服务，所以，这里必须要用google_apis的镜像</span>
+  <span class="hljs-built_in">echo</span> no|avdmanager create avd -n <span class="hljs-variable">${_avd_name}</span> --abi google_apis/x86_64 -k <span class="hljs-string">"system-images;android-31;google_apis;x86_64"</span>
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-comment">#强制重写telnet的token</span>
+&gt;/root/.emulator_console_auth_token <span class="hljs-built_in">echo</span> -n <span class="hljs-string">"vGwk2RHZyv8PDqjZ"</span>
+
+emulator -no-qt -no-window -no-audio -no-snapshot-load -no-boot-anim -avd <span class="hljs-variable">${_avd_name}</span> -qemu -m 2048 -enable-kvm -cpu host &amp;
+<span class="hljs-comment">#xvfb-run emulator -gpu host -no-qt -no-window -no-audio -no-snapshot-load -no-boot-anim -avd ${_avd_name} -qemu -m 3072 -enable-kvm -cpu host &amp;</span>
+
+<span class="hljs-comment">#允许远程访问adb</span>
+{
+  <span class="hljs-comment">#iptables -F</span>
+  iptables -A FORWARD -j ACCEPT
+  iptables -A OUTPUT -j ACCEPT
+  iptables -A INPUT -j ACCEPT
+  <span class="hljs-comment">#iptables -t nat -F</span>
+  iptables -t nat -A PREROUTING -d 172.20.0.119 -j DNAT --to-destination 127.0.0.1
+  iptables -t nat -A POSTROUTING -s 127.0.0.1 -j SNAT --to-source 172.20.0.119
+}
+
+sleep 40s
+
+adb root
+
+sleep 5s
+
+<span class="hljs-keyword">if</span> [ ! -f ~/.adb_config ];<span class="hljs-keyword">then</span>
+  <span class="hljs-comment">#修改开发者选项、系统设置</span>
+  {
+    adb shell settings put global development_settings_enabled 1
+    adb shell settings put global animator_duration_scale 0.5
+    adb shell settings put global transition_animation_scale 0.5
+    adb shell settings put global window_animation_scale 0.5
+    adb shell settings put global ntp_server <span class="hljs-string">"ntp.aliyun.com"</span>
+  }
+  <span class="hljs-comment">#禁用无关软件（需要adb root后）</span>
+  {
+    <span class="hljs-comment">#gmail</span>
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.gm
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.apps.docs
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.youtube
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.calendar
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.apps.maps
+    <span class="hljs-comment">#禁用搜索框可能会导致Launcher出问题</span>
+<span class="hljs-comment">#    adb shell pm disable com.google.android.googlequicksearchbox</span>
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.apps.photos
+    adb shell pm <span class="hljs-built_in">disable</span> com.google.android.apps.youtube.music
+    <span class="hljs-comment">#Chrome</span>
+    adb shell pm <span class="hljs-built_in">disable</span> com.android.chrome
+  }
+  touch ~/.adb_config
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-built_in">fg</span> || <span class="hljs-literal">true</span>
+sleep infinity
+</code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
