@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>学习Lua中遇到的一些问题 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">学习Lua中遇到的一些问题</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1736595862474"
+                    >2025-01-11 19:44</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1737628432302"
+                    >2025-01-23 18:33</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p>问题：Openwrt编译时，如果启用了lua-restry，启动后，<code>nginx -t</code>是正常的，但是nginx会启动失败</p>
+<div><pre class="hljs"><code>root@J4125:~# nginx
+2025/01/11 19:43:02 [alert] 20604#0: failed to load the 'resty.core' module (https://github.com/openresty/lua-resty-core); ensure you are using an OpenResty release from https://openresty.org/en/download.html (reason: module 'resty.core' not found:
+    no field package.preload['resty.core']
+    no file './resty/core.lua'
+    no file '/app/openwrt-24.10.0-rc5/build_dir/target-x86_64_musl/luajit2-2.1.2024.08.15/ipkg-install/usr/share/luajit-2.1/resty/core.lua'
+    no file '/usr/share/lua/resty/core.lua'
+    no file '/usr/share/lua/resty/core/init.lua'
+    no file '/usr/share/lua/resty/core.lua'
+    no file '/usr/share/lua/resty/core/init.lua'
+    no file './resty/core.so'
+    no file '/usr/lib/lua/resty/core.so'
+    no file '/usr/lib/lua/resty/core.so'
+    no file '/usr/lib/lua/loadall.so'
+    no file './resty.so'
+    no file '/usr/lib/lua/resty.so'
+    no file '/usr/lib/lua/resty.so'
+    no file '/usr/lib/lua/loadall.so') in /etc/nginx/nginx.conf:242</code></pre></div>
+<p>注意上面报错信息中的<code>no file</code> ，就是<code>package.path</code>。<br />
+也可以通过打印显示默认<code>package.path</code></p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 进入lua命令交互模式</span>
+lua
+<span class="hljs-comment"># 打印目前的package.path</span>
+<span class="hljs-built_in">print</span>(package.path)</code></pre></div>
+<p>另外，<code>nginx</code>支持在<code>http</code>作用域内指定<code>lua_package_path "./?.lua;/usr/share/lua/?.lua;/usr/share/lua/?/init.lua;/usr/lib/lua/?.lua;/usr/lib/lua/?/init.lua";</code></p>
+<p>综上：Openwrt上的nginx解决方案：就是创建软链接，让lua可以在 /usr/lib/lua里面找到它要的restry库：</p>
+<div><pre class="hljs"><code>ln -s /usr/lib/lua /usr/share/lua</code></pre></div>
+<p>或者，修改nginx的lua-path，让lua去对的地方找库：</p>
+<div><pre class="hljs"><code>http {
+    <span class="hljs-string">...</span>
+    lua_package_path <span class="hljs-string">"./?.lua;/usr/lib/lua/?.lua;/usr/share/lua/?.lua;/usr/share/lua/?/init.lua;/usr/lib/lua/?/init.lua"</span>;
+    <span class="hljs-string">...</span>
+}</code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

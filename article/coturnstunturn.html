@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>对于coturn测试stun和turn - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">对于coturn测试stun和turn</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1733277847604"
+                    >2024-12-04 10:04</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1737628077496"
+                    >2025-01-23 18:27</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><h2 id="对于stun">对于stun：</h2>
+<p>首先，stun只是用来探测外部主机地址（当然，也可以用来探测NAT类型），所以，流量很小，大可以直接用现有的公开stun，注意，coturn把stun和turn的端口融合了，所以<code>turnserver.conf</code>中<code>listening-port=</code>既是stun的端口，也是turn的端口。<br />
+而且，大多数stun都是不需要身份验证的。<br />
+我们最常使用的两个stun标准</p>
+<div><pre class="hljs"><code>rfc 3489 : need 2 public ip to determining the NAT type.
+rfc 5389 : it depends on the client's NAT traversal solution.</code></pre></div>
+<p>stun测试有两个现有客户端：</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># （推荐使用stunclient）behavior的mode会直接显示出NAT模式，需要多测试几遍。对于Nextcloud call来说，只要显示Binding test: success，就行</span>
+stunclient --mode behavior --family 4 --protocol udp turn.cloudflare.com 3478
+<span class="hljs-comment"># 如果是自己搭建的，遇到莫名其妙地死循环，是因为遵循的rfc标准不同，pystun3是需要两个公网ipv4地址的。</span>
+pystun3 -d -H turn.cloudflare.com -p 3478</code></pre></div>
+<h2 id="对于turn">对于turn：</h2>
+<p>turn主要是用来转发流量的，所以，流量很大，几乎不存在公共免费的turn服务器，必须要使用自己的服务，coturn的turn服务有两种身份验证模式：<code>static-auth-secret</code>（支持REST Api）和身份密码模式。</p>
+<p>身份密码模式直接填就行，接下来主要说下更常用的<code>static-auth-secret</code>（支持REST Api）模式：<br />
+通过<code>static-auth-secret</code>生成用户名密码对：<br />
+打开一个终端，安装好nodejs，键入nodejs，进入nodejs的交互模式<br />
+复制如下函数定义，粘贴，回车确认：</p>
+<div><pre class="hljs"><code><span class="hljs-keyword">var</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">'crypto'</span>);
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">getTURNCredentials</span>(<span class="hljs-params">name, secret</span>){    
+    <span class="hljs-keyword">var</span> unixTimeStamp = <span class="hljs-built_in">parseInt</span>(<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>()/<span class="hljs-number">1000</span>) + <span class="hljs-number">24</span>*<span class="hljs-number">3600</span>,  <span class="hljs-comment">//设置生成的密码有效期为24小时</span>
+        username = [unixTimeStamp, name].<span class="hljs-title function_">join</span>(<span class="hljs-string">':'</span>),
+        password,
+        hmac = crypto.<span class="hljs-title function_">createHmac</span>(<span class="hljs-string">'sha1'</span>, secret);
+    hmac.<span class="hljs-title function_">setEncoding</span>(<span class="hljs-string">'base64'</span>);
+    hmac.<span class="hljs-title function_">write</span>(username);
+    hmac.<span class="hljs-title function_">end</span>();
+    password = hmac.<span class="hljs-title function_">read</span>();
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">username</span>: username,
+        <span class="hljs-attr">password</span>: password
+    };
+}</code></pre></div>
+<p>键入如下函数调用，即可得到用户名密码对：</p>
+<div><pre class="hljs"><code><span class="hljs-title function_">getTURNCredentials</span>(<span class="hljs-string">"test1"</span>, <span class="hljs-string">"fc7833ac40ac3fef7ea0c5ea45cdbe173c47f20dadc6d**此处隐藏10字符**ff5780321"</span>)</code></pre></div>
+<p>最终填到测试turn的<a title="https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/" href="https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/">在线工具</a>中的内容如下：</p>
+<div><pre class="hljs"><code>STUN or TURN URI:（服务器URL）
+turn:turn.cloudflare.com:3478
+TURN username:（用户名，形如如下格式，冒号前面的一串数字是Linux时间戳，加上冒号和后面的字符串，作为一个完整的用户名）
+1733363329:test1
+TURN password:（密码，形如如下的字符串）
+j7i6bgUO+xt1O1qxBh**此处隐藏4字符**sziaA=</code></pre></div>
+<p>PS：如果是自部署的coturn，并且开了web-admin的话，在网页端测试点击开始后<br />
+可以去coturn的web-admin界面查看：<br />
+注意，使用chrome打开web-admin能会遇到频繁被登出，可以使用其它浏览器<br />
+可以进入coturn容器的shell，通过cli查看（仅能查看一些基本信息，无法查看session）<br />
+另外，容器里还有一些turn开头的命令工具，有空可以看看什么作用</p>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

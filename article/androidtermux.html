@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>Android中使用Termux的一些常用操作 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">Android中使用Termux的一些常用操作</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1702962741719"
+                    >2023-12-19 13:12</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1737631453911"
+                    >2025-01-23 19:24</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><h3 id="adb-shell使用run-as进入termux-shell"><code>adb shell</code>使用<code>run-as</code>进入Termux shell</h3>
+<div><pre class="hljs"><code>run-as com.termux files/usr/bin/bash -lic <span class="hljs-string">'export PATH=/data/data/com.termux/files/usr/bin:$PATH; export LD_PRELOAD=/data/data/com.termux/files/usr/lib/libtermux-exec.so; bash -i'</span>
+</code></pre></div>
+<h3 id="对于使用ncdu时中文乱码的问题">对于使用ncdu时中文乱码的问题</h3>
+<p>虽然官方在issue中表示Termux并locale命令，但是，由于默认<code>LANG</code>是en_US.UTF-8，属于UTF-8字符集，所以，UFT-8字符集中包含的中文字符都是可以正常显示的。ncdu出现乱码，大多数情况是：使用su、或者tsu时，默认的shell环境是sh（并不会去加载bash的初始化文件），环境变量LANG是默认缺失的，所以，解决方法很简单</p>
+<div><pre class="hljs"><code><span class="hljs-built_in">export</span> LANG=en_US.UTF-8 ncdu</code></pre></div>
+<h3 id="使用rclone进行数据同步排除androiddata">使用<code>rclone</code>进行数据同步，排除<code>Android/data/</code></h3>
+<div><pre class="hljs"><code>sudo rclone copy -P --transfers=16 --multi-thread-streams=4 --exclude Android/ /sdcard/ openwrt:/app/MI12-upgrade/</code></pre></div>
+<h3 id="修改默认的home位置">修改默认的<code>HOME</code>位置</h3>
+<div><pre class="hljs"><code>nano /data/data/com.termux/files/usr/etc/bash.bashrc
+<span class="hljs-comment"># 添加如下内容：</span>
+<span class="hljs-built_in">export</span> HOME=/data/data/com.termux/files/home
+<span class="hljs-built_in">cd</span> <span class="hljs-variable">$HOME</span>
+</code></pre></div>
+<h3 id="开启ssh-server">开启<code>ssh-server</code></h3>
+<div><pre class="hljs"><code><span class="hljs-comment"># 启动ssh服务</span>
+sshd
+<span class="hljs-comment"># 生成ssh-key（会自动创建$HOME/.ssh/目录）</span>
+ssh-keygen -t ecdsa -b 384
+<span class="hljs-comment"># 然后添加客户端ssh公钥到$HOME/.ssh/authorized_keys</span>
+nano /data/data/com.termux/files/home/.ssh/authorized_keys
+
+<span class="hljs-comment"># 通过客户端连接</span>
+ssh -p 8022 <span class="hljs-variable">${任何用户名}</span>@<span class="hljs-variable">${目标主机地址}</span>
+<span class="hljs-comment"># 比如：</span>
+ssh -p 8022 root@127.0.0.1
+
+<span class="hljs-comment"># 启用root用户登录</span>
+nano /data/data/com.termux/files/usr/etc/ssh/sshd_config
+
+PrintMotd yes
+PasswordAuthentication no
+Subsystem sftp /data/data/com.termux/files/usr/libexec/sftp-server
+
+Port 8022
+PermitRootLogin yes
+PubkeyAuthentication yes
+AuthorizedKeysFile /data/data/com.termux/files/home/.ssh/authorized_keys
+StrictModes no
+
+<span class="hljs-comment"># 使用su启动sshd，可以使用tmux托管tsu</span>
+<span class="hljs-comment"># 切换用户之后，需要重新load环境变量！</span>
+<span class="hljs-comment"># env |grep "^PATH" |tee "${TMUX_TMPDIR}/path.default.env"</span>
+su -p
+<span class="hljs-comment"># source "${TMUX_TMPDIR}/path.default.env"</span>
+sshd
+
+<span class="hljs-comment"># 使用tsu启动sshd，可以使用tmux托管tsu</span>
+pkg install tsu
+tsu
+sshd
+
+<span class="hljs-comment"># 也可以先在tsu或su模式下以非daemon模式运行sshd并连接进行测试（ssh-client连接断开后会自动结束运行！）</span>
+<span class="hljs-built_in">export</span> PATH=/data/data/com.termux/files/usr/bin:<span class="hljs-variable">$PATH</span> ;sshd \
+-D -dd \
+-p 8022 -e</code></pre></div>
+<h3 id="termux启动x11">Termux启动X11</h3>
+<div><pre class="hljs"><code><span class="hljs-comment"># 打开`Termux-X11`，然后进入Termux，执行：</span>
+termux-x11 :1 -xstartup <span class="hljs-string">'dbus-launch --exit-with-session xfce4-session'</span></code></pre></div>
+<h3 id="termux启动scrcpy">Termux启动<code>scrcpy</code></h3>
+<div><pre class="hljs"><code><span class="hljs-comment"># 打开`Termux-X11`，然后进入Termux，执行：</span>
+termux-x11 :1 -xstartup <span class="hljs-string">'scrcpy -s 10.0.0.189'</span>
+<span class="hljs-comment"># 或者，包装成带参数访问</span>
+<span class="hljs-built_in">eval</span> <span class="hljs-string">"termux-x11 :1 -xstartup 'scrcpy <span class="hljs-variable">$@</span>'"</span></code></pre></div>
+<h3 id="添加ll命令为了再切换shell时依然可用这边未使用alias模式">添加<code>ll</code>命令（为了再切换<code>shell</code>时依然可用，这边未使用<code>alias</code>模式）</h3>
+<div><pre class="hljs"><code><span class="hljs-built_in">echo</span> <span class="hljs-string">'ls -alFh $@'</span> |tee /data/data/com.termux/files/usr/bin/ll ;chmod ugo+rx /data/data/com.termux/files/usr/bin/ll</code></pre></div>
+<h3 id="快捷指令">快捷指令</h3>
+<div><pre class="hljs"><code><span class="hljs-built_in">echo</span> <span class="hljs-string">'ls -alFh $@'</span> |tee /data/data/com.termux/files/usr/bin/ll
+
+chmod ugo+x /data/data/com.termux/files/usr/bin/ll</code></pre></div>
+<h3 id="查看端口监听">查看端口监听</h3>
+<div><pre class="hljs"><code>netstat -nlpt</code></pre></div>
+<h3 id="将127001上的监听转发到0000其它端口">将<code>127.0.0.1</code>上的监听转发到<code>0.0.0.0</code>（其它端口）</h3>
+<div><pre class="hljs"><code><span class="hljs-comment"># 使用语句块批量执行，避免打乱终端输出</span>
+{
+    2&gt;&amp;1 &gt;/dev/null socat TCP-LISTEN:12222,fork TCP:127.0.0.1:10808 &amp;
+    2&gt;&amp;1 &gt;/dev/null socat UDP-LISTEN:12222,fork UDP:127.0.0.1:10808 &amp;
+    2&gt;&amp;1 &gt;/dev/null socat TCP-LISTEN:12333,fork TCP:127.0.0.1:10809 &amp;
+    2&gt;&amp;1 &gt;/dev/null socat TCP-LISTEN:12253,fork TCP:127.0.0.1:10853 &amp;
+}</code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>

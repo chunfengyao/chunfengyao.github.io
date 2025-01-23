@@ -4,9 +4,120 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 23 Jan 2025 10:07:27 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 23 Jan 2025 11:24:27 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
+        <item>
+            <title><![CDATA[Linux下的loop块设备命令记录]]></title>
+            <guid>dc0a82d26fe74105a1bd0ee516358778</guid>
+            <pubDate>Thu, 23 Jan 2025 10:34:37 GMT</pubDate>
+            <content:encoded><![CDATA[<h2 id="创建-格式化并挂载">创建、格式化并挂载</h2>
+<div><pre class="hljs"><code><span class="hljs-comment"># 申请文件（不找用实际磁盘空间）</span>
+truncate -s 256G /app/imgs/share_disk
+<span class="hljs-comment"># 格式化成ext4</span>
+mkfs.ext4 /app/imgs/share_disk
+<span class="hljs-comment"># 或者格式化成ntfs</span>
+mkfs.ntfs -F -f /app/imgs/share_disk
+
+<span class="hljs-comment"># 创建挂载点</span>
+mkdir /mnt/share_disk
+<span class="hljs-comment"># 为了避免空目录被清理，可以创建一个占位文件</span>
+<span class="hljs-comment"># touch /mnt/share_disk/.keep</span>
+
+<span class="hljs-comment"># 直接通过mount挂载</span>
+mount -o loop /app/imgs/share_disk /mnt/share_disk
+
+<span class="hljs-comment"># 对于ntfs-3g，也可以直接使用mount.ntfs-3g直接挂载块设备</span>
+mount.ntfs-3g /app/imgs/share_disk /mnt/share_disk</code></pre></div>
+<div><pre class="hljs"><code><span class="hljs-comment"># 可以通过lsblk查看挂载详情</span>
+root@OpenWrt:~<span class="hljs-comment"># lsblk </span>
+<span class="hljs-comment"># NAME          MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS</span>
+<span class="hljs-comment"># loop0           7:0    0 320.6M  0 loop /overlay</span>
+<span class="hljs-comment"># loop1           7:1    0   217G  0 loop /mnt/share_disk</span>
+<span class="hljs-comment"># nvme0n1       259:0    0   1.8T  0 disk </span>
+<span class="hljs-comment"># ├─nvme0n1p1   259:1    0    50M  0 part </span>
+<span class="hljs-comment"># ├─nvme0n1p2   259:2    0   500M  0 part /rom</span>
+<span class="hljs-comment"># ├─nvme0n1p3   259:3    0   500M  0 part </span>
+<span class="hljs-comment"># ├─nvme0n1p4   259:4    0   1.8T  0 part /app/docker</span>
+<span class="hljs-comment"># │                                       /app</span>
+<span class="hljs-comment"># └─nvme0n1p128 259:5    0   239K  0 part </span></code></pre></div>
+<h2 id="loop块设备的大小调整">loop块设备的大小调整</h2>
+<div><pre class="hljs"><code><span class="hljs-comment"># 可以先将之前的挂在remount,ro挂载成只读，或者umount也行</span>
+<span class="hljs-comment"># 给块设备对应的文件添加10G大小（不会增加实际磁盘空间占用大小的）</span>
+truncate -s +10G /app/imgs/share_disk
+
+<span class="hljs-comment"># 触发一次系统针对loop1的分区扫描（相当于通知了系统，物理硬盘大小变了）</span>
+partprobe -s /dev/loop1
+<span class="hljs-comment"># 调整loop1的块设备大小到实际大小（相当于通知了loop驱动，硬盘大小变了，让loop驱动可以识别出新的大小）</span>
+losetup -c /dev/loop1
+
+<span class="hljs-comment"># 磁盘错误扫描（resize2fs的必须项）</span>
+fdisk -l /dev/loop1
+
+<span class="hljs-comment"># 调整文件系统大小</span>
+resize2fs /dev/loop1
+
+<span class="hljs-comment"># 检查结果</span>
+root@OpenWrt:~<span class="hljs-comment"># df -h /dev/loop1</span>
+<span class="hljs-comment"># Filesystem                Size      Used Available Use% Mounted on</span>
+<span class="hljs-comment"># /dev/loop1              212.5G     76.5G    125.3G  38% /mnt/share_disk</span>
+</code></pre></div>
+<h3 id="手动使用loop的losetup挂载ntfs镜像文件">手动使用loop的losetup挂载NTFS镜像文件</h3>
+<div><pre class="hljs"><code><span class="hljs-comment">#获取可用的loop设备号</span>
+losetup -f
+<span class="hljs-comment">#将share_disk关联到可用的loop设备号</span>
+<span class="hljs-built_in">export</span> _loopPath=<span class="hljs-string">"<span class="hljs-subst">$(losetup -f)</span>"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">${_loopPath}</span>"</span>
+losetup <span class="hljs-string">"<span class="hljs-variable">${_loopPath}</span>"</span> /app/imgs/share_disk
+
+<span class="hljs-comment">#挂载</span>
+mount <span class="hljs-string">"<span class="hljs-variable">${_loopPath}</span>"</span> /mnt/ap
+</code></pre></div>
+<h3 id="缩减loop设备对应的文件大小">缩减loop设备对应的文件大小</h3>
+<div><pre class="hljs"><code><span class="hljs-comment">#opkg install fstrim</span>
+<span class="hljs-comment">#注意：fstrim针对的是挂载点（目录），并且，无法处理直接挂载的ntfs，只能处理通过loop块设备挂载的ntfs</span>
+fstrim /mnt/ap</code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[学习Lua中遇到的一些问题]]></title>
+            <guid>a8367ad713cb49d98b79c9463f7bbdbb</guid>
+            <pubDate>Sat, 11 Jan 2025 11:44:22 GMT</pubDate>
+            <content:encoded><![CDATA[<p>问题：Openwrt编译时，如果启用了lua-restry，启动后，<code>nginx -t</code>是正常的，但是nginx会启动失败</p>
+<div><pre class="hljs"><code>root@J4125:~# nginx
+2025/01/11 19:43:02 [alert] 20604#0: failed to load the 'resty.core' module (https://github.com/openresty/lua-resty-core); ensure you are using an OpenResty release from https://openresty.org/en/download.html (reason: module 'resty.core' not found:
+    no field package.preload['resty.core']
+    no file './resty/core.lua'
+    no file '/app/openwrt-24.10.0-rc5/build_dir/target-x86_64_musl/luajit2-2.1.2024.08.15/ipkg-install/usr/share/luajit-2.1/resty/core.lua'
+    no file '/usr/share/lua/resty/core.lua'
+    no file '/usr/share/lua/resty/core/init.lua'
+    no file '/usr/share/lua/resty/core.lua'
+    no file '/usr/share/lua/resty/core/init.lua'
+    no file './resty/core.so'
+    no file '/usr/lib/lua/resty/core.so'
+    no file '/usr/lib/lua/resty/core.so'
+    no file '/usr/lib/lua/loadall.so'
+    no file './resty.so'
+    no file '/usr/lib/lua/resty.so'
+    no file '/usr/lib/lua/resty.so'
+    no file '/usr/lib/lua/loadall.so') in /etc/nginx/nginx.conf:242</code></pre></div>
+<p>注意上面报错信息中的<code>no file</code> ，就是<code>package.path</code>。<br />
+也可以通过打印显示默认<code>package.path</code></p>
+<div><pre class="hljs"><code><span class="hljs-comment"># 进入lua命令交互模式</span>
+lua
+<span class="hljs-comment"># 打印目前的package.path</span>
+<span class="hljs-built_in">print</span>(package.path)</code></pre></div>
+<p>另外，<code>nginx</code>支持在<code>http</code>作用域内指定<code>lua_package_path "./?.lua;/usr/share/lua/?.lua;/usr/share/lua/?/init.lua;/usr/lib/lua/?.lua;/usr/lib/lua/?/init.lua";</code></p>
+<p>综上：Openwrt上的nginx解决方案：就是创建软链接，让lua可以在 /usr/lib/lua里面找到它要的restry库：</p>
+<div><pre class="hljs"><code>ln -s /usr/lib/lua /usr/share/lua</code></pre></div>
+<p>或者，修改nginx的lua-path，让lua去对的地方找库：</p>
+<div><pre class="hljs"><code>http {
+    <span class="hljs-string">...</span>
+    lua_package_path <span class="hljs-string">"./?.lua;/usr/lib/lua/?.lua;/usr/share/lua/?.lua;/usr/share/lua/?/init.lua;/usr/lib/lua/?/init.lua"</span>;
+    <span class="hljs-string">...</span>
+}</code></pre></div>
+]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[个人简历]]></title>
             <guid>efafeec0b99046aeaabc2556dc0da8d8</guid>
@@ -281,6 +392,281 @@ sleep 5s
 
 <span class="hljs-built_in">fg</span> || <span class="hljs-literal">true</span>
 sleep infinity
+</code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[对于coturn测试stun和turn]]></title>
+            <guid>ab4e099e9b5b4055ac92fcc56c76de06</guid>
+            <pubDate>Wed, 04 Dec 2024 02:04:07 GMT</pubDate>
+            <content:encoded><![CDATA[<h2 id="对于stun">对于stun：</h2>
+<p>首先，stun只是用来探测外部主机地址（当然，也可以用来探测NAT类型），所以，流量很小，大可以直接用现有的公开stun，注意，coturn把stun和turn的端口融合了，所以<code>turnserver.conf</code>中<code>listening-port=</code>既是stun的端口，也是turn的端口。<br />
+而且，大多数stun都是不需要身份验证的。<br />
+我们最常使用的两个stun标准</p>
+<div><pre class="hljs"><code>rfc 3489 : need 2 public ip to determining the NAT type.
+rfc 5389 : it depends on the client's NAT traversal solution.</code></pre></div>
+<p>stun测试有两个现有客户端：</p>
+<div><pre class="hljs"><code><span class="hljs-comment"># （推荐使用stunclient）behavior的mode会直接显示出NAT模式，需要多测试几遍。对于Nextcloud call来说，只要显示Binding test: success，就行</span>
+stunclient --mode behavior --family 4 --protocol udp turn.cloudflare.com 3478
+<span class="hljs-comment"># 如果是自己搭建的，遇到莫名其妙地死循环，是因为遵循的rfc标准不同，pystun3是需要两个公网ipv4地址的。</span>
+pystun3 -d -H turn.cloudflare.com -p 3478</code></pre></div>
+<h2 id="对于turn">对于turn：</h2>
+<p>turn主要是用来转发流量的，所以，流量很大，几乎不存在公共免费的turn服务器，必须要使用自己的服务，coturn的turn服务有两种身份验证模式：<code>static-auth-secret</code>（支持REST Api）和身份密码模式。</p>
+<p>身份密码模式直接填就行，接下来主要说下更常用的<code>static-auth-secret</code>（支持REST Api）模式：<br />
+通过<code>static-auth-secret</code>生成用户名密码对：<br />
+打开一个终端，安装好nodejs，键入nodejs，进入nodejs的交互模式<br />
+复制如下函数定义，粘贴，回车确认：</p>
+<div><pre class="hljs"><code><span class="hljs-keyword">var</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">'crypto'</span>);
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">getTURNCredentials</span>(<span class="hljs-params">name, secret</span>){    
+    <span class="hljs-keyword">var</span> unixTimeStamp = <span class="hljs-built_in">parseInt</span>(<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>()/<span class="hljs-number">1000</span>) + <span class="hljs-number">24</span>*<span class="hljs-number">3600</span>,  <span class="hljs-comment">//设置生成的密码有效期为24小时</span>
+        username = [unixTimeStamp, name].<span class="hljs-title function_">join</span>(<span class="hljs-string">':'</span>),
+        password,
+        hmac = crypto.<span class="hljs-title function_">createHmac</span>(<span class="hljs-string">'sha1'</span>, secret);
+    hmac.<span class="hljs-title function_">setEncoding</span>(<span class="hljs-string">'base64'</span>);
+    hmac.<span class="hljs-title function_">write</span>(username);
+    hmac.<span class="hljs-title function_">end</span>();
+    password = hmac.<span class="hljs-title function_">read</span>();
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">username</span>: username,
+        <span class="hljs-attr">password</span>: password
+    };
+}</code></pre></div>
+<p>键入如下函数调用，即可得到用户名密码对：</p>
+<div><pre class="hljs"><code><span class="hljs-title function_">getTURNCredentials</span>(<span class="hljs-string">"test1"</span>, <span class="hljs-string">"fc7833ac40ac3fef7ea0c5ea45cdbe173c47f20dadc6d**此处隐藏10字符**ff5780321"</span>)</code></pre></div>
+<p>最终填到测试turn的<a title="https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/" href="https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/">在线工具</a>中的内容如下：</p>
+<div><pre class="hljs"><code>STUN or TURN URI:（服务器URL）
+turn:turn.cloudflare.com:3478
+TURN username:（用户名，形如如下格式，冒号前面的一串数字是Linux时间戳，加上冒号和后面的字符串，作为一个完整的用户名）
+1733363329:test1
+TURN password:（密码，形如如下的字符串）
+j7i6bgUO+xt1O1qxBh**此处隐藏4字符**sziaA=</code></pre></div>
+<p>PS：如果是自部署的coturn，并且开了web-admin的话，在网页端测试点击开始后<br />
+可以去coturn的web-admin界面查看：<br />
+注意，使用chrome打开web-admin能会遇到频繁被登出，可以使用其它浏览器<br />
+可以进入coturn容器的shell，通过cli查看（仅能查看一些基本信息，无法查看session）<br />
+另外，容器里还有一些turn开头的命令工具，有空可以看看什么作用</p>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[在docker中使用golang镜像，编译mt7621平台上的sing-box]]></title>
+            <guid>f021d6f5e82f45feabf3ff7d28b46a82</guid>
+            <pubDate>Thu, 17 Oct 2024 13:10:39 GMT</pubDate>
+            <content:encoded><![CDATA[<h3 id="在docker中编译mt7621平台上的sing-box">在docker中编译mt7621平台上的sing-box</h3>
+<ul>
+<li>git拉取到当前目录</li>
+<li>拉取：golang:alpine</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-comment"># 进入工作目录（拉取的sing-box源码目录）</span>
+<span class="hljs-built_in">cd</span> sing-box
+
+<span class="hljs-comment"># mt7621的相关环境变量</span>
+<span class="hljs-built_in">export</span> GOOS=linux
+<span class="hljs-built_in">export</span> GOARCH=mipsle
+<span class="hljs-built_in">export</span> GOMIPS=softfloat
+<span class="hljs-built_in">export</span> CGO_ENABLED=0
+
+<span class="hljs-comment"># 如果go build过程中提示网络问题的话，设置一下代理（大概率是要设置的，要不然就得使用国内源）</span>
+<span class="hljs-built_in">export</span> http_proxy=http://10.0.0.1:12333
+<span class="hljs-built_in">export</span> https_proxy=<span class="hljs-variable">$http_proxy</span>
+<span class="hljs-comment"># 启用 Go Modules 功能</span>
+go env -w GO111MODULE=on
+<span class="hljs-comment"># 1. 七牛 CDN</span>
+go env -w  GOPROXY=https://goproxy.cn,direct
+<span class="hljs-comment"># 2. 阿里云</span>
+go env -w GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
+<span class="hljs-comment"># 3. 官方</span>
+go env -w  GOPROXY=https://goproxy.io,direct
+<span class="hljs-comment"># 检查设置结果</span>
+go env | grep GOPROXY
+
+<span class="hljs-comment">#版本号</span>
+<span class="hljs-built_in">export</span> _version=<span class="hljs-string">'1.10.2'</span>
+
+<span class="hljs-comment"># 编译</span>
+go build -v -trimpath -ldflags <span class="hljs-string">"-X 'github.com/sagernet/sing-box/constant.Version=<span class="hljs-variable">${_version}</span>' -s -w -buildid="</span> -tags with_clash_api,with_ech,with_gvisor,with_quic,with_reality_server,with_utls,with_wireguard ./cmd/sing-box
+
+<span class="hljs-comment"># 编译后会在当前目录生成sing-box二进制文件，文件偏大，用upx压缩一下</span>
+upx sing-box
+
+<span class="hljs-comment"># 传给mt7621的设备</span>
+scp sing-box root@10.1.1.1:/tmp/
+</code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[facefusion使用记录]]></title>
+            <guid>954a719e700a4388b518e5f3fce3cd85</guid>
+            <pubDate>Wed, 25 Sep 2024 13:51:23 GMT</pubDate>
+            <content:encoded><![CDATA[<h3 id="mac-os-下m1-max芯片使用conda安装">Mac OS 下（M1 Max芯片），使用Conda安装</h3>
+<div><pre class="hljs"><code><span class="hljs-comment"># 我的conda初始化是单独放到`~/.bash_profile`中的，所以需要提前source一下。</span>
+<span class="hljs-built_in">source</span> ~/.bash_profile
+
+<span class="hljs-comment"># 创建虚拟环境</span>
+conda create --no-default-packages -n facefusion python=3.10
+
+<span class="hljs-comment">#如果要删除虚拟环境的话</span>
+conda remove --name facefusion --all
+<span class="hljs-comment"># 检查删除结果</span>
+conda info
+<span class="hljs-comment"># 找到"envs directories"，查看是否删除干净了</span>
+ll /opt/homebrew/Caskroom/miniconda/base/envs
+
+<span class="hljs-comment"># 目前需要切换到特定分支，默认的稳定版的分支会有numpy的版本冲突问题，暂时无解</span>
+<span class="hljs-comment"># 当前的最新版已经不需要了</span>
+<span class="hljs-comment"># git checkout next</span>
+
+
+<span class="hljs-comment"># 进入项目目录</span>
+<span class="hljs-comment"># 进行安装</span>
+./install.py</code></pre></div>
+<h3 id="mac-os-下m1-max芯片使用conda启动">Mac OS 下（M1 Max芯片），使用Conda启动</h3>
+<div><pre class="hljs"><code><span class="hljs-built_in">source</span> ~/.bash_profile
+
+<span class="hljs-comment"># 安装时创建的环境名称是facefusion</span>
+conda activate facefusion
+
+<span class="hljs-comment"># 进入项目目录</span>
+<span class="hljs-comment"># 启动，打印帮助信息</span>
+./facefusion.py headless-run -h</code></pre></div>
+<h3 id="以next分支为例关闭未成年内容审查nsfw线上环境是要开的但是自己测试的时候可以关掉而且它有的时候会误判-开启0000访问">以next分支为例：关闭未成年内容审查（NSFW）（线上环境是要开的，但是自己测试的时候可以关掉，而且，它有的时候会误判）。开启0.0.0.0访问</h3>
+<div><pre class="hljs"><code><span class="hljs-comment">diff --git a/facefusion/content_analyser.py b/facefusion/content_analyser.py</span>
+<span class="hljs-comment">index 998e560..a40094f 100644</span>
+<span class="hljs-comment">--- a/facefusion/content_analyser.py</span>
+<span class="hljs-comment">+++ b/facefusion/content_analyser.py</span>
+<span class="hljs-meta">@@ -71,10 +71,10 @@</span> def analyse_stream(vision_frame : VisionFrame, video_fps : Fps) -&gt; bool:
+ 
+ 
+ def analyse_frame(vision_frame : VisionFrame) -&gt; bool:
+<span class="hljs-deletion">-	vision_frame = prepare_frame(vision_frame)</span>
+<span class="hljs-deletion">-	probability = forward(vision_frame)</span>
+<span class="hljs-addition">+	#vision_frame = prepare_frame(vision_frame)</span>
+<span class="hljs-addition">+	#probability = forward(vision_frame)</span>
+ 
+<span class="hljs-deletion">-	return probability &gt; PROBABILITY_LIMIT</span>
+<span class="hljs-addition">+	return False</span>
+ 
+ 
+ def forward(vision_frame : VisionFrame) -&gt; float:
+<span class="hljs-comment">diff --git a/facefusion/uis/layouts/default.py b/facefusion/uis/layouts/default.py</span>
+<span class="hljs-comment">index c5cf2d6..ab085cc 100755</span>
+<span class="hljs-comment">--- a/facefusion/uis/layouts/default.py</span>
+<span class="hljs-comment">+++ b/facefusion/uis/layouts/default.py</span>
+<span class="hljs-meta">@@ -114,4 +114,4 @@</span> def listen() -&gt; None:
+ 
+ 
+ def run(ui : gradio.Blocks) -&gt; None:
+<span class="hljs-deletion">-	ui.launch(favicon_path = 'facefusion.ico', inbrowser = state_manager.get_item('open_browser'))</span>
+<span class="hljs-addition">+	ui.launch(favicon_path = 'facefusion.ico', share=False, server_name="0.0.0.0", inbrowser = state_manager.get_item('open_browser'))</span>
+</code></pre></div>
+<h3 id="网页版操作时-next分支有个bugpreview控件的ui宽度有问题而且它是悬浮的所以要么把网页缩放到很小要么通过inspect调整preview控件的宽度为25">网页版操作时。next分支有个Bug，preview控件的UI宽度有问题，而且它是悬浮的，所以，要么，把网页缩放到很小，要么，通过inspect，调整preview控件的宽度为25%</h3>
+<h3 id="超参数建议">超参数建议</h3>
+<ul>
+<li>不建议选face_enhancer和frame_enhancer，会导致消耗的时间特别长</li>
+<li>EXECUTION PROVIDERS，Mac OS可以选上coreml（可以使用Apple的Metal引擎）</li>
+<li>EXECUTION THREAD COUNT，cpu核心数</li>
+<li>EXECUTION QUEUE COUNT，队列数</li>
+<li>VIDEO MEMORY STRATEGY，内存不紧张的，可以选moderate</li>
+<li>（输出为视频时）OUTPUT VIDEO ENCODER，推荐选libx265</li>
+<li>（输出为视频时）OUTPUT VIDEO QUALITY，设置100</li>
+<li>SOURCE，添加目标人物的头像，可以选择多个图片或者视频</li>
+<li>TARGET，添加媒体素材</li>
+<li>（输出为视频时）PREVIEW FRAME，可以自己用于临时预览（与实际效果不一定是完全一样的）</li>
+<li>FACE SELECTOR MODE，如果你的SOURCE对应的图片里就只有一个人，可以使用one，如果是reference的话，需要调整以下参数
+<ul>
+<li>REFERENCE FACE DISTANCE，值越大，越像SOURCE的目标人物</li>
+</ul>
+</li>
+<li>FACE SELECTOR ORDER，当有多个人脸是可以根据条件设置优先顺序</li>
+<li>FACE MASK TYPES，可以都选上</li>
+<li>FACE MASK BLUR，可以设置为0（未知参数）</li>
+<li>FACE DETECTOR SCORE，如果有不该识别为人脸的物品/部位被识别为人脸了，可以适当提高该值</li>
+<li>FACE LANDMARKER SCORE，相当于换脸后的置信度阈值</li>
+</ul>
+<h3 id="使用command进行转换">使用command进行转换</h3>
+<ul>
+<li>待解决的问题：几乎使用同样的参数，在web页面中生成的视频，码率为1773 kb/s，但是用command生成的视频，码率为30333 kb/s，并且，用command生成的视频，Mac OS的Finder是无法直接预览的。（暂未解决，应该是有几个ffmpeg的后处理未完成）</li>
+</ul>
+<div><pre class="hljs"><code><span class="hljs-built_in">echo</span> <span class="hljs-string">"Sample: ./handle.sh 'source_img' 'target_video' 'output_video_path'"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"===&gt; press Enter to continue."</span>
+<span class="hljs-built_in">read</span> _tempValue
+
+_tempFile=<span class="hljs-string">"/tmp/<span class="hljs-subst">$(date '+%Y-%m-%d-%H-%M')</span>-<span class="hljs-subst">$(uuidgen)</span>.mp4"</span>
+_source=<span class="hljs-string">"<span class="hljs-variable">${1}</span>"</span>
+_target=<span class="hljs-string">"<span class="hljs-variable">${2}</span>"</span>
+_output=<span class="hljs-string">"<span class="hljs-variable">${3}</span>"</span>
+
+./facefusion.py headless-run \
+--execution-providers coreml \
+--execution-thread-count 11 \
+--execution-queue-count 2 \
+--temp-frame-format png \
+--video-memory-strategy moderate \
+--output-image-quality 100 \
+--output-audio-encoder aac \
+--output-video-encoder libx265 \
+--output-video-quality 100 \
+--output-video-preset veryfast \
+--output-video-fps 25 \
+ \
+ \
+--face-selector-mode one \
+--face-selector-order large-small \
+--face-selector-gender female \
+ \
+ \
+--face-mask-types box occlusion region \
+--face-mask-regions skin left-eyebrow right-eyebrow left-eye right-eye glasses nose mouth upper-lip lower-lip \
+--face-mask-blur 0.05 \
+ \
+--face-detector-score 0.6 \
+--face-landmarker-score 0.6 \
+ \
+--log-level debug  \
+ \
+-s <span class="hljs-string">"<span class="hljs-variable">${_source}</span>"</span> \
+-t <span class="hljs-string">"<span class="hljs-variable">${_target}</span>"</span> \
+-o <span class="hljs-string">"<span class="hljs-variable">${_tempFile}</span>"</span> \
+
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"Generated temp video file located here: <span class="hljs-variable">${_tempFile}</span>"</span>
+
+<span class="hljs-comment"># 复制源视频的参数</span>
+_tempFileWithAudio=<span class="hljs-string">"/tmp/<span class="hljs-subst">$(date '+%Y-%m-%d-%H-%M')</span>-<span class="hljs-subst">$(uuidgen)</span>.mp4"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"[Post handle] Merge Video from temp file and Audio from target file"</span>
+<span class="hljs-built_in">set</span> -x
+ffmpeg -hide_banner -loglevel error -i <span class="hljs-string">"<span class="hljs-variable">${_tempFile}</span>"</span> -i <span class="hljs-string">"<span class="hljs-variable">${_target}</span>"</span> -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 -shortest -y <span class="hljs-string">"<span class="hljs-variable">${_tempFileWithAudio}</span>"</span>
+<span class="hljs-built_in">set</span> +x
+
+<span class="hljs-comment">### 如果实在嫌麻烦，下面的两步，可以试试直接降低视频流的比特率</span>
+<span class="hljs-comment">### 这一步还没有分析完成</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"[Post handle] Concat video"</span>
+_concatConfig=<span class="hljs-string">"/tmp/.concat_config_<span class="hljs-subst">$(date '+%Y-%m-%d-%H-%M')</span>-<span class="hljs-subst">$(uuidgen)</span>"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"file '<span class="hljs-variable">${_tempFileWithAudio}</span>'\n"</span> &gt; <span class="hljs-string">"<span class="hljs-variable">${_concatConfig}</span>"</span>
+ffmpeg -hide_banner -loglevel error -f concat -safe 0 -i <span class="hljs-string">"<span class="hljs-variable">${_concatConfig}</span>"</span> -c:v copy -c:a aac -y <span class="hljs-string">"<span class="hljs-variable">${_output}</span>"</span>
+<span class="hljs-comment">### 后面可能还有一步</span>
+
+<span class="hljs-built_in">echo</span> <span class="hljs-string">'All Done!'</span>
+</code></pre></div>
+<h3 id="暴力截取的web版本的-ffmpeg命令记录">暴力截取的web版本的 ffmpeg命令记录</h3>
+<div><pre class="hljs"><code><span class="hljs-comment"># 拆分视频为帧图</span>
+ffmpeg -hide_banner -loglevel error -i /private/var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/gradio/36ef46ec576711637d2ce8b00afb1d20fe52c168a486203aff5c42d9c1bbd27a/test.mp4 -s 720x1280 -q:v 0 -vf fps=25.0 -vsync 0 /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/facefusion/<span class="hljs-built_in">test</span>/%08d.png
+
+<span class="hljs-comment"># face_swapper</span>
+
+<span class="hljs-comment"># 将换脸完成的帧图合成为视频（无音频）</span>
+ffmpeg -hide_banner -loglevel error -r 25.0 -i /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/facefusion/<span class="hljs-built_in">test</span>/%08d.png -s 720x1280 -c:v libx265 -crf 0 -preset veryfast -vf framerate=fps=25.0 -pix_fmt yuv420p -colorspace bt709 -y /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/facefusion/<span class="hljs-built_in">test</span>/temp.mp4
+
+
+<span class="hljs-comment"># 合并音频</span>
+ffmpeg -hide_banner -loglevel error -i /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/facefusion/<span class="hljs-built_in">test</span>/temp.mp4 -i /private/var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/gradio/36ef46ec576711637d2ce8b00afb1d20fe52c168a486203aff5c42d9c1bbd27a/test.mp4 -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 -shortest -y /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/41fcdb05.mp4
+
+
+<span class="hljs-comment"># concat（待分析） 注： /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/tmpgyx5kq 文件的内容为：file '/var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/xx-ui-xxx-xxxxx.mp4'\n</span>
+ffmpeg -hide_banner -loglevel error -f concat -safe 0 -i /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/tmpgyx5kq0j -c:v copy -c:a aac -y /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/41fcdb05.mp4
+
+
+<span class="hljs-comment"># 未知（待分析）</span>
+ffmpeg -y -loglevel quiet -i /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/tmpy8n8zqyr /var/folders/w7/msfp_m6112j80xdxx_slpkwr0000gn/T/41fcdb05.mp4
 </code></pre></div>
 ]]></content:encoded>
         </item>
@@ -825,418 +1211,6 @@ Debug模式：</p>
 </ul>
 </li>
 </ul>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[Openwrt中通过对Dnsmasq进行DUMP来排查dns缓存问题]]></title>
-            <guid>f1baff6a14074fe49e99f54fe58a26b0</guid>
-            <pubDate>Wed, 03 Jul 2024 00:05:00 GMT</pubDate>
-            <content:encoded><![CDATA[<p>首先Openwrt中开启Dnsmasq的日志功能。</p>
-<div><pre class="hljs"><code><span class="hljs-comment"># 我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
-uci <span class="hljs-built_in">set</span> dhcp.cfg01411c.logqueries=<span class="hljs-string">'1'</span>
-uci commit
-
-<span class="hljs-comment"># 当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
-uci <span class="hljs-built_in">set</span> dhcp.@dnsmasq[0].logqueries=<span class="hljs-string">'1'</span>
-uci commit</code></pre></div>
-<p>这会让<code>Openwrt</code>生成的配置文件中的<code>log-queries</code>变为启用状态。</p>
-<p>然后重启Dnsmasq</p>
-<div><pre class="hljs"><code><span class="hljs-comment"># 重启</span>
-/etc/init.d/dnsmasq restart</code></pre></div>
-<p>重启/重载完可以检查下配置文件是不是正确生成了：</p>
-<div><pre class="hljs"><code>grep <span class="hljs-string">"log-queries"</span> /var/etc/dnsmasq.conf*</code></pre></div>
-<p>然后开俩终端<br />
-终端一用于监视日志</p>
-<div><pre class="hljs"><code>logread -f</code></pre></div>
-<p>终端二用于发送信号量，以触发dump</p>
-<div><pre class="hljs"><code><span class="hljs-comment"># 调用pidof子命令获取Dnsmasq的进程号，再给对应进程发送SIGUSR1信号</span>
-<span class="hljs-built_in">kill</span> -SIGUSR1 `pidof /usr/sbin/dnsmasq`</code></pre></div>
-<p>然后即可看到dump内容，大致如下</p>
-<div><pre class="hljs"><code>Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: time 3487
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cache size 150, 0/163 cache insertions re-used unexpired cache entries.
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: queries forwarded 98, queries answered locally 38
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: queries for authoritative zones 0
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-query subqueries HWM 0
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-query crypto work HWM 0
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: DNSSEC per-RRSet signature fails HWM 0
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: pool memory in use 0, max 88, allocated 2200
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: child processes for TCP requests: in use 0, highest since last SIGUSR1 0, max allowed 20.
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: server 127.0.0.1#5333: queries sent 98, retried 0, failed 0, nxdomain replies 3, avg. latency 597ms
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: Host                           Address                                  Flags      Expires                  Source
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ------------------------------ ---------------------------------------- ---------- ------------------------ ------------
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: mtalk.google.com               mobile-gtalk.l.google.com                CF         62
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-localhost                  ::1                                      6F I   H   0                        /etc/hosts
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: upp-cdn.itunes-apple.com.akadn ioshost.qtlcdn.com                       CF         4294967112
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-loopback                   ::1                                      6F I   H   0                        /etc/hosts
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ip6-allnodes.lan               ff02::1                                  6FRI   H   0                        /etc/hosts
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: assis.local.lan                                                         !F I   H   0
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: clients4.google.com            clients.l.google.com                     CF         4294967271
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ipcdn-lb.apple.com.akadns.net  ioshost.qtlcdn.com                       CF         4294967292
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: ajax.googleapis.com            142.250.189.234                          4F         4294967269
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: live.github.com                140.82.112.25                            4F         3
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 172.217.164.106                          4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.191.74                           4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.202                           4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.234                          4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.188.10                           4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.191.42                           4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.214.138                          4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.32.42                            4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.170                          4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.72.202                           4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.234                           4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.251.46.170                           4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: content-autofill.googleapis.co 142.250.189.202                          4F         19
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: googlehosted.l.googleuserconte 142.250.189.161                          4F         98
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: lh3.googleusercontent.com      googlehosted.l.googleusercontent.com     CF         4294967261
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.cookielaw.org              104.19.178.52                            4F         4294967283
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.cookielaw.org              104.19.177.52                            4F         4294967283
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.sstatic.net                104.18.40.222                            4F         78
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: cdn.sstatic.net                172.64.147.34                            4F         78
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: i.sstatic.net                  104.18.41.33                             4F         4294967135
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: i.sstatic.net                  172.64.146.223                           4F         4294967135
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: mobile-gtalk.l.google.com      142.251.2.188                            4F         62
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: clients.l.google.com           142.250.189.174                          4F         4294967271
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.191.42                           4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.170                          4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.191.74                           4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 172.217.164.106                          4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.202                           4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.72.202                           4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.214.138                          4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.170                           4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.46.234                           4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.234                          4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.250.189.202                          4F         4294967248
-Wed Jul  3 07:59:52 2024 daemon.info dnsmasq[1]: optimizationguide-pa.googleapi 142.251.32.42                            4F         4294967248</code></pre></div>
-<p>然后排查dns缓存问题即可</p>
-<p>排查完之后，需要关闭的话，如下：</p>
-<div><pre class="hljs"><code><span class="hljs-comment"># 我这边Openwrt中的Dnsmasq实例名为：cfg01411c，所以，UCI操作为</span>
-uci del dhcp.cfg01411c.logqueries
-uci commit
-
-<span class="hljs-comment"># 当然，也可以使用相对值，比如针对第一个Dnsmasq实例</span>
-uci del dhcp.@dnsmasq[0].logqueries
-uci commit</code></pre></div>
-<p>然后重启Dnsmasq</p>
-<div><pre class="hljs"><code><span class="hljs-comment"># 重启</span>
-/etc/init.d/dnsmasq restart</code></pre></div>
-<h3 id="根据打印的信息可知290版本的dnsmasq是可以通过reload来清空dns缓存的">根据打印的信息可知，2.90版本的Dnsmasq是可以通过reload来清空dns缓存的。</h3>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[Andriod - 通过adb执行JAVA程序（包含main入口的java文件）]]></title>
-            <guid>2d3f56eee8bd416e9f2dae3238b1ebf2</guid>
-            <pubDate>Sun, 16 Jun 2024 09:41:38 GMT</pubDate>
-            <content:encoded><![CDATA[<ul>
-<li>首先编写JAVA文件 - 该代码作用：通过adb执行java关闭屏幕</li>
-</ul>
-<div><pre class="hljs"><code><span class="hljs-keyword">import</span> android.annotation.SuppressLint;
-<span class="hljs-keyword">import</span> android.os.IBinder;
-<span class="hljs-keyword">import</span> android.os.Build;
-<span class="hljs-keyword">import</span> java.lang.reflect.Method;
-<span class="hljs-keyword">import</span> java.lang.reflect.InvocationTargetException;
-
-<span class="hljs-meta">@SuppressLint("PrivateApi")</span>
-<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DisplayControl</span> {
-
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Class&lt;?&gt; CLASS;
-    <span class="hljs-keyword">static</span> {
-        <span class="hljs-keyword">try</span> {
-            CLASS = Class.forName(<span class="hljs-string">"android.view.SurfaceControl"</span>);
-        } <span class="hljs-keyword">catch</span> (ClassNotFoundException e) {
-            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AssertionError</span>(e);
-        }
-    }
-
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> <span class="hljs-keyword">throws</span> Exception {
-        System.out.println(<span class="hljs-string">"===&gt; Target Mode: "</span> + args[<span class="hljs-number">0</span>]);
-        <span class="hljs-keyword">switch</span> (Integer.parseInt(args[<span class="hljs-number">0</span>])){
-                     <span class="hljs-comment">// &lt;https://android.googlesource.com/platform/frameworks/base/+/bcf48ed/core/java/android/view/SurfaceControl.java#224&gt;</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:
-                System.out.println(<span class="hljs-string">"POWER_MODE_OFF."</span>);
-                <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
-                System.out.println(<span class="hljs-string">"POWER_MODE_DOZE."</span>);
-                <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
-                System.out.println(<span class="hljs-string">"POWER_MODE_NORMAL."</span>);
-                <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:
-                System.out.println(<span class="hljs-string">"POWER_MODE_DOZE_SUSPEND."</span>);
-                <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">default</span>:
-                System.out.println(<span class="hljs-string">"Not supported value."</span>);
-                <span class="hljs-keyword">return</span>;
-        }
-        <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> CLASS.getMethod(<span class="hljs-string">"setDisplayPowerMode"</span>, IBinder.class, <span class="hljs-type">int</span>.class);
-        <span class="hljs-keyword">try</span> {
-            method.invoke(<span class="hljs-literal">null</span>, getBuiltInDisplay(),Integer.parseInt(args[<span class="hljs-number">0</span>]));
-        } <span class="hljs-keyword">catch</span> (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Method <span class="hljs-title function_">getGetBuiltInDisplayMethod</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> NoSuchMethodException {
-        Method getBuiltInDisplayMethod;
-        <span class="hljs-comment">// the method signature has changed in Android Q</span>
-        <span class="hljs-comment">// &lt;https://github.com/Genymobile/scrcpy/issues/586&gt;</span>
-        <span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.Q) {
-            getBuiltInDisplayMethod = CLASS.getMethod(<span class="hljs-string">"getBuiltInDisplay"</span>, <span class="hljs-type">int</span>.class);
-        } <span class="hljs-keyword">else</span> {
-            getBuiltInDisplayMethod = CLASS.getMethod(<span class="hljs-string">"getInternalDisplayToken"</span>);
-        }
-        <span class="hljs-keyword">return</span> getBuiltInDisplayMethod;
-    }
-
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> IBinder <span class="hljs-title function_">getBuiltInDisplay</span><span class="hljs-params">()</span> {
-        <span class="hljs-keyword">try</span> {
-            <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> getGetBuiltInDisplayMethod();
-            <span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.Q) {
-                <span class="hljs-comment">// call getBuiltInDisplay(0)</span>
-                <span class="hljs-keyword">return</span> (IBinder) method.invoke(<span class="hljs-literal">null</span>, <span class="hljs-number">0</span>);
-            }
-            <span class="hljs-comment">// call getInternalDisplayToken()</span>
-            <span class="hljs-keyword">return</span> (IBinder) method.invoke(<span class="hljs-literal">null</span>);
-        } <span class="hljs-keyword">catch</span> (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-            e.printStackTrace();
-            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
-        }
-    }
-}
-</code></pre></div>
-<ul>
-<li>然后编译，通过-cp指定android.jar的路径</li>
-</ul>
-<div><pre class="hljs"><code>javac -<span class="hljs-built_in">source</span> 1.8 -target 1.8 ./DisplayControl.java -cp <span class="hljs-string">"<span class="hljs-variable">$ANDROID_HOME</span>/platforms/android-33/android.jar"</span></code></pre></div>
-<ul>
-<li>然后将class文件打包为dex（Dalvik可执行文件）</li>
-</ul>
-<div><pre class="hljs"><code><span class="hljs-string">"<span class="hljs-variable">$ANDROID_HOME</span>/build-tools/27.0.3/dx"</span> --dex --output ./DisplayControl.dex ./DisplayControl.class</code></pre></div>
-<ul>
-<li>将文件推送到设备的tmp目录（有权限，并且可以添加可执行权限）</li>
-</ul>
-<div><pre class="hljs"><code>adb push DisplayControl.dex /data/<span class="hljs-built_in">local</span>/tmp/</code></pre></div>
-<ul>
-<li>执行（其中：/data/local/tmp/DisplayControl.dex是dex路径，最后的DisplayControl是包含main方法的类名）</li>
-</ul>
-<div><pre class="hljs"><code>adb shell CLASSPATH=/data/<span class="hljs-built_in">local</span>/tmp/DisplayControl.dex app_process / DisplayControl</code></pre></div>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[HomeAssistant优化]]></title>
-            <guid>ed06cd4fadac48e9b51ff7b5fbd216dc</guid>
-            <pubDate>Sun, 05 May 2024 11:56:58 GMT</pubDate>
-            <content:encoded><![CDATA[<h2 id="注意所有牵扯到编辑configurationyaml的都得重启生效">注意：所有牵扯到编辑<code>configuration.yaml</code>的，都得重启生效</h2>
-<h3 id="设置ha的请求通过http_proxy发送不包含连接设备的请求">设置HA的请求通过http_proxy发送（不包含连接设备的请求）</h3>
-<div><pre class="hljs"><code>vi /config/custom_components/hacs/base.py
-<span class="hljs-comment"># search: `self.session.get`</span>
-<span class="hljs-comment"># add this line(http proxy only socks5 will not work) in parameters list</span>
-`proxy=<span class="hljs-string">"http://10.0.0.1:12333"</span>, `
-</code></pre></div>
-<hr />
-<h3 id="添加基于rest-api的自定义通知平台">添加基于<code>REST-api</code>的自定义通知平台</h3>
-<ul>
-<li>编辑<code>configuration.yaml</code></li>
-<li>添加如下内容，注意：<code>${__gotify_host_port_url}</code>、<code>${__gotify_api_key}</code>替换为自己的配置：</li>
-</ul>
-<div><pre class="hljs"><code><span class="hljs-attr">notify:</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">gotify</span>
-    <span class="hljs-attr">platform:</span> <span class="hljs-string">rest</span>
-    <span class="hljs-attr">resource:</span> <span class="hljs-string">${__gotify_host_port_url}/message</span>
-    <span class="hljs-attr">method:</span> <span class="hljs-string">POST_JSON</span>
-    <span class="hljs-attr">headers:</span>
-      <span class="hljs-attr">X-Gotify-Key:</span> <span class="hljs-string">${__gotify_api_key}</span>
-    <span class="hljs-attr">message_param_name:</span> <span class="hljs-string">message</span>
-    <span class="hljs-attr">title_param_name:</span> <span class="hljs-string">title</span>
-    <span class="hljs-attr">data:</span>
-      <span class="hljs-attr">priority:</span> <span class="hljs-number">7</span>
-      <span class="hljs-attr">extras:</span>
-        <span class="hljs-attr">client::display:</span>
-          <span class="hljs-attr">contentType:</span> <span class="hljs-string">"text/markdown"</span></code></pre></div>
-<hr />
-<h3 id="将自动化配置和设备配置添加到侧边栏步骤如下">将自动化配置和设备配置添加到侧边栏，步骤如下：</h3>
-<ul>
-<li>开启高级模式（点击用户头像，常规设置中，高级模式）</li>
-<li>编辑<code>configuration.yaml</code>（如果你有add-on，也可以用<code>File Editor</code>进行编辑）</li>
-<li>添加如下内容：</li>
-</ul>
-<div><pre class="hljs"><code><span class="hljs-attr">panel_custom:</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">panel_integrations</span>
-    <span class="hljs-attr">sidebar_title:</span> <span class="hljs-string">设备与服务</span>
-    <span class="hljs-attr">sidebar_icon:</span> <span class="hljs-string">mdi:devices</span>
-    <span class="hljs-attr">url_path:</span> <span class="hljs-string">'config/integrations'</span>
-    <span class="hljs-attr">module_url:</span> <span class="hljs-string">/api/hassio/app/entrypoint.js</span>
-    <span class="hljs-attr">embed_iframe:</span> <span class="hljs-literal">true</span>
-    <span class="hljs-attr">require_admin:</span> <span class="hljs-literal">true</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">panel_automations</span>
-    <span class="hljs-attr">sidebar_title:</span> <span class="hljs-string">自动化与场景</span>
-    <span class="hljs-attr">sidebar_icon:</span> <span class="hljs-string">mdi:robot</span>
-    <span class="hljs-attr">url_path:</span> <span class="hljs-string">'config/automation'</span>
-    <span class="hljs-attr">module_url:</span> <span class="hljs-string">/api/hassio/app/entrypoint.js</span>
-    <span class="hljs-attr">embed_iframe:</span> <span class="hljs-literal">true</span>
-    <span class="hljs-attr">require_admin:</span> <span class="hljs-literal">true</span></code></pre></div>
-<ul>
-<li>最终效果如下：<br />
-<img src="/_resources/3a9e4d073d8349b99d32503d75f90e78.png" /></li>
-</ul>
-<hr />
-<h3 id="添加wakeonlan通过幻数包远程唤醒主机">添加WakeOnLan（通过幻数包远程唤醒主机）</h3>
-<ul>
-<li>编辑<code>configuration.yaml</code>，添加如下内容，注意：<code>00:00:00:00:00:00</code>、<code>x.x.x.x</code>、<code>${__host_alias}</code>换成自己的配置：</li>
-</ul>
-<div><pre class="hljs"><code><span class="hljs-attr">switch:</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-attr">platform:</span> <span class="hljs-string">wake_on_lan</span>
-    <span class="hljs-attr">mac:</span> <span class="hljs-string">"00:00:00:00:00:00"</span>
-    <span class="hljs-attr">name:</span> <span class="hljs-string">"${__host_alias}"</span>
-    <span class="hljs-attr">host:</span> <span class="hljs-string">"x.x.x.x"</span>
-<span class="hljs-comment">#    broadcast_address: "10.0.255.255"</span></code></pre></div>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[使用stun进行NAT类型探测]]></title>
-            <guid>d6829effd51b44028a970b59e1790b2c</guid>
-            <pubDate>Sat, 04 May 2024 23:16:34 GMT</pubDate>
-            <content:encoded><![CDATA[<p><img src="/_resources/9f75a44f82514c38b03abe53e586ece7.svg" /></p>
-<p>对于使用pystun3进行NAT Type测试，请注意：</p>
-<ul>
-<li>按<code>rfc 3489</code>的标准：探测客户端网络的NAT类型是需要两个公网地址的（通过dns能查询到同一个address family的两个公网地址，比如两个公网ipv4）</li>
-<li>按<code>rfc 5389</code>的标准：是否需要两个公网IP，取决于客户端的NAT穿透模式</li>
-</ul>
-<p>所以，如果你只有一个公网IP，那么，pystun3（只支持<code>rfc 3489</code>）就不需要尝试了（其实，对于其它一些早期的stun客户端软件-包括一些VoIP客户端，大部分只支持<code>rfc 3489</code>，将pystun3用于这些客户端排查错误还是有用的）。</p>
-<p>另外，实际上，在进行比如基于webrtc的p2p连接时，是不需要得到具体的NAT类型的，对于stun服务来说只需要得到公网地址即可，所以，如果你只有一个公网IP地址，是不影响webrtc的使用的。</p>
-<p>通过js连接turn服务器进行测试</p>
-<div><pre class="hljs"><code><span class="hljs-keyword">function</span> <span class="hljs-title function_">checkTURNServer</span>(<span class="hljs-params">turnConfig, timeout</span>){ 
-
-  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>){
-
-    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){
-        <span class="hljs-keyword">if</span>(promiseResolved) <span class="hljs-keyword">return</span>;
-        <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">false</span>);
-        promiseResolved = <span class="hljs-literal">true</span>;
-    }, timeout || <span class="hljs-number">5000</span>);
-
-    <span class="hljs-keyword">var</span> promiseResolved = <span class="hljs-literal">false</span>
-      , myPeerConnection = <span class="hljs-variable language_">window</span>.<span class="hljs-property">RTCPeerConnection</span> || <span class="hljs-variable language_">window</span>.<span class="hljs-property">mozRTCPeerConnection</span> || <span class="hljs-variable language_">window</span>.<span class="hljs-property">webkitRTCPeerConnection</span>   <span class="hljs-comment">//compatibility for firefox and chrome</span>
-      , pc = <span class="hljs-keyword">new</span> <span class="hljs-title function_">myPeerConnection</span>({<span class="hljs-attr">iceServers</span>:[turnConfig]})
-      , noop = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){};
-    pc.<span class="hljs-title function_">createDataChannel</span>(<span class="hljs-string">""</span>);    <span class="hljs-comment">//create a bogus data channel</span>
-    pc.<span class="hljs-title function_">createOffer</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">sdp</span>){
-      <span class="hljs-keyword">if</span>(sdp.<span class="hljs-property">sdp</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'typ relay'</span>) &gt; -<span class="hljs-number">1</span>){ <span class="hljs-comment">// sometimes sdp contains the ice candidates...</span>
-        promiseResolved = <span class="hljs-literal">true</span>;
-        <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">true</span>);
-      }
-      pc.<span class="hljs-title function_">setLocalDescription</span>(sdp, noop, noop);
-    }, noop);    <span class="hljs-comment">// create offer and set local description</span>
-    pc.<span class="hljs-property">onicecandidate</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">ice</span>){  <span class="hljs-comment">//listen for candidate events</span>
-      <span class="hljs-keyword">if</span>(promiseResolved || !ice || !ice.<span class="hljs-property">candidate</span> || !ice.<span class="hljs-property">candidate</span>.<span class="hljs-property">candidate</span> || !(ice.<span class="hljs-property">candidate</span>.<span class="hljs-property">candidate</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'typ relay'</span>)&gt;-<span class="hljs-number">1</span>))  <span class="hljs-keyword">return</span>;
-      promiseResolved = <span class="hljs-literal">true</span>;
-      <span class="hljs-title function_">resolve</span>(<span class="hljs-literal">true</span>);
-    };
-  });   
-}
-
-<span class="hljs-title function_">checkTURNServer</span>({
-    <span class="hljs-attr">url</span>: <span class="hljs-string">'turn:127.0.0.1:3478'</span>,
-    <span class="hljs-attr">username</span>: <span class="hljs-string">'test'</span>,
-    <span class="hljs-attr">credential</span>: <span class="hljs-string">'test'</span>
-}).<span class="hljs-title function_">then</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">bool</span>){
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'is my TURN server active? '</span>, bool? <span class="hljs-string">'yes'</span>:<span class="hljs-string">'no'</span>);
-}).<span class="hljs-title function_">catch</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">error</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">console</span>));</code></pre></div>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[使用fail2ban保护Openwrt的luci-web登录]]></title>
-            <guid>f13995c60eaf488490ade8d058f8c9ad</guid>
-            <pubDate>Wed, 01 May 2024 06:08:50 GMT</pubDate>
-            <content:encoded><![CDATA[<p>fail2ban靠的是日志文件，对应于luci-web的日志源码在这里：<br />
-<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L511">登录失败日志</a>，<a title="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505" href="https://github.com/openwrt/luci/blob/openwrt-23.05/modules/luci-base/ucode/dispatcher.uc#L505">登录成功日志</a></p>
-<p>生成的日志参见如下，假设攻击者IP是<code>1.1.1.1</code>，三次登录失败，最后一次登录成功</p>
-<div><pre class="hljs"><code>May  1 01:06:38 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
-May  1 01:06:41 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
-May  1 01:06:48 OpenWrt uwsgi-luci: [info] luci: failed login on / for root from 1.1.1.1
-May  1 01:06:52 OpenWrt uwsgi-luci: [info] luci: accepted login on / for root from 1.1.1.1</code></pre></div>
-<p>由于Openwrt所包含的fail2ban配置文件，并没有包含luci-web的filter，所以，需要先自定义一个filter（比如<code>/etc/fail2ban/filter.d/luci-web.conf</code>），内容如下（部分item我加了详细的中文注释）：</p>
-<div><pre class="hljs"><code><span class="hljs-comment"># fail2ban filter configuration for luci-web by uwsgi-luci</span>
-
-<span class="hljs-section">[INCLUDES]</span>
-<span class="hljs-comment"># Read common prefixes. If any customizations available -- read them from</span>
-<span class="hljs-comment"># common.local</span>
-<span class="hljs-attr">after</span> = common.conf
-
-<span class="hljs-comment"># 大致浏览了下fail2ban的配置文件，fail2ban自带的日志前缀%(__prefix_line)s是无法匹配到luci-web的日志信息的</span>
-<span class="hljs-comment"># 并且，为了尽可能符合fail2ban的filter配置文件模式，这里自定义了一个日志类型</span>
-<span class="hljs-section">[lt_uwsgi-luci-over-syslog-ng]</span>
-<span class="hljs-attr">__prefix_line</span> = \s+&lt;__hostname&gt;\s+&lt;__daemon_re&gt;\:\s+\[.+\]\s+luci\:\s+
-<span class="hljs-attr">datepattern</span> = {^LN-BEG}
-
-<span class="hljs-section">[Definition]</span>
-<span class="hljs-comment"># 通过logtype，让fail2ban使用我们自定义的日志类型中的前缀和日期格式</span>
-<span class="hljs-attr">logtype</span> = uwsgi-luci-over-syslog-ng
-
-<span class="hljs-comment"># 这个对应了前缀中的&lt;__daemon_re&gt;（带有一定规则的正则匹配的&lt;_daemon&gt;）</span>
-<span class="hljs-attr">_daemon</span> = uwsgi-luci
-
-<span class="hljs-comment"># 预匹配表达式</span>
-<span class="hljs-attr">prefregex</span> = ^%(__prefix_line)s&lt;F-CONTENT&gt;([Ff]ailed).+&lt;/F-CONTENT&gt;$
-
-<span class="hljs-comment"># 匹配失败登录的表达式</span>
-<span class="hljs-attr">failregex</span> = ^[Ff]ailed\s+login\s+<span class="hljs-literal">on</span>\s+/.*\s+for\s+.+\s*from\s+&lt;HOST&gt;(:\d+)?$
-
-ignoreregex =
-</code></pre></div>
-<p>另外，对于调试fail2ban的表达式，可以使用<code>fail2ban-regex</code></p>
-<div><pre class="hljs"><code><span class="hljs-comment"># 其中/var/log/test-log是测试日志，可以通过echo去手动添加日志进行测试</span>
-fail2ban-regex --log-level=debug /var/<span class="hljs-built_in">log</span>/test-log /etc/fail2ban/filter.d/luci-web.conf</code></pre></div>
-<p>filter有了，并且，也通过<code>fail2ban-regex</code>测试通过了，就可以接下来进行jail的配置了<br />
-内容如下（由于我这边所有App都已经转到nftables了，所以，我只用了nftables版本的action，iptables的action其实也类似）:</p>
-<div><pre class="hljs"><code><span class="hljs-section">[luci]</span>
-<span class="hljs-attr">filter</span> = luci-web
-
-<span class="hljs-attr">enabled</span> = <span class="hljs-literal">true</span>
-<span class="hljs-comment"># 这里使用你自定义的日志文件路径（注意，luci默认是不把日志文件写入到本地文件的），可以使用`uci get system.@[0].log_file`查询，当然，如果你使用的是syslog-ng，日志文件的位置就在syslog-ng的配置文件中</span>
-<span class="hljs-attr">logpath</span> = /var/log/messages
-<span class="hljs-attr">maxretry</span> = <span class="hljs-number">6</span>
-<span class="hljs-attr">findtime</span> = <span class="hljs-number">5</span>m
-<span class="hljs-attr">bantime</span> = <span class="hljs-number">1</span>h
-
-<span class="hljs-comment"># incremental banning:</span>
-<span class="hljs-attr">bantime.increment</span> = <span class="hljs-literal">true</span>
-
-<span class="hljs-comment"># max banning time = permanent:</span>
-<span class="hljs-attr">bantime.maxtime</span> = -<span class="hljs-number">1</span>
-
-<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部丢弃（效果类似于主机不在线）</span>
-<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter drop"]</span>
-<span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部丢弃 </span>
-<span class="hljs-attr">action</span> = nftables-multiport[name=%(__name__)s-all, port=<span class="hljs-string">"443,80"</span>, protocol=<span class="hljs-string">"tcp,udp"</span>, blocktype=<span class="hljs-string">"counter drop"</span>]
-<span class="hljs-comment">#一旦匹配到，则将攻击者所有的数据包全部拒绝（默认是icmp不可达）（效果类似于主机不可ping通）</span>
-<span class="hljs-comment">#action = nftables-allports[name=%(__name__)s-all, protocol="tcp,udp,icmp,igmp,icmpv6", blocktype="counter reject"]</span>
-<span class="hljs-comment">#一旦匹配到，则将攻击者请求443,80端口的数据包全部拒绝（默认是icmp不可达）（效果类似于端口未开启）</span>
-<span class="hljs-comment">#action = nftables-multiport[name=%(__name__)s-all, port="443,80", protocol="tcp,udp", blocktype="counter reject"]</span>
-</code></pre></div>
-<p>注意上方的action中的blocktype，我在blocktype中加了counter（计数），翻看fail2ban的源码就能发现配置文件中的参数和最终的行为之间的关联，而加了这个counter之后可以让我们更加直观地看到在ban生效之后主机的数据包数量和大小。查看方法（基于nft）：</p>
-<div><pre class="hljs"><code>nft list table inet f2b-table</code></pre></div>
-<p>输出内容类似于：</p>
-<div><pre class="hljs"><code>table inet f2b-table {
-        set addr-set-luci-all {
-                type ipv4_addr
-                elements = { <span class="hljs-number">31.184</span><span class="hljs-number">.198</span><span class="hljs-number">.71</span>, <span class="hljs-number">58.215</span><span class="hljs-number">.203</span><span class="hljs-number">.139</span>,
-                             <span class="hljs-number">116.55</span><span class="hljs-number">.248</span><span class="hljs-number">.235</span>, <span class="hljs-number">119.167</span><span class="hljs-number">.165</span><span class="hljs-number">.54</span>,
-                             <span class="hljs-number">120.26</span><span class="hljs-number">.110</span><span class="hljs-number">.245</span>, <span class="hljs-number">120.27</span><span class="hljs-number">.151</span><span class="hljs-number">.128</span>,
-                             <span class="hljs-number">120.48</span><span class="hljs-number">.84</span><span class="hljs-number">.73</span>, <span class="hljs-number">122.194</span><span class="hljs-number">.12</span><span class="hljs-number">.206</span>,
-                             <span class="hljs-number">125.124</span><span class="hljs-number">.199</span><span class="hljs-number">.57</span>, <span class="hljs-number">182.92</span><span class="hljs-number">.165</span><span class="hljs-number">.47</span>,
-                             <span class="hljs-number">182.92</span><span class="hljs-number">.184</span><span class="hljs-number">.221</span>, <span class="hljs-number">182.92</span><span class="hljs-number">.239</span><span class="hljs-number">.50</span>,
-                             <span class="hljs-number">183.56</span><span class="hljs-number">.201</span><span class="hljs-number">.60</span>, <span class="hljs-number">193.35</span><span class="hljs-number">.18</span><span class="hljs-number">.122</span> }
-        }
-
-        chain f2b-chain {
-                type nat hook prerouting priority dstnat + <span class="hljs-number">1</span>; policy accept;
-                # 注意这里最后的<span class="hljs-string">'packets 1230 bytes 73800'</span>，就是ban后又收到了来自攻击者的<span class="hljs-number">1230</span>个数据包(约等于请求个数)
-                meta l4proto { tcp, udp } ip saddr @addr-set-luci-all counter packets <span class="hljs-number">1230</span> bytes <span class="hljs-number">73800</span> drop
-        }
-}</code></pre></div>
-<p>注意：防火墙的counter会在重启时重置为0哦！</p>
 ]]></content:encoded>
         </item>
     </channel>

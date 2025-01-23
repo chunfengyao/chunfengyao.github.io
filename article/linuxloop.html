@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>Linux下的loop块设备命令记录 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">Linux下的loop块设备命令记录</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1737628477389"
+                    >2025-01-23 18:34</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1737629187277"
+                    >2025-01-23 18:46</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><h2 id="创建-格式化并挂载">创建、格式化并挂载</h2>
+<div><pre class="hljs"><code><span class="hljs-comment"># 申请文件（不找用实际磁盘空间）</span>
+truncate -s 256G /app/imgs/share_disk
+<span class="hljs-comment"># 格式化成ext4</span>
+mkfs.ext4 /app/imgs/share_disk
+<span class="hljs-comment"># 或者格式化成ntfs</span>
+mkfs.ntfs -F -f /app/imgs/share_disk
+
+<span class="hljs-comment"># 创建挂载点</span>
+mkdir /mnt/share_disk
+<span class="hljs-comment"># 为了避免空目录被清理，可以创建一个占位文件</span>
+<span class="hljs-comment"># touch /mnt/share_disk/.keep</span>
+
+<span class="hljs-comment"># 直接通过mount挂载</span>
+mount -o loop /app/imgs/share_disk /mnt/share_disk
+
+<span class="hljs-comment"># 对于ntfs-3g，也可以直接使用mount.ntfs-3g直接挂载块设备</span>
+mount.ntfs-3g /app/imgs/share_disk /mnt/share_disk</code></pre></div>
+<div><pre class="hljs"><code><span class="hljs-comment"># 可以通过lsblk查看挂载详情</span>
+root@OpenWrt:~<span class="hljs-comment"># lsblk </span>
+<span class="hljs-comment"># NAME          MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS</span>
+<span class="hljs-comment"># loop0           7:0    0 320.6M  0 loop /overlay</span>
+<span class="hljs-comment"># loop1           7:1    0   217G  0 loop /mnt/share_disk</span>
+<span class="hljs-comment"># nvme0n1       259:0    0   1.8T  0 disk </span>
+<span class="hljs-comment"># ├─nvme0n1p1   259:1    0    50M  0 part </span>
+<span class="hljs-comment"># ├─nvme0n1p2   259:2    0   500M  0 part /rom</span>
+<span class="hljs-comment"># ├─nvme0n1p3   259:3    0   500M  0 part </span>
+<span class="hljs-comment"># ├─nvme0n1p4   259:4    0   1.8T  0 part /app/docker</span>
+<span class="hljs-comment"># │                                       /app</span>
+<span class="hljs-comment"># └─nvme0n1p128 259:5    0   239K  0 part </span></code></pre></div>
+<h2 id="loop块设备的大小调整">loop块设备的大小调整</h2>
+<div><pre class="hljs"><code><span class="hljs-comment"># 可以先将之前的挂在remount,ro挂载成只读，或者umount也行</span>
+<span class="hljs-comment"># 给块设备对应的文件添加10G大小（不会增加实际磁盘空间占用大小的）</span>
+truncate -s +10G /app/imgs/share_disk
+
+<span class="hljs-comment"># 触发一次系统针对loop1的分区扫描（相当于通知了系统，物理硬盘大小变了）</span>
+partprobe -s /dev/loop1
+<span class="hljs-comment"># 调整loop1的块设备大小到实际大小（相当于通知了loop驱动，硬盘大小变了，让loop驱动可以识别出新的大小）</span>
+losetup -c /dev/loop1
+
+<span class="hljs-comment"># 磁盘错误扫描（resize2fs的必须项）</span>
+fdisk -l /dev/loop1
+
+<span class="hljs-comment"># 调整文件系统大小</span>
+resize2fs /dev/loop1
+
+<span class="hljs-comment"># 检查结果</span>
+root@OpenWrt:~<span class="hljs-comment"># df -h /dev/loop1</span>
+<span class="hljs-comment"># Filesystem                Size      Used Available Use% Mounted on</span>
+<span class="hljs-comment"># /dev/loop1              212.5G     76.5G    125.3G  38% /mnt/share_disk</span>
+</code></pre></div>
+<h3 id="手动使用loop的losetup挂载ntfs镜像文件">手动使用loop的losetup挂载NTFS镜像文件</h3>
+<div><pre class="hljs"><code><span class="hljs-comment">#获取可用的loop设备号</span>
+losetup -f
+<span class="hljs-comment">#将share_disk关联到可用的loop设备号</span>
+<span class="hljs-built_in">export</span> _loopPath=<span class="hljs-string">"<span class="hljs-subst">$(losetup -f)</span>"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">${_loopPath}</span>"</span>
+losetup <span class="hljs-string">"<span class="hljs-variable">${_loopPath}</span>"</span> /app/imgs/share_disk
+
+<span class="hljs-comment">#挂载</span>
+mount <span class="hljs-string">"<span class="hljs-variable">${_loopPath}</span>"</span> /mnt/ap
+</code></pre></div>
+<h3 id="缩减loop设备对应的文件大小">缩减loop设备对应的文件大小</h3>
+<div><pre class="hljs"><code><span class="hljs-comment">#opkg install fstrim</span>
+<span class="hljs-comment">#注意：fstrim针对的是挂载点（目录），并且，无法处理直接挂载的ntfs，只能处理通过loop块设备挂载的ntfs</span>
+fstrim /mnt/ap</code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
