@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 23 Jan 2025 11:24:27 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 24 Jan 2025 13:45:04 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -257,7 +257,7 @@ lua
 ]]></content:encoded>
         </item>
         <item>
-            <title><![CDATA[通过adb dump堆内存]]></title>
+            <title><![CDATA[Android通过adb来dump堆内存进行代码分析]]></title>
             <guid>7f36a4d7f9a6432481f46a0a58faafc6</guid>
             <pubDate>Sun, 15 Dec 2024 04:25:35 GMT</pubDate>
             <content:encoded><![CDATA[<p>注：<code>am dumpheap</code>需满足以下条件之一：</p>
