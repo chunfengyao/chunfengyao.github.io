@@ -27,8 +27,8 @@
                   ></span
                 >
                 <span
-                  >Updated At：<time datetime="1737629187277"
-                    >2025-01-23 18:46</time
+                  >Updated At：<time datetime="1737952198104"
+                    >2025-01-27 12:29</time
                   ></span
                 >
               </div>
@@ -37,11 +37,11 @@
           </header>
         
         <div class="article-content markdown-body"><h2 id="创建-格式化并挂载">创建、格式化并挂载</h2>
-<div><pre class="hljs"><code><span class="hljs-comment"># 申请文件（不找用实际磁盘空间）</span>
+<div><pre class="hljs"><code><span class="hljs-comment"># 申请文件（不占用实际磁盘空间）</span>
 truncate -s 256G /app/imgs/share_disk
 <span class="hljs-comment"># 格式化成ext4</span>
 mkfs.ext4 /app/imgs/share_disk
-<span class="hljs-comment"># 或者格式化成ntfs</span>
+<span class="hljs-comment"># 或者格式化成ntfs（注意-f，使用快速格式化，否则，默认的格式化会导致块设备文件占用完整的实际磁盘空间）</span>
 mkfs.ntfs -F -f /app/imgs/share_disk
 
 <span class="hljs-comment"># 创建挂载点</span>
