@@ -27,8 +27,8 @@
                   ></span
                 >
                 <span
-                  >Updated At：<time datetime="1738490835770"
-                    >2025-02-02 18:07</time
+                  >Updated At：<time datetime="1738490902287"
+                    >2025-02-02 18:08</time
                   ></span
                 >
               </div>
@@ -126,7 +126,7 @@ adb shell settings delete secure theme_customization_overlay_picked_color_accent
 </tbody>
 </table>
 <ul>
-<li>所以，最终的代码为（其中的<code>FFC709</code>是我常用的护眼色，改成你自己的就好）：<div><pre class="hljs"><code>settings put secure theme_customization_overlay_packages <span class="hljs-string">'{"android.theme.customization.color_source":"preset","android.theme.customization.system_palette":"FFC709","android.theme.customization.accent_color":"FFC709","_applied_timestamp":1738487984972}'</span></code></pre></div>
+<li>所以，最终的代码为（其中的<code>FFC709</code>是我常用的护眼色，改成你自己的就好）：<div><pre class="hljs"><code>adb shell settings put secure theme_customization_overlay_packages <span class="hljs-string">'{"android.theme.customization.color_source":"preset","android.theme.customization.system_palette":"FFC709","android.theme.customization.accent_color":"FFC709","_applied_timestamp":1738487984972}'</span></code></pre></div>
 </li>
 </ul>
 </div>
