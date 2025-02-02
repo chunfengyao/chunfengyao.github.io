@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6bc5e88948dd4d7f83cec74e1e7ebf24"}'></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <title>Android修改：系统强调色/系统主题色/基本颜色 - chunfeng.yao</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">chunfeng.yao</a>
+      </nav>
+      <article>
+        
+          <header>
+            <h1 class="article-title">Android修改：系统强调色/系统主题色/基本颜色</h1>
+            <div style="font-family: 'Lucida Console', 'Liberation Mono', Menlo, Monaco, Roboto, apple-system, 'Helvetica Neue', Arial, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;color: #555555;bottom: 0;width: 100%;height: 2rem;"><span id="busuanzi_container_page_pv">当前文章被浏览次数:&nbsp;<span id="busuanzi_value_page_pv"></div>
+            <div class="article-info">
+              <div>
+                <span
+                  >Created At：<time datetime="1738488120041"
+                    >2025-02-02 17:22</time
+                  ></span
+                >
+                <span
+                  >Updated At：<time datetime="1738490835770"
+                    >2025-02-02 18:07</time
+                  ></span
+                >
+              </div>
+              
+            </div>
+          </header>
+        
+        <div class="article-content markdown-body"><p>莫名地系统强调色被重置为了默认的蓝色，蓝光伤眼，所以折腾了一下修改过程。<br />
+<strong>在AOSP或者其他一些系统中，可以在设置中直接搜索：强调色（在<code>开启开发者选项</code>中）/基本颜色（在<code>壁纸和样式</code>中）</strong><br />
+但是由于小米的MIUI/HyperOS屏蔽了相关的设置入口，所以，设置中是无法搜索到相关设置的（我记得MIUI的有几个开发版的开发者选项中是有强调色设置的，最新的Hyper OS已经没了）</p>
+<ul>
+<li>首先想到的是通过<code>startActivity</code>去启动包含强调色设置的设置页面（众所周知，小米在刚开始的时候，虽然使用了MIUI专属的com.android.settings应用，但是，其中还是有很多AOSP的设置的页面的，于是就有了通过<code>startActivity</code>来启动对应页面的方案），未果（应该是相关页面的Activity类彻底删掉了）</li>
+<li>既然无法启动对应的页面来直接设置，那就只有直接修改设置项了，所以，先简单搜索了一下：<div><pre class="hljs"><code>settings list secure</code></pre></div>
+</li>
+<li>无奈设置项太多，所以Google搜索一番，由于关键词比较模糊，而且，和应用开发时的主题色很容易匹配到，只能搜索了一下XDA，倒是有个相似的问题：<a title="https://xdaforums.com/t/cant-change-back-the-accent-color-after-updating.4251477/" href="https://xdaforums.com/t/cant-change-back-the-accent-color-after-updating.4251477/">https://xdaforums.com/t/cant-change-back-the-accent-color-after-updating.4251477/</a>
+<ul>
+<li>主要操作是：<code>adb shell cmd overlay enable com.android.theme.color.${color}</code>，其中的<code>${color}</code>支持：<code>black, green, cinnamon, orchid, purple, space, and ocean</code>，由于不存在这个组件，未果</li>
+</ul>
+<div><pre class="hljs"><code>yaocf@yaochunfeng ~ % adb shell cmd overlay <span class="hljs-built_in">enable</span> com.android.theme.color.cinnamon
+
+Exception occurred <span class="hljs-keyword">while</span> executing <span class="hljs-string">'enable'</span>:
+java.lang.SecurityException: commit failed
+    at com.android.server.om.OverlayManagerService<span class="hljs-variable">$1</span>.commit(OverlayManagerService.java:960)
+    at com.android.server.om.OverlayManagerShellCommand.runEnableDisable(OverlayManagerShellCommand.java:251)
+    at com.android.server.om.OverlayManagerShellCommand.onCommand(OverlayManagerShellCommand.java:89)
+    at com.android.modules.utils.BasicShellCommandHandler.exec(BasicShellCommandHandler.java:97)
+    at android.os.ShellCommand.exec(ShellCommand.java:38)
+    at com.android.server.om.OverlayManagerService<span class="hljs-variable">$1</span>.onShellCommand(OverlayManagerService.java:1081)
+    at android.os.Binder.shellCommand(Binder.java:1237)
+    at android.os.Binder.onTransact(Binder.java:1050)
+    at android.content.om.IOverlayManager<span class="hljs-variable">$Stub</span>.onTransact(IOverlayManager.java:510)
+    at android.os.Binder.execTransactInternal(Binder.java:1512)
+    at android.os.Binder.execTransact(Binder.java:1451)</code></pre></div>
+</li>
+<li>还有另一个帖子，给的方案是：<div><pre class="hljs"><code><span class="hljs-comment"># 设置</span>
+adb shell settings put secure theme_customization_overlay_picked_color_primary <span class="hljs-string">"#FFC709"</span>
+adb shell settings put secure theme_customization_overlay_picked_color_accent <span class="hljs-string">"#FFC709"</span>
+
+<span class="hljs-comment"># 删除设置</span>
+adb shell settings delete secure theme_customization_overlay_picked_color_primary
+adb shell settings delete secure theme_customization_overlay_picked_color_accent
+</code></pre></div>
+<ul>
+<li>其中的<code>color_primary</code>和<code>color_accent</code>，Android开发一定都不陌生，可惜，这个方法也过时了，未果</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>突然想起来，默认的主题色是跟着壁纸走的（动态颜色）。并且，由于在AOSP中，这个强调色的设置是在系统设置中的，也就是在settings表中，所以，还是来搜索settings表，增加了一些过滤条件：<div><pre class="hljs"><code>adb shell settings list secure |grep wallpaper |grep color</code></pre></div>
+<ul>
+<li>得到如下结果：</li>
+</ul>
+<div><pre class="hljs"><code>theme_customization_overlay_packages={"android.theme.customization.color_both":"0","android.theme.customization.color_source":"lock_wallpaper","_applied_timestamp":1738487984972}</code></pre></div>
+<ul>
+<li>看来是找到了，接下来就是看字段含义，搜索到了开发者页面：<a title="https://source.android.com/docs/core/display/dynamic-color?hl=zh-cn" href="https://source.android.com/docs/core/display/dynamic-color?hl=zh-cn">https://source.android.com/docs/core/display/dynamic-color?hl=zh-cn</a></li>
+<li>这里简单列一下<code>theme_customization_overlay_packages</code>支持的相关参数：</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">key</th>
+<th style="text-align:center">desc</th>
+<th style="text-align:center">value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">android.theme.customization.color_index</td>
+<td style="text-align:center">颜色索引</td>
+<td style="text-align:center">0~n</td>
+</tr>
+<tr>
+<td style="text-align:center">android.theme.customization.system_palette</td>
+<td style="text-align:center">系统调色盘</td>
+<td style="text-align:center">color</td>
+</tr>
+<tr>
+<td style="text-align:center">android.theme.customization.accent_color</td>
+<td style="text-align:center">强调色</td>
+<td style="text-align:center">color</td>
+</tr>
+<tr>
+<td style="text-align:center">android.theme.customization.color_source</td>
+<td style="text-align:center">颜色来源：从壁纸提取颜色还是手动指定（基本颜色）</td>
+<td style="text-align:center">present/home_wallpaper/lock_wallpaper</td>
+</tr>
+<tr>
+<td style="text-align:center">android.theme.customization.color_both</td>
+<td style="text-align:center">当前壁纸设置类型</td>
+<td style="text-align:center">1：锁屏和主屏幕，0：只设置其中一项</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>所以，最终的代码为（其中的<code>FFC709</code>是我常用的护眼色，改成你自己的就好）：<div><pre class="hljs"><code>settings put secure theme_customization_overlay_packages <span class="hljs-string">'{"android.theme.customization.color_source":"preset","android.theme.customization.system_palette":"FFC709","android.theme.customization.accent_color":"FFC709","_applied_timestamp":1738487984972}'</span></code></pre></div>
+</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
