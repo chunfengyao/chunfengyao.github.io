@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Mon, 03 Feb 2025 13:32:08 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 03 Feb 2025 13:40:14 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -38,7 +38,7 @@ java.lang.SecurityException: commit failed
     at android.os.Binder.execTransactInternal(Binder.java:1512)
     at android.os.Binder.execTransact(Binder.java:1451)</code></pre></div>
 </li>
-<li>还有另一个帖子，给的方案是：<div><pre class="hljs"><code><span class="hljs-comment"># 设置</span>
+<li>还有另一个帖子，给的方案是：<div><pre class="hljs"><code><span class="hljs-comment"># 设置强调色</span>
 adb shell settings put secure theme_customization_overlay_picked_color_primary <span class="hljs-string">"#FFC709"</span>
 adb shell settings put secure theme_customization_overlay_picked_color_accent <span class="hljs-string">"#FFC709"</span>
 
